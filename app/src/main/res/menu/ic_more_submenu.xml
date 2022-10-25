@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+   <item android:id="@+id/details"
+       android:icon="@drawable/ic_back"
+       android:title="Details"
+       />
+    <item android:id="@+id/add"
+        android:icon="@drawable/ic_more"
+        android:title="Add to album"/>
+    <item android:id="@+id/set"
+        android:icon="@drawable/ic_more"
+        android:title="Set as"/>
+    <item android:id="@+id/rename"
+        android:icon="@drawable/ic_more"
+        android:title="Rename"/>
+</menu>
