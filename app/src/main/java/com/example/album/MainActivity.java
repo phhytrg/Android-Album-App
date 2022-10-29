@@ -2,6 +2,9 @@ package com.example.album;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -12,26 +15,36 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
-public class MainActivity extends Activity {
-
-
+public class MainActivity extends Activity{
+    BottomNavigationView bottomNav;
+    PopupMenu popup;
+    int isChecked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNav=(BottomNavigationView)findViewById(R.id.bottom_nav);
+
+        bottomNav=(BottomNavigationView)findViewById(R.id.bottom_nav);
         bottomNav.setItemIconTintList(null);
-
-
+        isChecked=0;
+        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return itemNavigationBottomSelected(item);
+            }
+        });
 
 
     }
     public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
+        popup = new PopupMenu(this, v);
 
         // This activity implements OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -55,6 +68,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(this, "set", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rename:
+                Toast.makeText(this, "rename", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 return false;
@@ -62,4 +76,30 @@ public class MainActivity extends Activity {
         return true;
     }
 
+
+    public boolean itemNavigationBottomSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.edit:
+                Toast.makeText(this, "edit", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.favorite:
+                if(isChecked==0){
+                    bottomNav.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
+                    isChecked=1;
+                }else {
+                    bottomNav.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
+                    isChecked=0;
+                }
+                Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.delete:
+                Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.share:
+                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+        return false;
+    }
 }
