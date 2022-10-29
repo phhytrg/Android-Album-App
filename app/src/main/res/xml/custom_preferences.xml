@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:title="Theme"
+        android:key="key_theme"
+        android:defaultValue="Light"
+        android:entries="@array/themeList"
+        android:entryValues="@array/themeList"
+        android:summary="Light"/>
+
+    <ListPreference
+        android:title="Text color"
+        android:key="key_text_color"
+        android:defaultValue="@color/black"
+        android:entries="@array/themeList"
+        android:entryValues="@array/themeList"
+        android:summary="Black"/>
+
+    <ListPreference
+        android:title="Background color"
+        android:key="key_bg_color"
+        android:defaultValue="@color/white"
+        android:entries="@array/themeList"
+        android:entryValues="@array/themeList"
+        android:summary="White"/>
+
+    <ListPreference
+        android:title="Primary color"
+        android:key="key_primary_color"
+        android:defaultValue="@color/teal_700"
+        android:entries="@array/themeList"
+        android:entryValues="@array/themeList"
+        android:summary="Teal"/>
+
+
+</PreferenceScreen>
