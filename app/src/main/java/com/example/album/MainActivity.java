@@ -1,15 +1,13 @@
 package com.example.album;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.album.gallery.GalleryFragment;
+import com.example.album.album.AlbumFragment;
 
 public class MainActivity extends AppCompatActivity {
 

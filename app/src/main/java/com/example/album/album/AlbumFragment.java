@@ -1,12 +1,10 @@
-package com.example.album;
+package com.example.album.album;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -14,23 +12,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-class AlbumFragment extends Fragment implements PopupMenu.OnMenuItemClickListener {
+import com.example.album.R;
+
+public class AlbumFragment extends Fragment implements PopupMenu.OnMenuItemClickListener {
 
     private GridView gridView;
 
     String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes"};
-    int[] albumImages = {R.drawable.image, R.drawable.image3, R.drawable.image3,
-            R.drawable.image3, R.drawable.image3, R.drawable.image3, R.drawable.image3,
-            R.drawable.image3, R.drawable.image3, R.drawable.image3, R.drawable.image3};
-
-
+    int[] albumImages = {R.drawable.photo1, R.drawable.photo2, R.drawable.photo10,
+            R.drawable.photo4, R.drawable.cat1, R.drawable.photo6, R.drawable.photo3,
+            R.drawable.photo5, R.drawable.photo8, R.drawable.photo7, R.drawable.photo9};
 
     @Nullable
     @Override
