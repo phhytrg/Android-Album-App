@@ -5,32 +5,40 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
-public class MainActivity1 extends Activity{
+public class DetailFragment extends Fragment {
     BottomNavigationView bottomNav;
     PopupMenu popup;
     //com.github.chrisbanes.photoview.PhotoView img;
     int isChecked;
     String[] details;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_main1,container,false).getRootView();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         //img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
-        bottomNav=(BottomNavigationView)findViewById(R.id.bottom_nav);
+        bottomNav=(BottomNavigationView)view.findViewById(R.id.bottom_nav);
         bottomNav.setItemIconTintList(null);
         isChecked=0;
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -53,7 +61,7 @@ public class MainActivity1 extends Activity{
         //Drawable drawable = img.getDrawable();
     }
     public void showPopup(View v) {
-        popup = new PopupMenu(this, v);
+        popup = new PopupMenu(requireContext(), v);
 
         // This activity implements OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -69,17 +77,17 @@ public class MainActivity1 extends Activity{
         switch (item.getItemId()) {
             case R.id.details:
                 handleDetails();
-                Toast.makeText(this, "details", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "details", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add:
-                Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "add", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.set:
-                Toast.makeText(this, "set", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "set", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rename:
                 handleRename();
-                Toast.makeText(this, "rename", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "rename", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 return false;
@@ -88,9 +96,9 @@ public class MainActivity1 extends Activity{
     }
 
     public void handleRename() {
-        final AlertDialog.Builder renameDialog = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog.Builder renameDialog = new AlertDialog.Builder(requireContext());
         renameDialog.setTitle("Rename to:");
-        final EditText input = new EditText(MainActivity.this);
+        final EditText input = new EditText(requireContext());
         input.setText(details[0]);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         renameDialog.setView(input);
@@ -110,9 +118,9 @@ public class MainActivity1 extends Activity{
     }
 
     public void handleDetails() {
-        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(requireContext());
         detailsDialog.setTitle("Details");
-        final EditText input = new EditText(MainActivity.this);
+        final EditText input = new EditText(requireContext());
         String info = details[0] + "\n" + details[1] + "\n" + details[2] + "\n" + details[3];
         detailsDialog.setMessage(info);
         input.setHint("Enter the description of this image");
@@ -140,7 +148,7 @@ public class MainActivity1 extends Activity{
         int id = item.getItemId();
         switch(id){
             case R.id.edit:
-                Toast.makeText(this, "edit", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "edit", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.favorite:
                 if(isChecked==0){
@@ -150,13 +158,13 @@ public class MainActivity1 extends Activity{
                     bottomNav.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
                     isChecked=0;
                 }
-                Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "favorite", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.delete:
-                Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.share:
-                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "share", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return false;

@@ -14,16 +14,16 @@ public class MainActivity extends AppCompatActivity {
 
 //    GalleryFragment galleryFragment;
     AlbumFragment albumFragment;
-    CustomizeFragment customizeFragment;
+    DetailFragment detailFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        galleryFragment = new GalleryFragment();
-        customizeFragment = new CustomizeFragment();
+        detailFragment = new DetailFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.nav_host_fragment,customizeFragment);
+        fragmentTransaction.add(R.id.nav_host_fragment,detailFragment);
         fragmentTransaction.commit();
     }
 }
