@@ -80,6 +80,7 @@ public class MainActivity extends Activity{
     public boolean onPopUpMenuClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.details:
+                handleDetails();
                 Toast.makeText(this, "details", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add:
@@ -120,24 +121,31 @@ public class MainActivity extends Activity{
         renameDialog.show();
     }
 
-//    public void handleDetails() {
-//        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(MainActivity.this);
-//        detailsDialog.setTitle("Details");
-//        detailsDialog.setView(input);
-//        renameDialog.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                details[0] = input.getText().toString();
-//            }
-//        });
-//        renameDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-//        renameDialog.show();
-//    }
+    public void handleDetails() {
+        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(MainActivity.this);
+        detailsDialog.setTitle("Details");
+        final EditText input = new EditText(MainActivity.this);
+        String info = details[0] + "\n" + details[1] + "\n" + details[2] + "\n" + details[3];
+        detailsDialog.setMessage(info);
+        input.setHint("Enter the description of this image");
+        input.setText(details[4]);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setSingleLine(false);
+        detailsDialog.setView(input);
+        detailsDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                details[4] = input.getText().toString();
+            }
+        });
+        detailsDialog.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        detailsDialog.show();
+    }
 
 
     public boolean itemNavigationBottomSelected(@NonNull MenuItem item) {
