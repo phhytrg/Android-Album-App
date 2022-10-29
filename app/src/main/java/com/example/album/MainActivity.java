@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.album.album.AlbumFragment;
+import com.example.album.customize.CustomizeFragment;
 
 public class MainActivity extends AppCompatActivity {
 

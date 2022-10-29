@@ -1,4 +1,4 @@
-package com.example.album;
+package com.example.album.customize;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -6,6 +6,8 @@ import android.preference.PreferenceFragment;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.example.album.R;
 
 public class CustomizeFragment extends PreferenceFragmentCompat {
     @Override
