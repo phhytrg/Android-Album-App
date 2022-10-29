@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
 //    GalleryFragment galleryFragment;
     AlbumFragment albumFragment;
+    CustomizeActivity customizeActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
