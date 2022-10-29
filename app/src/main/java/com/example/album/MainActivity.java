@@ -13,15 +13,17 @@ import com.example.album.gallery.GalleryFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    GalleryFragment galleryFragment;
+//    GalleryFragment galleryFragment;
+    AlbumFragment albumFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        galleryFragment = new GalleryFragment();
+//        galleryFragment = new GalleryFragment();
+        albumFragment = new AlbumFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.nav_host_fragment,galleryFragment);
+        fragmentTransaction.add(R.id.nav_host_fragment,albumFragment);
         fragmentTransaction.commit();
     }
 }

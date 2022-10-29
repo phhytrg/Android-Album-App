@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/widget_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="GALLERY"
+            android:textSize="30dp"
+            android:textStyle="bold"/>
+
+        <ImageButton
+            android:id="@+id/btn_camera"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/btn_setting"
+            android:background="@drawable/camera"
+            android:scaleType="fitXY"
+            android:onClick="switchToCamera"/>
+
+        <ImageButton
+            android:id="@+id/btn_setting"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/dots"
+            android:scaleType="fitXY"
+            android:onClick="showAlbumOption"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/navagation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_top">
+
+        <Button
+            android:id="@+id/btn_photos"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/btn_albums"
+            android:text="PHOTOS"
+            android:textColor="#9e9c9b"/>
+
+        <Button
+            android:id="@+id/btn_albums"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="ALBUMS"
+            android:textColor="#d65e13"/>
+
+        <Button
+            android:id="@+id/btn_privacy"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/btn_albums"
+            android:text="PRIVACY"
+            android:textColor="#9e9c9b"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="90dp"
+        android:background="#cccccc" />
+
+    <GridView
+        android:id="@+id/album_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/navagation"
+        android:layout_gravity="center"
+        android:numColumns="3"/>
+
+</RelativeLayout>
