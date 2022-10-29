@@ -3,9 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/ic_grid_layout.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/ic_linear_layout.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/activity_main.xml" value="0.1334853090172239" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/gallery_fragment.xml" value="0.1265625" />
-        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/image_item.xml" value="0.1265625" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/image_item.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/layout_menu.xml" value="0.2734375" />
       </map>
     </option>
   </component>

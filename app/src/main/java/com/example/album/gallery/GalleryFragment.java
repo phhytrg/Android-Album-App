@@ -32,15 +32,7 @@ public class GalleryFragment extends Fragment {
         recyclerView = view.findViewById(R.id.gallery_recyclerview);
         recyclerView.setAdapter(new GalleryAdapter());
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),4));
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.top=0;
-                outRect.bottom=0;
-                outRect.left=0;
-                outRect.right=0;
-            }
-        });
+        recyclerView.addItemDecoration(
+                new GridSpacingItemDecoration(4,4, false));
     }
 }

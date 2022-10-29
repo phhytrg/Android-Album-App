@@ -13,12 +13,12 @@ import com.example.album.R;
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
     View view;
-    int[] images = {R.drawable.image,R.drawable.image,R.drawable.image,
-            R.drawable.image,R.drawable.image,R.drawable.image,
-            R.drawable.image,R.drawable.image,R.drawable.image,
-            R.drawable.image,R.drawable.image,R.drawable.image,
-            R.drawable.image,R.drawable.image,R.drawable.image,
-            R.drawable.image,R.drawable.image,R.drawable.image};
+    int[] images = {R.drawable.image2,R.drawable.image2,R.drawable.image2,
+            R.drawable.image2,R.drawable.image2,R.drawable.image2,
+            R.drawable.image2,R.drawable.image2,R.drawable.image2,
+            R.drawable.image2,R.drawable.image2,R.drawable.image2,
+            R.drawable.image2,R.drawable.image2,R.drawable.image2,
+            R.drawable.image2,R.drawable.image2,R.drawable.image2};
 
     @NonNull
     @Override
