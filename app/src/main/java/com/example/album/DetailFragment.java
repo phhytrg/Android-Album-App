@@ -1,6 +1,5 @@
 package com.example.album;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
