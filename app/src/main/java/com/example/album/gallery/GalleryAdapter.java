@@ -1,18 +1,27 @@
 package com.example.album.gallery;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
+    public void setLinearLayout(boolean linearLayout) {
+        isLinearLayout = linearLayout;
+    }
+
+    boolean isLinearLayout;
     View view;
+
     int[] images = {R.drawable.image2,R.drawable.image2,R.drawable.image2,
             R.drawable.image2,R.drawable.image2,R.drawable.image2,
             R.drawable.image2,R.drawable.image2,R.drawable.image2,

@@ -4,5 +4,5 @@
     <item android:id="@+id/action_switch_layout"
         android:title="@string/app_name"
         android:icon="@drawable/ic_linear_layout"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

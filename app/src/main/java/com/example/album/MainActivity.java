@@ -1,6 +1,8 @@
 package com.example.album;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 
 import androidx.appcompat.app.AppCompatActivity;
