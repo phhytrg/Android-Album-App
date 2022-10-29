@@ -2,9 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:title="New Album"
-        android:id="@+id/menu_newAlbum"
-        />
+        android:id="@+id/menu_newAlbum" />
+    <item
+        android:title="Recently deleted"
+        android:id="@+id/menu_deleted"/>
+    <item
+        android:title="Hidden"
+        android:id="@+id/menu_hidden"/>
     <item
         android:title="Setting"
         android:id="@+id/menu_setting"/>
+    <item
+        android:title="Account"
+        android:id="@+id/menu_account"/>
 </menu>

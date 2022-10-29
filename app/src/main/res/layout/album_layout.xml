@@ -17,7 +17,7 @@
             android:layout_marginLeft="20dp"
             android:text="GALLERY"
             android:textSize="30dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/btn_camera"
@@ -55,7 +55,7 @@
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@+id/btn_albums"
             android:text="PHOTOS"
-            android:textColor="#9e9c9b"/>
+            android:textColor="#9e9c9b" />
 
         <Button
             android:id="@+id/btn_albums"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="ALBUMS"
-            android:textColor="#d65e13"/>
+            android:textColor="#d65e13" />
 
         <Button
             android:id="@+id/btn_privacy"
@@ -74,7 +74,7 @@
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/btn_albums"
             android:text="PRIVACY"
-            android:textColor="#9e9c9b"/>
+            android:textColor="#9e9c9b" />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"

@@ -3,9 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/drawable/ic_launcher_background.xml" value="0.142" />
+        <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/drawable/my_edittext.xml" value="0.115" />
+        <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/drawable/mybutton.xml" value="0.142" />
+        <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/drawable/mydialog.xml" value="0.142" />
         <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/layout/activity_main.xml" value="0.22" />
-        <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/layout/album_item.xml" value="0.6666666666666666" />
+        <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/layout/album_item.xml" value="0.22" />
         <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/layout/album_layout.xml" value="0.22" />
+        <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.17552083333333332" />
         <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/layout/toolbar.xml" value="0.25" />
         <entry key="..\:/Users/LENOVO/Android-Album-App/app/src/main/res/menu/album_option.xml" value="0.16666666666666666" />
       </map>

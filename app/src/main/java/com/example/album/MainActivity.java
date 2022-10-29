@@ -1,29 +1,35 @@
 package com.example.album;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.app.Activity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
-
-import androidx.appcompat.widget.Toolbar;
-
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private GridView gridView;
+    private ImageButton camera_btn;
+    final Context c = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_layout);
 
-        ImageButton camera_btn = findViewById(R.id.btn_camera);
+        camera_btn = findViewById(R.id.btn_camera);
         camera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,13 +46,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         gridView = (GridView) findViewById(R.id.album_list);
         gridView.setAdapter(gridAdapter);
+
       }
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.menu_newAlbum:
-                Toast.makeText(this, "create new album",Toast.LENGTH_SHORT).show();
+                showCreateAlbumDialog();
                 return true;
             case R.id.menu_setting:
                 Toast.makeText(this, "setting",Toast.LENGTH_SHORT).show();
@@ -54,6 +61,54 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             default:
                 return false;
         }
+    }
+
+    public void showCreateAlbumDialog(){
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.new_album_dialog_layout);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        final EditText nameEt = (EditText) dialog.findViewById(R.id.userInputDialog);
+        Button okButton = dialog.findViewById(R.id.okDialogBtn);
+        Button cancelButton = dialog.findViewById(R.id.cancelDialogBtn);
+
+        nameEt.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = nameEt.getText().toString();
+                okButton.setEnabled(!name.isEmpty());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     public void showAlbumOption(View v){
