@@ -2,15 +2,19 @@ package com.example.album;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -20,17 +24,24 @@ import androidx.annotation.NonNull;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 
 public class MainActivity extends Activity{
     BottomNavigationView bottomNav;
     PopupMenu popup;
+    //com.github.chrisbanes.photoview.PhotoView img;
     int isChecked;
+    String[] details;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        //img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
         bottomNav=(BottomNavigationView)findViewById(R.id.bottom_nav);
         bottomNav.setItemIconTintList(null);
         isChecked=0;
@@ -41,7 +52,17 @@ public class MainActivity extends Activity{
             }
         });
 
-
+        // details chứa name, date, location, size, description
+        // theo thứ tự index 0 -> 4
+        // name, date, location, size, description phải được lấy từ database
+        // demo chưa có database nên chỉ gán cứng chạy thử
+        details = new String[5];
+        details[0] = "Image";
+        details[1] = "29/10/2022";
+        details[2] = "Ho Chi Minh";
+        details[3] = "5KB";
+        details[4] = "Flexing at Circle K with my bros";
+        //Drawable drawable = img.getDrawable();
     }
     public void showPopup(View v) {
         popup = new PopupMenu(this, v);
@@ -68,6 +89,7 @@ public class MainActivity extends Activity{
                 Toast.makeText(this, "set", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rename:
+                handleRename();
                 Toast.makeText(this, "rename", Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -75,6 +97,47 @@ public class MainActivity extends Activity{
         }
         return true;
     }
+
+    public void handleRename() {
+        final AlertDialog.Builder renameDialog = new AlertDialog.Builder(MainActivity.this);
+        renameDialog.setTitle("Rename to:");
+        final EditText input = new EditText(MainActivity.this);
+        input.setText(details[0]);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        renameDialog.setView(input);
+        renameDialog.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                details[0] = input.getText().toString();
+            }
+        });
+        renameDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        renameDialog.show();
+    }
+
+//    public void handleDetails() {
+//        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(MainActivity.this);
+//        detailsDialog.setTitle("Details");
+//        detailsDialog.setView(input);
+//        renameDialog.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                details[0] = input.getText().toString();
+//            }
+//        });
+//        renameDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        renameDialog.show();
+//    }
 
 
     public boolean itemNavigationBottomSelected(@NonNull MenuItem item) {
