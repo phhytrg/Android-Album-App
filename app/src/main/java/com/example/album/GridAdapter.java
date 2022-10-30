@@ -7,16 +7,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.util.ArrayList;
 
 
 public class GridAdapter extends BaseAdapter {
     Context context;
-    String[] pictureName;
-    int[] pictureId;
+    ArrayList<String> pictureName;
+    ArrayList<Integer> pictureId;
+//    String[] pictureName;
+//    int[] pictureId;
 
     LayoutInflater inflater;
 
-    public GridAdapter(Context context, String[] pictureName, int[] pictureId) {
+    public GridAdapter(Context context, ArrayList<String> pictureName, ArrayList<Integer> pictureId) {
         this.context = context;
         this.pictureName = pictureName;
         this.pictureId = pictureId;
@@ -24,7 +27,7 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return pictureName.length;
+        return pictureName.size();
     }
 
     @Override
@@ -49,14 +52,15 @@ public class GridAdapter extends BaseAdapter {
         ImageView imageView = convertView.findViewById(R.id.avatar);
         TextView textView = convertView.findViewById(R.id.album_name); //item name
 
-        imageView.setImageResource(pictureId[position]);
-        textView.setText(pictureName[position]);
+        imageView.setImageResource(pictureId.get(position));
+        textView.setText(pictureName.get(position));
 
         return convertView;
     }
 
-//    @Override
-//    public void addItem(){
+//    public void add(String name) {
+//        pictureName.add(name);
 //
+//        notifyDataSetChanged();
 //    }
 }

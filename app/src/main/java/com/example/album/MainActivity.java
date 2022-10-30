@@ -18,11 +18,19 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private GridView gridView;
     private ImageButton camera_btn;
     final Context c = this;
+    GridAdapter gridAdapter;
+
+    ArrayList<String> albumName  = new ArrayList<String>();
+    ArrayList<Integer> albumImages = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +45,36 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
 
-        String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
-                "Picnic", "Friends", "Selfie", "Memes"};
-        int[] albumImages = {R.drawable.photo1, R.drawable.photo2, R.drawable.photo10, R.drawable.photo4, R.drawable.cat1,
-                R.drawable.photo6, R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7, R.drawable.photo9};
+        albumName.add("Camera");
+        albumName.add("Videos");
+        albumName.add("Favorites");
+        albumName.add("Screens");
+        albumName.add("Location");
+        albumName.add("Download");
+        albumName.add("Collages");
+        albumName.add("Picnic");
+        albumName.add("Friends");
+        albumName.add("Selfie");
+        albumName.add("Memes");
 
-        GridAdapter gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages);
+        albumImages.add(R.drawable.photo1);
+        albumImages.add(R.drawable.photo2);
+        albumImages.add(R.drawable.photo10);
+        albumImages.add(R.drawable.photo4);
+        albumImages.add(R.drawable.cat1);
+        albumImages.add(R.drawable.photo6);
+        albumImages.add(R.drawable.photo3);
+        albumImages.add(R.drawable.photo5);
+        albumImages.add(R.drawable.photo8);
+        albumImages.add(R.drawable.photo7);
+        albumImages.add(R.drawable.photo9);
+
+//        String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
+//                "Picnic", "Friends", "Selfie", "Memes"};
+//        int[] albumImages = {R.drawable.photo1, R.drawable.photo2, R.drawable.photo10, R.drawable.photo4, R.drawable.cat1,
+//                R.drawable.photo6, R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7, R.drawable.photo9};
+
+        gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages);
 
         gridView = (GridView) findViewById(R.id.album_list);
         gridView.setAdapter(gridAdapter);
@@ -79,13 +111,11 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = nameEt.getText().toString();
-                okButton.setEnabled(!name.isEmpty());
+                okButton.setEnabled(!nameEt.getText().toString().isEmpty());
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
@@ -96,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 dialog.dismiss();
             }
         });
@@ -103,9 +134,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String name = nameEt.getText().toString();
+                albumName.add(name);
+                albumImages.add(R.drawable.gray);
+                gridAdapter.notifyDataSetChanged();
+                gridView.setAdapter(gridAdapter);
 
                 dialog.dismiss();
-            }
+                }
         });
 
         dialog.show();
