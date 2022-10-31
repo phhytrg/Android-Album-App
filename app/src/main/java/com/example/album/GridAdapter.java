@@ -9,11 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-
 public class GridAdapter extends BaseAdapter {
     Context context;
     ArrayList<String> pictureName;
     ArrayList<Integer> pictureId;
+
 //    String[] pictureName;
 //    int[] pictureId;
 
@@ -50,17 +50,12 @@ public class GridAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.album_item, null);
 
         ImageView imageView = convertView.findViewById(R.id.avatar);
-        TextView textView = convertView.findViewById(R.id.album_name); //item name
+        TextView textView = convertView.findViewById(R.id.album_name);
+        ImageView tick = convertView.findViewById(R.id.tick);
 
         imageView.setImageResource(pictureId.get(position));
         textView.setText(pictureName.get(position));
 
         return convertView;
     }
-
-//    public void add(String name) {
-//        pictureName.add(name);
-//
-//        notifyDataSetChanged();
-//    }
 }

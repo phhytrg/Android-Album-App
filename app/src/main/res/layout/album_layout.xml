@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/layout_top"
@@ -27,8 +28,8 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/btn_setting"
             android:background="@drawable/camera"
-            android:scaleType="fitXY"
-            android:onClick="switchToCamera"/>
+            android:onClick="switchToCamera"
+            android:scaleType="fitXY" />
 
         <ImageButton
             android:id="@+id/btn_setting"
@@ -37,10 +38,11 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/dots"
-            android:scaleType="fitXY"
-            android:onClick="showAlbumOption"/>
+            android:onClick="showAlbumOption"
+            android:scaleType="fitXY" />
     </RelativeLayout>
 
+<!--  tab layout  -->
     <RelativeLayout
         android:id="@+id/navagation"
         android:layout_width="match_parent"
@@ -86,8 +88,62 @@
         android:id="@+id/album_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/navagation"
+        android:layout_marginTop="80dp"
+        android:paddingTop="10dp"
+        android:layout_above="@+id/bottom_album_nav"
         android:layout_gravity="center"
-        android:numColumns="3"/>
+        android:numColumns="3"></GridView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_album_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        app:menu = "@menu/bottom_nav_menu" />
+
+    <RelativeLayout
+        android:id="@+id/front_album_nav"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_close"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/close"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 Selected item"
+            android:layout_toRightOf="@+id/btn_close"
+            android:layout_marginLeft="84dp"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_marginTop="-5dp"
+            android:textColor="@color/black"
+           />
+
+        <ImageButton
+            android:id="@+id/btn_chooseAll"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/check_list"
+            android:scaleType="fitXY" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

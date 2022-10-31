@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
@@ -7,21 +7,29 @@
     android:paddingTop="5dp">
 
     <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/avatar"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:id="@+id/avatar"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/roundImageView"/>
-
+        app:shapeAppearanceOverlay="@style/roundImageView" />
 
     <TextView
+        android:id="@+id/album_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/album_name"
+        android:layout_below="@+id/avatar"
+        android:layout_marginTop="6dp"
         android:text="Camera"
-        android:textStyle="bold"
         android:textSize="15dp"
-        android:layout_marginTop="6dp"/>
+        android:textStyle="bold" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/tick"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/check"
+        android:visibility="gone"/>
+
+
+</RelativeLayout>
