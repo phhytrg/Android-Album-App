@@ -1,4 +1,4 @@
-package com.example.album.gallery;
+package com.example.album.item_decoration;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -20,16 +20,19 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         int position = parent.getChildAdapterPosition(view); // item position
-        int column = position % spanCount; // item column
+        int columnIndex = position % spanCount; // item column
         if (includeEdge) {
-            outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-            outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+            outRect.left = spacing - columnIndex * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+            outRect.right = (columnIndex + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
             outRect.top = (position < spanCount) ? spacing : 0;
             outRect.bottom = spacing; // item bottom
         } else {
-            outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-            outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-            outRect.top = (position >= spanCount) ? spacing : 0; //item top
+            outRect.left = columnIndex * spacing / spanCount; // column * ((1f / spanCount) * spacing)
+            outRect.right = spacing - (columnIndex + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+            if(position >= spanCount){
+                outRect.top = spacing;
+            }
         }
     }
 }
+

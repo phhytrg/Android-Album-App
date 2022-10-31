@@ -1,4 +1,4 @@
-package com.example.album.gallery;
+package com.example.album.item_decoration;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -28,5 +28,6 @@ public class LinearSpacingItemDecoration extends RecyclerView.ItemDecoration {
         } else {
             outRect.bottom = spacing;
         }
+
     }
 }
