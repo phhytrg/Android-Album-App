@@ -1,7 +1,6 @@
 package com.example.album.customize;
 
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.viewmodel.CreationExtras;

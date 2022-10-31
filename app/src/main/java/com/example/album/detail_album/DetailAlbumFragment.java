@@ -30,7 +30,6 @@ public class DetailAlbumFragment extends Fragment {
 
     boolean isLinearLayout = true;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,7 +47,6 @@ public class DetailAlbumFragment extends Fragment {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 isLinearLayout = !isLinearLayout;
-                adapter.setLinearLayout(isLinearLayout);
                 chooseLayout();
                 setIcon(menuItem);
                 return true;

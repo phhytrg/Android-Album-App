@@ -12,11 +12,6 @@ import com.example.album.R;
 
 public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.GalleryViewHolder> {
 
-    public void setLinearLayout(boolean linearLayout) {
-        isLinearLayout = linearLayout;
-    }
-
-    boolean isLinearLayout;
     View view;
 
     int[] images = {R.drawable.image2,R.drawable.image2,R.drawable.image2,

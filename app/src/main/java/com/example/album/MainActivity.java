@@ -6,20 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.album.detail_album.DetailAlbumFragment;
+import com.example.album.gallery.GalleryFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-//    GalleryFragment galleryFragment;
-//    GalleryAdapter albumFragment;
-//    DetailFragment detailFragment;
-//    GalleryFragment galleryFragment = new GalleryFragment();
-    DetailAlbumFragment detailAlbumFragment = new DetailAlbumFragment();
+    GalleryFragment detailAlbumFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        detailAlbumFragment = new GalleryFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.nav_host_fragment,detailAlbumFragment);
