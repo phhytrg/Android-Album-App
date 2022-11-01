@@ -88,20 +88,50 @@
         android:id="@+id/album_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
-        android:paddingTop="10dp"
         android:layout_above="@+id/bottom_album_nav"
         android:layout_gravity="center"
-        android:numColumns="3"></GridView>
+        android:layout_marginTop="80dp"
+        android:numColumns="3"
+        android:paddingTop="10dp"></GridView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <RelativeLayout
         android:id="@+id/bottom_album_nav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
+        android:layout_height="50dp"
         android:background="@color/white"
-        app:menu = "@menu/bottom_nav_menu" />
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_share"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/share"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY" />
+
+        <ImageButton
+            android:id="@+id/btn_change_albumName"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/edit"
+            android:layout_centerInParent="true"/>
+
+        <ImageButton
+            android:id="@+id/btn_delete"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_centerVertical="true"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/bin"
+            android:scaleType="fitXY" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/front_album_nav"
@@ -121,6 +151,7 @@
             android:scaleType="fitXY" />
 
         <TextView
+            android:id="@+id/count_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1 Selected item"

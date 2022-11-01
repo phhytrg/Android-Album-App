@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.transition.Slide;
 import androidx.transition.TransitionManager;
 import androidx.transition.Transition;
@@ -28,6 +30,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.navigation.NavigationView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -36,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private GridView gridView;
     private ImageButton camera_btn;
     private ImageButton close_btn;
+    private ImageButton choose_all_btn;
+    private ImageButton delete_album_btn;
+    private ImageButton change_album_name_btn;
     final Context c = this;
     GridAdapter gridAdapter;
 
@@ -47,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_layout);
 
+        final int[] count = {0};
+        ArrayList<String> chose = new ArrayList<String>();
+
         camera_btn = findViewById(R.id.btn_camera);
         camera_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,12 +67,19 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
 
-        close_btn = findViewById(R.id.btn_close);
-        close_btn.setOnClickListener(new View.OnClickListener() {
-
+        choose_all_btn = findViewById(R.id.btn_chooseAll);
+        choose_all_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BottomNavigationView bottom_nav = (BottomNavigationView) findViewById(R.id.bottom_album_nav);
+
+            }
+        });
+
+        close_btn = findViewById(R.id.btn_close);
+        close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RelativeLayout bottom_nav = (RelativeLayout) findViewById(R.id.bottom_album_nav);
                 RelativeLayout front_nav = (RelativeLayout) findViewById(R.id.front_album_nav);
                 RelativeLayout layout_top = (RelativeLayout) findViewById(R.id.layout_top);
                 RelativeLayout nav = (RelativeLayout) findViewById(R.id.navagation);
@@ -70,7 +89,36 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 nav.setVisibility(View.VISIBLE);
                 bottom_nav.setVisibility(View.GONE);
 
+                TextView countText = (TextView) findViewById(R.id.count_item);
+                countText.setText("1 Selected item");
+                count[0] = 0;
+
                 gridView = (GridView) findViewById(R.id.album_list);
+                gridView.setAdapter(gridAdapter);
+            }
+        });
+
+        delete_album_btn = findViewById(R.id.btn_delete);
+        delete_album_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAlbum(albumName, albumImages, chose);
+
+                RelativeLayout bottom_nav = (RelativeLayout) findViewById(R.id.bottom_album_nav);
+                RelativeLayout front_nav = (RelativeLayout) findViewById(R.id.front_album_nav);
+                RelativeLayout layout_top = (RelativeLayout) findViewById(R.id.layout_top);
+                RelativeLayout nav = (RelativeLayout) findViewById(R.id.navagation);
+
+                front_nav.setVisibility(View.GONE);
+                layout_top.setVisibility(View.VISIBLE);
+                nav.setVisibility(View.VISIBLE);
+                bottom_nav.setVisibility(View.GONE);
+
+                TextView countText = (TextView) findViewById(R.id.count_item);
+                countText.setText("1 Selected item");
+                count[0] = 0;
+
+                gridAdapter.notifyDataSetChanged();
                 gridView.setAdapter(gridAdapter);
             }
         });
@@ -99,24 +147,18 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         albumImages.add(R.drawable.photo7);
         albumImages.add(R.drawable.photo9);
 
-//        String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
-//                "Picnic", "Friends", "Selfie", "Memes"};
-//        int[] albumImages = {R.drawable.photo1, R.drawable.photo2, R.drawable.photo10, R.drawable.photo4, R.drawable.cat1,
-//                R.drawable.photo6, R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7, R.drawable.photo9};
-        ArrayList<String> chose = new ArrayList<String>();
-
         gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages);
-
         gridView = (GridView) findViewById(R.id.album_list);
         gridView.setAdapter(gridAdapter);
 
         gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long l) {
-                BottomNavigationView bottom_nav = (BottomNavigationView) findViewById(R.id.bottom_album_nav);
+                RelativeLayout bottom_nav = (RelativeLayout) findViewById(R.id.bottom_album_nav);
                 RelativeLayout front_nav = (RelativeLayout) findViewById(R.id.front_album_nav);
                 RelativeLayout layout_top = (RelativeLayout) findViewById(R.id.layout_top);
                 RelativeLayout nav = (RelativeLayout) findViewById(R.id.navagation);
+                TextView countText = (TextView) findViewById(R.id.count_item);
 
                 Transition transition = new Slide(Gravity.BOTTOM);
                 transition.setDuration(300);
@@ -138,11 +180,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         {
                             tick.setVisibility(View.GONE);
                             chose.remove(name_selected);
+                            count[0]--;
+                            countText.setText(count[0]+" Selected item");
+
                         }
                         else
                         {
                             tick.setVisibility(View.VISIBLE);
                             chose.add(name_selected);
+                            count[0]++;
+                            countText.setText(count[0]+" Selected item");
                         }
                     }
                 });
@@ -157,11 +204,15 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 {
                     tick.setVisibility(View.GONE);
                     chose.remove(name_selected);
+                    count[0]--;
+                    countText.setText(count[0]+" Selected item");
                 }
                 else
                 {
                     tick.setVisibility(View.VISIBLE);
                     chose.add(name_selected);
+                    count[0]++;
+                    countText.setText(count[0]+" Selected item");
                 }
                 return true;
             }
@@ -234,12 +285,13 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     public void deleteAlbum(ArrayList<String> src, ArrayList<Integer> img, ArrayList<String> b){
-        for (int i = 0; i < src.size() - 1; i++){
-            for (int j = 0; j < b.size() - 1; j++){
+        for (int i = 0; i < src.size(); i++){
+            for (int j = 0; j < b.size(); j++){
                 if (src.get(i) == b.get(j)){
                     src.remove(i);
                     b.remove(j);
                     img.remove(i);
+                    i--;
                     break;
                 }
             }
