@@ -46,18 +46,17 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private ImageButton delete_album_btn;
     private ImageButton change_album_name_btn;
     final Context c = this;
+    final int[] count = {0};
     GridAdapter gridAdapter;
 
     ArrayList<String> albumName  = new ArrayList<String>();
     ArrayList<Integer> albumImages = new ArrayList<Integer>();
+    ArrayList<String> chose = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_layout);
-
-        final int[] count = {0};
-        ArrayList<String> chose = new ArrayList<String>();
 
         camera_btn = findViewById(R.id.btn_camera);
         camera_btn.setOnClickListener(new View.OnClickListener() {
@@ -67,11 +66,29 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
 
+        final int[] flag ={0};
         choose_all_btn = findViewById(R.id.btn_chooseAll);
         choose_all_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                TextView countText = (TextView) findViewById(R.id.count_item);
+                if (flag[0] == 0){
+                    gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages, true);
+                    gridView.setAdapter(gridAdapter);
+                    gridAdapter.notifyDataSetChanged();
+                    chose = (ArrayList)albumName.clone();
+                    flag[0] = 1;
+                    count[0]=chose.size();
+                }
+                else{
+                    gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages, false);
+                    gridView.setAdapter(gridAdapter);
+                    gridAdapter.notifyDataSetChanged();
+                    chose.clear();
+                    flag[0] = 0;
+                    count[0] = 0;
+                }
+                countText.setText(count[0]+" Selected item");
             }
         });
 
@@ -93,8 +110,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 countText.setText("1 Selected item");
                 count[0] = 0;
 
-                gridView = (GridView) findViewById(R.id.album_list);
+                gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages, false);
                 gridView.setAdapter(gridAdapter);
+                gridAdapter.notifyDataSetChanged();
             }
         });
 
@@ -102,24 +120,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         delete_album_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteAlbum(albumName, albumImages, chose);
-
-                RelativeLayout bottom_nav = (RelativeLayout) findViewById(R.id.bottom_album_nav);
-                RelativeLayout front_nav = (RelativeLayout) findViewById(R.id.front_album_nav);
-                RelativeLayout layout_top = (RelativeLayout) findViewById(R.id.layout_top);
-                RelativeLayout nav = (RelativeLayout) findViewById(R.id.navagation);
-
-                front_nav.setVisibility(View.GONE);
-                layout_top.setVisibility(View.VISIBLE);
-                nav.setVisibility(View.VISIBLE);
-                bottom_nav.setVisibility(View.GONE);
-
-                TextView countText = (TextView) findViewById(R.id.count_item);
-                countText.setText("1 Selected item");
-                count[0] = 0;
-
-                gridAdapter.notifyDataSetChanged();
-                gridView.setAdapter(gridAdapter);
+                showDeleteAlbumDialog();
             }
         });
 
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         albumImages.add(R.drawable.photo7);
         albumImages.add(R.drawable.photo9);
 
-        gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages);
+        gridAdapter = new GridAdapter(MainActivity.this, albumName, albumImages, false);
         gridView = (GridView) findViewById(R.id.album_list);
         gridView.setAdapter(gridAdapter);
 
@@ -279,6 +280,52 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 gridView.setAdapter(gridAdapter);
                 dialog.dismiss();
                 }
+        });
+
+        dialog.show();
+    }
+
+    public void showDeleteAlbumDialog(){
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.delete_album_dialog_layout);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button deleteButton = dialog.findViewById(R.id.deleteDialogBtn);
+        Button cancelButton = dialog.findViewById(R.id.cancelDeleteDialogBtn);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAlbum(albumName, albumImages, chose);
+
+                RelativeLayout bottom_nav = (RelativeLayout) findViewById(R.id.bottom_album_nav);
+                RelativeLayout front_nav = (RelativeLayout) findViewById(R.id.front_album_nav);
+                RelativeLayout layout_top = (RelativeLayout) findViewById(R.id.layout_top);
+                RelativeLayout nav = (RelativeLayout) findViewById(R.id.navagation);
+
+                front_nav.setVisibility(View.GONE);
+                layout_top.setVisibility(View.VISIBLE);
+                nav.setVisibility(View.VISIBLE);
+                bottom_nav.setVisibility(View.GONE);
+
+                TextView countText = (TextView) findViewById(R.id.count_item);
+                countText.setText("1 Selected item");
+                count[0] = 0;
+
+                gridAdapter.notifyDataSetChanged();
+                gridView.setAdapter(gridAdapter);
+                dialog.dismiss();
+            }
         });
 
         dialog.show();

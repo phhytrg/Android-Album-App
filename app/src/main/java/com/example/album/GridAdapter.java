@@ -13,16 +13,15 @@ public class GridAdapter extends BaseAdapter {
     Context context;
     ArrayList<String> pictureName;
     ArrayList<Integer> pictureId;
-
-//    String[] pictureName;
-//    int[] pictureId;
+    Boolean flag;
 
     LayoutInflater inflater;
 
-    public GridAdapter(Context context, ArrayList<String> pictureName, ArrayList<Integer> pictureId) {
+    public GridAdapter(Context context, ArrayList<String> pictureName, ArrayList<Integer> pictureId, Boolean flag) {
         this.context = context;
         this.pictureName = pictureName;
         this.pictureId = pictureId;
+        this.flag = flag;
     }
 
     @Override
@@ -55,6 +54,10 @@ public class GridAdapter extends BaseAdapter {
 
         imageView.setImageResource(pictureId.get(position));
         textView.setText(pictureName.get(position));
+
+        if (flag == true){
+            tick.setVisibility(View.VISIBLE);
+        }
 
         return convertView;
     }
