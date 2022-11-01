@@ -4,10 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -26,13 +34,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MainActivity extends Activity{
     BottomNavigationView bottomNav;
     PopupMenu popup;
-    //com.github.chrisbanes.photoview.PhotoView img;
+    com.github.chrisbanes.photoview.PhotoView img;
     int isChecked;
     String[] details;
 
@@ -41,7 +53,7 @@ public class MainActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
+        img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
         bottomNav=(BottomNavigationView)findViewById(R.id.bottom_nav);
         bottomNav.setItemIconTintList(null);
         isChecked=0;
@@ -62,7 +74,6 @@ public class MainActivity extends Activity{
         details[2] = "Ho Chi Minh";
         details[3] = "5KB";
         details[4] = "Flexing at Circle K with my bros";
-        //Drawable drawable = img.getDrawable();
     }
     public void showPopup(View v) {
         popup = new PopupMenu(this, v);
@@ -155,22 +166,37 @@ public class MainActivity extends Activity{
                 Toast.makeText(this, "edit", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.favorite:
-                if(isChecked==0){
-                    bottomNav.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
-                    isChecked=1;
-                }else {
-                    bottomNav.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
-                    isChecked=0;
-                }
-                Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
+                handleFavorite();
                 return true;
             case R.id.delete:
                 Toast.makeText(this, "delete", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.share:
-                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show();
+                handleShare();
                 return true;
         }
         return false;
+    }
+
+    public void handleFavorite() {
+        if(isChecked==0){
+            bottomNav.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
+            isChecked=1;
+        }else {
+            bottomNav.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
+            isChecked=0;
+        }
+    }
+
+    public void handleShare() {
+        Bitmap b = ((BitmapDrawable)img.getDrawable()).getBitmap();
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        b.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), b, "Title", null);
+        Uri imageUri =  Uri.parse(path);
+        share.putExtra(Intent.EXTRA_STREAM, imageUri);
+        startActivity(Intent.createChooser(share, "Select"));
     }
 }
