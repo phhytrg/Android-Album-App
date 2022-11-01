@@ -48,7 +48,7 @@ public class GridAdapter extends BaseAdapter {
         if (convertView==null)
             convertView = inflater.inflate(R.layout.album_item, null);
 
-        ImageView imageView = convertView.findViewById(R.id.avatar);
+        ImageView imageView = convertView.findViewById(R.id.album_image);
         TextView textView = convertView.findViewById(R.id.album_name); //item name
 
         imageView.setImageResource(pictureId[position]);

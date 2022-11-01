@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="New Album"
-        android:id="@+id/menu_newAlbum"
-        />
+        android:title="@string/new_album"
+        android:id="@+id/menu_newAlbum" />
     <item
-        android:title="Setting"
+        android:title="@string/setting"
         android:id="@+id/menu_setting"/>
+
+    <item android:id="@+id/action_switch_layout"
+        android:title="@string/app_name"
+        android:icon="@drawable/ic_camera"
+        app:showAsAction="ifRoom" />
 </menu>

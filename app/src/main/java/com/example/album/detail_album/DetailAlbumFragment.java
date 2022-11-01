@@ -39,7 +39,7 @@ public class DetailAlbumFragment extends Fragment {
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.layout_menu, menu);
+                menuInflater.inflate(R.menu.layout_option, menu);
                 MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
                 setIcon(layoutMenu);
             }

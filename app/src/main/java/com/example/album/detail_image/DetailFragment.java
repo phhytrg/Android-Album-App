@@ -1,4 +1,4 @@
-package com.example.album;
+package com.example.album.detail_image;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.album.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 

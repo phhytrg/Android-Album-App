@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/albumFragment">
+
+    <fragment
+        android:id="@+id/albumFragment"
+        android:name="com.example.album.album.AlbumFragment"
+        android:label="Gallery">
+        <action
+            android:id="@+id/action_albumFragment_to_detailAlbumFragment"
+            app:destination="@id/detailAlbumFragment" />
+        <action
+            android:id="@+id/action_albumFragment_to_galleryFragment2"
+            app:destination="@id/galleryFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailAlbumFragment"
+        android:name="com.example.album.detail_album.DetailAlbumFragment"
+        android:label="DetailAlbumFragment" >
+        <action
+            android:id="@+id/action_detailAlbumFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <argument
+            android:name="label"
+            app:argType="string"/>
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.album.detail_image.DetailFragment"
+        android:label="DetailFragment" />
+    <fragment
+        android:id="@+id/galleryFragment2"
+        android:name="com.example.album.gallery.GalleryFragment"
+        android:label="GalleryFragment" >
+        <action
+            android:id="@+id/action_galleryFragment2_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+</navigation>
