@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,7 +40,7 @@ public class GalleryFragment extends Fragment {
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.layout_option, menu);
                 MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
-                setIcon(layoutMenu);
+//                setIcon(layoutMenu);
             }
 
             @Override
@@ -95,6 +96,23 @@ public class GalleryFragment extends Fragment {
 //            recyclerView.addItemDecoration(
 //                    new GridSpacingItemDecoration(4,8,false)
 //            );
+        }
+    }
+
+    public class PinchZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return super.onScaleBegin(detector);
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            super.onScaleEnd(detector);
         }
     }
 }

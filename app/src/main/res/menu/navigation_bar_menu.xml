@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:title="@string/gallery"
-        app:showAsAction="always"
+    <item
         android:id="@+id/galleryFragment"
+        android:title="@string/photos"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/albumFragment"
+        android:title="@string/albums"
+        app:showAsAction="always"/>
+    <item android:title="@string/privacy"
+        app:showAsAction="always"
+        android:id="@+id/privacyFragment"
         />
-    <item android:title="photos"
-        app:showAsAction="always"/>
-    <item android:title="@string/albums"
-        app:showAsAction="always"/>
 
 </menu>

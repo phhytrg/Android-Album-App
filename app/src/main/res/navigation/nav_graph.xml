@@ -12,8 +12,11 @@
             android:id="@+id/action_albumFragment_to_detailAlbumFragment"
             app:destination="@id/detailAlbumFragment" />
         <action
-            android:id="@+id/action_albumFragment_to_galleryFragment2"
-            app:destination="@id/galleryFragment" />
+            android:id="@+id/action_albumFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/detailAlbumFragment"
@@ -35,7 +38,13 @@
         android:name="com.example.album.gallery.GalleryFragment"
         android:label="GalleryFragment" >
         <action
-            android:id="@+id/action_galleryFragment2_to_detailFragment"
+            android:id="@+id/action_galleryFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_galleryFragment_to_albumFragment"
+            app:destination="@id/albumFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

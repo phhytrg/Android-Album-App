@@ -1,6 +1,8 @@
 package com.example.album.album;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -26,13 +29,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.MainActivity;
 import com.example.album.R;
+import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
-import com.google.android.material.appbar.MaterialToolbar;
 
 public class AlbumFragment extends Fragment{
 
 //    private GridView gridView;
     private RecyclerView recyclerView;
+
+    private Menu navigationMenu;
 
     String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes"};
@@ -59,7 +64,7 @@ public class AlbumFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.album_layout,container, false).getRootView();
 
-        boolean flag = setUpToolBar(view);
+        boolean flag = setUpMainActionbar(view);
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
@@ -107,84 +112,72 @@ public class AlbumFragment extends Fragment{
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(3,24,false));
 
         //Navigation ToolBar's implement
-        MaterialToolbar navigationBar = getActivity().findViewById(R.id.navigation_bar);
+        SplitToolbar navigationBar = (SplitToolbar) ((MainActivity)getActivity()).findViewById(R.id.navigation_bar);
         navigationBar.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.album_navigation_bar,menu);
-
+                menuInflater.inflate(R.menu.navigation_bar_menu,menu);
+                MenuItem defaultItem = menu.getItem(1);
+                defaultItem.setTitle(getSpannableStringFromMenuItem(defaultItem,R.color.highlightColorText));
+                navigationMenu = menu;
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
+                for(int i =0; i < navigationMenu.size(); i++){
+                    MenuItem currentItem = navigationMenu.getItem(i);
+                    if (currentItem.getItemId() == R.id.galleryFragment) {
+                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
+                    } else if (currentItem.getItemId() == R.id.albumFragment) {
+                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
+                    } else if (currentItem.getItemId() == R.id.privacyFragment) {
+                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
+                    }
+                }
                 NavController navController =
                         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-                if (id == R.id.galleryFragment){
-                    return NavigationUI.onNavDestinationSelected(menuItem,navController) ||
-                            AlbumFragment.super.onOptionsItemSelected(menuItem);
-                }
-//                else if(id == R.id.btn_albums){
-//
-//                }
-//                else if(id == R.id.btn_privacy){
-//
-//                }
-                return false;
-            }
-        });
 
+                menuItem.setTitle(getSpannableStringFromMenuItem(menuItem, R.color.highlightColorText));
 
-//        navigationBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                int id = item.getItemId();
-//                NavController navController =
-//                        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+                return NavigationUI.onNavDestinationSelected(menuItem,navController) ||
+                        AlbumFragment.super.onOptionsItemSelected(menuItem);
 //                if (id == R.id.galleryFragment){
-//                    return NavigationUI.onNavDestinationSelected(item,navController) ||
-//                            AlbumFragment.super.onOptionsItemSelected(item);
+//                    return NavigationUI.onNavDestinationSelected(menuItem,navController) ||
+//                            AlbumFragment.super.onOptionsItemSelected(menuItem);
 //                }
-//                else if(id == R.id.btn_albums){
-//
+//                else if(id == R.id.albumFragment){
+//                    return NavigationUI.onNavDestinationSelected(menuItem, navController) ||
+//                            AlbumFragment
 //                }
-//                else if(id == R.id.btn_privacy){
+//                else if(id == R.id.privacyFragment){
 //
 //                }
 //                return false;
-//            }
-//        });
+            }
+        });
+
 
         NavController navController = Navigation.findNavController(view);
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(navController.getGraph()).build();
 
-        Toolbar toolbar = view.findViewById(R.id.navigation_bar);
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+        AppBarConfiguration appBarConfiguration1 =
+                new AppBarConfiguration.Builder(R.id.galleryFragment,R.id.albumFragment).build();
+
+        NavigationUI.setupWithNavController(navigationBar, navController, appBarConfiguration1);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(
                     @NonNull NavController navController
                     , @NonNull NavDestination navDestination
                     , @Nullable Bundle bundle) {
-                toolbar.setTitle("");
+                navigationBar.setTitle("");
             }
         });
-
-//        gridView = (GridView) view.findViewById(R.id.album_list);
-//        gridView.setAdapter(gridAdapter);
-
-//        ImageButton camera_btn = view.findViewById(R.id.btn_camera);
-//        camera_btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(requireContext(), "You're opening camera", Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
-    private boolean setUpToolBar(View view){
-//        Toolbar toolbar = view.findViewById(R.id.album_app_bar);
+    private boolean setUpMainActionbar(View view){
         AppCompatActivity activity = (AppCompatActivity)getActivity();
         Toolbar toolbar = getActivity().findViewById(R.id.app_bar);
         if(activity != null){
@@ -192,6 +185,19 @@ public class AlbumFragment extends Fragment{
             return true;
         }
         return false;
+    }
+
+    private SpannableString getSpannableStringFromMenuItem(MenuItem item, int colorResource){
+        SpannableString spanString =
+                new SpannableString(item.getTitle().toString());
+        spanString.setSpan(
+                new ForegroundColorSpan(ContextCompat
+                        .getColor(requireContext(),colorResource)),
+                0,
+                spanString.length(),
+                0
+        ); //fix the color to white
+        return spanString;
     }
 
     //    public void showAlbumOption(View v){
