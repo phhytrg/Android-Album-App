@@ -26,7 +26,12 @@
         <item name="android:theme">@style/Theme.Album</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="titleTextAppearance">@style/TextAppearance.Album.Toolbar</item>
-        <item name="android:actionBarDivider">@android:color/transparent</item>
+        <item name="actionBarStyle">@style/Theme.Album.ActionBar</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="Theme.Album.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="elevation">0dp</item>
     </style>
 
     <style name="roundImageView" parent="">

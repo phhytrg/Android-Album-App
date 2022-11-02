@@ -13,7 +13,7 @@
             app:destination="@id/detailAlbumFragment" />
         <action
             android:id="@+id/action_albumFragment_to_galleryFragment2"
-            app:destination="@id/galleryFragment2" />
+            app:destination="@id/galleryFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailAlbumFragment"
@@ -31,7 +31,7 @@
         android:name="com.example.album.detail_image.DetailFragment"
         android:label="DetailFragment" />
     <fragment
-        android:id="@+id/galleryFragment2"
+        android:id="@+id/galleryFragment"
         android:name="com.example.album.gallery.GalleryFragment"
         android:label="GalleryFragment" >
         <action
