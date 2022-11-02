@@ -2,8 +2,6 @@ package com.example.album.gallery;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -12,8 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,29 +25,47 @@ public class GalleryFragment extends Fragment {
 
     boolean isLinearLayout = true;
 
+    private ScaleGestureDetector scaleGestureDetector;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        scaleGestureDetector = new ScaleGestureDetector(requireContext(), new PinchZoomListener());
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.gallery_fragment, container, false).getRootView();
 
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(new MenuProvider() {
-            @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.layout_option, menu);
-                MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
-//                setIcon(layoutMenu);
-            }
+//        MenuHost menuHost = requireActivity();
+//        menuHost.addMenuProvider(new MenuProvider() {
+//            @Override
+//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+//                menuInflater.inflate(R.menu.layout_option, menu);
+//                MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
+////                setIcon(layoutMenu);
+//            }
+//
+//            @Override
+//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+//                isLinearLayout = !isLinearLayout;
+//                adapter.setLinearLayout(isLinearLayout);
+//                chooseLayout();
+//                setIcon(menuItem);
+//                return true;
+//            }
+//        });
+//
+//        view.findViewById(R.id.gallery_recyclerview).setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                Log.d("aaaa","ACTION DETECTED");
+//                scaleGestureDetector.onTouchEvent(event);
+//                return true;
+//            }
+//        });
 
-            @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                isLinearLayout = !isLinearLayout;
-                adapter.setLinearLayout(isLinearLayout);
-                chooseLayout();
-                setIcon(menuItem);
-                return true;
-            }
-        });
         return view;
     }
 
@@ -99,20 +113,31 @@ public class GalleryFragment extends Fragment {
         }
     }
 
-    public class PinchZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            return true;
-        }
 
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            return super.onScaleBegin(detector);
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-            super.onScaleEnd(detector);
-        }
-    }
+//
+//    public class PinchZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
+//        @Override
+//        public boolean onScale(ScaleGestureDetector detector) {
+//            float gestureFactor = detector.getScaleFactor();
+//            if(gestureFactor > 1){
+//                isLinearLayout = !isLinearLayout;
+//                adapter.setLinearLayout(isLinearLayout);
+//                chooseLayout();
+//            }
+//            else{
+//
+//            }
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onScaleBegin(ScaleGestureDetector detector) {
+//            return super.onScaleBegin(detector);
+//        }
+//
+//        @Override
+//        public void onScaleEnd(ScaleGestureDetector detector) {
+//            super.onScaleEnd(detector);
+//        }
+//    }
 }
