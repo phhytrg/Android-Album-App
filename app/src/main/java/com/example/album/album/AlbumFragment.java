@@ -2,7 +2,6 @@ package com.example.album.album;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,24 +16,19 @@ import com.example.album.item_decoration.GridSpacingItemDecoration;
 
 public class AlbumFragment extends Fragment {
 
-//    private GridView gridView;
-    private RecyclerView recyclerView;
-
-    private Menu navigationMenu;
-
-    String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
-            "Picnic", "Friends", "Selfie", "Memes"};
-    int[] albumImages = {R.drawable.photo1,
-            R.drawable.photo2,
-            R.drawable.photo10,
-            R.drawable.photo4,
-            R.drawable.cat1,
-            R.drawable.photo6,
-            R.drawable.photo3,
-            R.drawable.photo5,
-            R.drawable.photo8,
-            R.drawable.photo7,
-            R.drawable.photo9};
+//    String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
+//            "Picnic", "Friends", "Selfie", "Memes"};
+//    int[] albumImages = {R.drawable.photo1,
+//            R.drawable.photo2,
+//            R.drawable.photo10,
+//            R.drawable.photo4,
+//            R.drawable.cat1,
+//            R.drawable.photo6,
+//            R.drawable.photo3,
+//            R.drawable.photo5,
+//            R.drawable.photo8,
+//            R.drawable.photo7,
+//            R.drawable.photo9};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +38,6 @@ public class AlbumFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.album_layout,container, false).getRootView();
 
 //        boolean flag = setUpMainActionbar(view);
 //        MenuHost menuHost = requireActivity();
@@ -77,17 +70,18 @@ public class AlbumFragment extends Fragment {
 //
 //        });
 
-        return view;
+        return inflater.inflate(R.layout.album_layout,container, false).getRootView();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        GridAdapter gridAdapter = new GridAdapter(requireContext(), albumName, albumImages);
+//        GridAdapter gridAdapter = new GridAdapter(requireContext(), albumName, albumImages);
 
         //Set Adapter for RecyclerView
         AlbumAdapter albumAdapter = new AlbumAdapter();
-        recyclerView = view.findViewById(R.id.album_list);
+        //    private GridView gridView;
+        RecyclerView recyclerView = view.findViewById(R.id.album_list);
         recyclerView.setAdapter(albumAdapter);
         //Set Layout Manager
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(),3));
