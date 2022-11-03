@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,7 +17,6 @@ import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +30,7 @@ public class GalleryFragment extends Fragment {
 
     boolean isLinearLayout = true;
 
-    private ScaleGestureDetector scaleGestureDetector;
+//    private ScaleGestureDetector scaleGestureDetector;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,9 +134,9 @@ public class GalleryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.gallery_recyclerview);
-        adapter = new GalleryAdapter(isLinearLayout,requireActivity());
+        adapter = new GalleryAdapter(isLinearLayout);
         recyclerView.setAdapter(adapter);
-        chooseLayout();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
         MenuHost menuHost = (MenuHost) getActivity();
@@ -159,18 +157,18 @@ public class GalleryFragment extends Fragment {
                     setIcon(menuItem);
                     if(isLinearLayout){
                         for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
-                            GalleryAdapter.GalleryViewHolder viewHolder =
-                                    (GalleryAdapter.GalleryViewHolder) recyclerView
-                                            .findViewHolderForAdapterPosition(i);
+//                            GalleryAdapter.GalleryViewHolder viewHolder =
+//                                    (GalleryAdapter.GalleryViewHolder) recyclerView
+//                                            .findViewHolderForAdapterPosition(i);
                             adapter.setLinearLayout(isLinearLayout);
                             adapter.notifyItemChanged(i);
                         }
                     }
                     else{
                         for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
-                            GalleryAdapter.GalleryViewHolder viewHolder =
-                                    (GalleryAdapter.GalleryViewHolder) recyclerView
-                                            .findViewHolderForAdapterPosition(i);
+//                            GalleryAdapter.GalleryViewHolder viewHolder =
+//                                    (GalleryAdapter.GalleryViewHolder) recyclerView
+//                                            .findViewHolderForAdapterPosition(i);
 
                             adapter.setLinearLayout(isLinearLayout);
                             adapter.notifyItemChanged(i);
@@ -181,7 +179,9 @@ public class GalleryFragment extends Fragment {
             }
 
         };
-        menuHost.addMenuProvider(menuProvider,getViewLifecycleOwner(), Lifecycle.State.CREATED);
+        if(menuHost != null) {
+            menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+        }
     }
 
     private void setIcon(MenuItem menuItem){
@@ -195,43 +195,19 @@ public class GalleryFragment extends Fragment {
         }
     }
 
-    private void chooseLayout(){
-        RecyclerView.LayoutManager layoutManager;
-        if(isLinearLayout){
-            layoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(layoutManager);
-//            while (recyclerView.getItemDecorationCount() > 0) {
-//                recyclerView.removeItemDecorationAt(0);
-//            }
-//            recyclerView.addItemDecoration(
-//                    new LinearSpacingItemDecoration(8,false)
-//            );
-        }
-        else{
-            layoutManager = new GridLayoutManager(getContext(), 4);
-            recyclerView.setLayoutManager(layoutManager);
-//            while (recyclerView.getItemDecorationCount() > 0) {
-//                recyclerView.removeItemDecorationAt(0);
-//            }
-//            recyclerView.addItemDecoration(
-//                    new GridSpacingItemDecoration(4,8,false)
-//            );
-        }
-    }
-
-
-//
 //    public class PinchZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
 //        @Override
 //        public boolean onScale(ScaleGestureDetector detector) {
 //            float gestureFactor = detector.getScaleFactor();
 //            if(gestureFactor > 1){
 //                isLinearLayout = !isLinearLayout;
-//                adapter.setLinearLayout(isLinearLayout);
-//                chooseLayout();
-//            }
-//            else{
-//
+//                for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
+////                            GalleryAdapter.GalleryViewHolder viewHolder =
+////                                    (GalleryAdapter.GalleryViewHolder) recyclerView
+////                                            .findViewHolderForAdapterPosition(i);
+//                    adapter.setLinearLayout(isLinearLayout);
+//                    adapter.notifyItemChanged(i);
+//                }
 //            }
 //            return true;
 //        }

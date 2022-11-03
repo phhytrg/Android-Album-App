@@ -1,14 +1,11 @@
 package com.example.album.gallery;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,11 +19,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
 
     boolean isLinearLayout;
-    private Activity activity;
 
-    public GalleryAdapter(boolean isLinearLayout, Activity activity) {
+    public GalleryAdapter(boolean isLinearLayout) {
         this.isLinearLayout = isLinearLayout;
-        this.activity = activity;
     }
 
     public void setLinearLayout(boolean linearLayout) {
@@ -90,16 +85,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         }
     }
 
-    private void setIcon(MenuItem menuItem){
-        if(menuItem == null)
-            return;
-        if(isLinearLayout){
-            menuItem.setIcon(ContextCompat.getDrawable(this.activity,R.drawable.ic_grid_layout));
-        }
-        else{
-            menuItem.setIcon(ContextCompat.getDrawable(this.activity,R.drawable.ic_linear_layout));
-        }
-    }
 
 
 }
