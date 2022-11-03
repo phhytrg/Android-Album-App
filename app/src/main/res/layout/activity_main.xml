@@ -48,7 +48,6 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/img"
         android:layout_weight="1"/>
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"

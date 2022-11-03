@@ -3,6 +3,7 @@ package com.example.album;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -31,11 +32,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationBarView;
+import com.skydoves.colorpickerview.ColorEnvelope;
+import com.skydoves.colorpickerview.ColorPickerDialog;
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 
 import org.json.JSONObject;
 
@@ -44,6 +49,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
 
 
 public class MainActivity extends Activity{
@@ -65,7 +71,6 @@ public class MainActivity extends Activity{
         more=(ImageButton)findViewById(R.id.more);
         done=(ImageButton)findViewById(R.id.done);
 
-
         bottomNav.setItemIconTintList(null);
         isChecked=0;
         pos= "detail";
@@ -78,7 +83,9 @@ public class MainActivity extends Activity{
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick( View v) {handleBack(v);}
+            public void onClick( View v) {
+                handleBack(v);
+            }
         });
 
 
@@ -232,7 +239,7 @@ public class MainActivity extends Activity{
             case R.id.eraser:
                 break;
             case R.id.color:
-                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+                handleColor();
 
                 break;
             case R.id.pen:
@@ -270,9 +277,7 @@ public class MainActivity extends Activity{
         done.requestLayout();
         more.getLayoutParams().height = 0;
         more.requestLayout();
-        bottomNav.setItemIconTintList(null);
         bottomNav.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
-
         pos="edit";
     }
     public void handleBrush(){
@@ -285,6 +290,33 @@ public class MainActivity extends Activity{
         bottomNav.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         pos="paint";
     }
-    public void handleColor(View v){
+    public void handleColor(){
+        new ColorPickerDialog.Builder(this)
+                .setTitle("ColorPicker Dialog")
+                .setPreferenceName("MyColorPickerDialog")
+                .setPositiveButton("Confirm",
+                        new ColorEnvelopeListener() {
+                            @Override
+                            public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
+                                done.setColorFilter(envelope.getColor());
+                                MenuItem item=bottomNav.getMenu().findItem(R.id.color);
+                                Drawable normalDrawable = item.getIcon();
+                                Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
+                                DrawableCompat.setTint(wrapDrawable, envelope.getColor());
+                                item.setIcon(wrapDrawable);
+
+                            }
+                        })
+                .setNegativeButton("cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                .attachAlphaSlideBar(true) // the default value is true.
+                .attachBrightnessSlideBar(true)  // the default value is true.
+                .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
+                .show();
     }
 }
