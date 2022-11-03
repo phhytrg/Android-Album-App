@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/albumFragment"
         android:name="com.example.album.album.AlbumFragment"
-        android:label="Gallery">
+        android:label="Albums">
         <action
             android:id="@+id/action_albumFragment_to_detailAlbumFragment"
             app:destination="@id/detailAlbumFragment" />
@@ -16,7 +16,11 @@
             app:destination="@id/galleryFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/detailAlbumFragment"
@@ -36,7 +40,7 @@
     <fragment
         android:id="@+id/galleryFragment"
         android:name="com.example.album.gallery.GalleryFragment"
-        android:label="GalleryFragment" >
+        android:label="PHOTOS" >
         <action
             android:id="@+id/action_galleryFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
@@ -45,6 +49,11 @@
             app:destination="@id/albumFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true"
+
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 </navigation>

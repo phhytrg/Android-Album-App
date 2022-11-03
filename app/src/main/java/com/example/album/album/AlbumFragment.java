@@ -2,16 +2,28 @@ package com.example.album.album;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
+import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 
 public class AlbumFragment extends Fragment {
@@ -29,11 +41,8 @@ public class AlbumFragment extends Fragment {
 //            R.drawable.photo8,
 //            R.drawable.photo7,
 //            R.drawable.photo9};
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    SplitToolbar splitToolbar;
+    NavController navController;
 
     @Nullable
     @Override
@@ -69,9 +78,39 @@ public class AlbumFragment extends Fragment {
 //
 //
 //        });
+        if(getActivity()!=null){
+            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+            if(actionBar!=null) {
+                actionBar.setTitle(getString(R.string.albums));
+            }
+        }
+        MenuHost menuHost = requireActivity();
+        MenuProvider menuProvider = new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+//                menuInflater.inflate(R.menu.album_option,menu);
+//                menu.getItem(2).setVisible(false);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+
+                return false;
+            }
+        };
+        menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
+        splitToolbar = getActivity().findViewById(R.id.navigation_bar);
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
+                .getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment != null
+                ? navHostFragment.getNavController()
+                : null;
 
         return inflater.inflate(R.layout.album_layout,container, false).getRootView();
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -183,4 +222,34 @@ public class AlbumFragment extends Fragment {
 //          popupMenu.inflate(R.menu.album_option);
 //          popupMenu.show();
 //    }
+
+    private void setUpNavigationBar(){
+        MenuProvider menuProvider = new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.album_option,menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .setEnterAnim(R.anim.slide_in_left)
+                        .setExitAnim(R.anim.slide_out_right)
+                        .setPopEnterAnim(R.anim.slide_in_right)
+                        .setPopExitAnim(R.anim.slide_out_left)
+                        .build();
+
+                if(id == R.id.galleryFragment){
+                    if(navController != null) {
+                        navController.navigate(id, null, navOptions);
+                        return true;
+                    }
+                }
+                return true;
+            }
+        };
+        splitToolbar.addMenuProvider(menuProvider,getViewLifecycleOwner(), Lifecycle.State.CREATED);
+    }
 }

@@ -6,4 +6,7 @@
     <string name="albums">ALBUMS</string>
     <string name="privacy">PRIVACY</string>
     <string name="gallery">Gallery</string>
+    <string name="switch_layout_item">switch_layout_item</string>
+    <string name="filter_item">Filter</string>
+    <string name="camera_item">camera_item</string>
 </resources>

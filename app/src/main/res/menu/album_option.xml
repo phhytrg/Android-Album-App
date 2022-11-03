@@ -8,8 +8,19 @@
         android:title="@string/setting"
         android:id="@+id/menu_setting"/>
 
+    <item android:id="@+id/filter"
+        android:title="@string/filter_item"
+        android:icon="@drawable/ic_filter"
+        app:showAsAction="never" />
+
     <item android:id="@+id/action_switch_layout"
-        android:title="@string/app_name"
-        android:icon="@drawable/ic_camera"
+        android:title="@string/switch_layout_item"
+        android:icon="@drawable/ic_linear_layout"
         app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/camera"
+        android:title="@string/camera_item"
+        android:icon="@drawable/ic_camera"
+        app:showAsAction="always" />
+
 </menu>
