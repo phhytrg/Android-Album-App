@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     tools:context=".MainActivity"
     android:orientation="vertical"
     >
@@ -12,7 +11,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:background="@color/textInputOutlineColor">
 
         <ImageButton
             android:id="@+id/back"
@@ -29,7 +29,17 @@
             android:background="@color/trans"
             app:popupTheme="@drawable/menu_bg"
             android:onClick="showPopup" />
+        <ImageButton
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/trans"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_done"
+            />
     </RelativeLayout>
+
+
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
@@ -44,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/black"
+        android:background="@color/textInputOutlineColor"
         app:itemTextColor="@color/white"
         app:labelVisibilityMode="selected"
         app:elevation="16dp"

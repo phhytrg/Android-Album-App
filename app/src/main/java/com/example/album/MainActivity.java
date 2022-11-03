@@ -22,15 +22,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONObject;
 
@@ -45,9 +50,10 @@ public class MainActivity extends Activity{
     BottomNavigationView bottomNav;
     PopupMenu popup;
     com.github.chrisbanes.photoview.PhotoView img;
-    int isChecked;
+    int isChecked; //favorite btn
     String[] details;
-
+    ImageButton back,more,done;
+    String pos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,14 +61,27 @@ public class MainActivity extends Activity{
 
         img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
         bottomNav=(BottomNavigationView)findViewById(R.id.bottom_nav);
+        back=(ImageButton)findViewById(R.id.back);
+        more=(ImageButton)findViewById(R.id.more);
+        done=(ImageButton)findViewById(R.id.done);
+
+
         bottomNav.setItemIconTintList(null);
         isChecked=0;
+        pos= "detail";
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 return itemNavigationBottomSelected(item);
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick( View v) {handleBack(v);}
+        });
+
+
 
         // details chứa name, date, location, size, description
         // theo thứ tự index 0 -> 4
@@ -88,6 +107,27 @@ public class MainActivity extends Activity{
         popup.inflate(R.menu.ic_more_submenu);
         popup.show();
     }
+    public void handleBack(View v){
+        switch (pos){
+            case "detail":
+                // dang o layout_detail
+                break;
+            case "edit":
+                //dang o edit
+                bottomNav.getMenu().clear();
+                bottomNav.inflateMenu(R.menu.bottom_navigation);
+                more.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                more.requestLayout();
+                done.getLayoutParams().height = 0;
+                done.requestLayout();
+                pos="detail";
+                break;
+            case "paint":
+                //dang o paint
+                handleEdit();
+                break;
+        }
+    }
     public boolean onPopUpMenuClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.details:
@@ -101,7 +141,6 @@ public class MainActivity extends Activity{
                 Toast.makeText(this, "set", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rename:
-                handleRename();
                 Toast.makeText(this, "rename", Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -163,7 +202,7 @@ public class MainActivity extends Activity{
         int id = item.getItemId();
         switch(id){
             case R.id.edit:
-                Toast.makeText(this, "edit", Toast.LENGTH_SHORT).show();
+                handleEdit();
                 return true;
             case R.id.favorite:
                 handleFavorite();
@@ -174,6 +213,30 @@ public class MainActivity extends Activity{
             case R.id.share:
                 handleShare();
                 return true;
+            case R.id.crop:
+                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.rotate:
+                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.flip:
+                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.paint:
+                handleBrush();
+                break;
+            case R.id.undo:
+                return true;
+            case R.id.redo:
+                break;
+            case R.id.eraser:
+                break;
+            case R.id.color:
+                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+
+                break;
+            case R.id.pen:
+                break;
         }
         return false;
     }
@@ -198,5 +261,30 @@ public class MainActivity extends Activity{
         Uri imageUri =  Uri.parse(path);
         share.putExtra(Intent.EXTRA_STREAM, imageUri);
         startActivity(Intent.createChooser(share, "Select"));
+    }
+
+    public void handleEdit(){
+        bottomNav.getMenu().clear();
+        bottomNav.inflateMenu(R.menu.edit_nav);
+        done.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        done.requestLayout();
+        more.getLayoutParams().height = 0;
+        more.requestLayout();
+        bottomNav.setItemIconTintList(null);
+        bottomNav.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+
+        pos="edit";
+    }
+    public void handleBrush(){
+        bottomNav.getMenu().clear();
+        bottomNav.inflateMenu(R.menu.paint_nav);
+        done.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        done.requestLayout();
+        more.getLayoutParams().height = 0;
+        more.requestLayout();
+        bottomNav.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+        pos="paint";
+    }
+    public void handleColor(View v){
     }
 }
