@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
@@ -14,10 +15,16 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
 
     View view;
 
-    int[] images = {R.drawable.image2,R.drawable.image2,R.drawable.image2,
-            R.drawable.image2,R.drawable.image2,R.drawable.image2,
-            R.drawable.image2,R.drawable.image2,R.drawable.image2,
-            R.drawable.image2,R.drawable.image2,R.drawable.image2,
+    boolean isLinearLayout = false;
+
+    public void setLinearLayout(boolean linearLayout) {
+        isLinearLayout = linearLayout;
+    }
+
+    int[] images = {R.drawable.photo1,R.drawable.photo2,R.drawable.photo2,
+            R.drawable.photo3,R.drawable.photo4,R.drawable.photo5,
+            R.drawable.photo6,R.drawable.photo7,R.drawable.photo8,
+            R.drawable.image,R.drawable.image2,R.drawable.image2,
             R.drawable.image2,R.drawable.image2,R.drawable.image2,
             R.drawable.image2,R.drawable.image2,R.drawable.image2};
 
@@ -32,6 +39,16 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
     @Override
     public void onBindViewHolder(@NonNull GalleryViewHolder holder, int position) {
         holder.imageView.setImageResource(images[position]);
+        ConstraintLayout.LayoutParams a = (ConstraintLayout.LayoutParams)holder.imageView.getLayoutParams();
+        if(isLinearLayout){
+            int h = holder.imageView.getDrawable().getIntrinsicHeight();
+            int w = holder.imageView.getDrawable().getIntrinsicWidth();
+            a.dimensionRatio = "H,"+ w +":"+ h;
+        }else{
+            a.dimensionRatio = "H,1:1";
+            a.width=0;
+            a.height=0;
+        }
     }
 
     @Override

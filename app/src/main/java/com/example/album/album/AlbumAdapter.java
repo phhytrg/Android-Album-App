@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.album.R;
 import com.google.android.material.imageview.ShapeableImageView;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>
+        implements View.OnClickListener{
 
     //data field
     String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
@@ -33,11 +34,18 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
         holder.shapeableImageView.setImageResource(albumImages[position]);
         holder.albumName.setText(albumName[position]);
+        holder.shapeableImageView.setOnClickListener(this);
+        holder.albumName.setOnClickListener(this);
     }
 
     @Override
     public int getItemCount() {
         return albumName.length;
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
     class AlbumViewHolder extends RecyclerView.ViewHolder {
