@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -60,6 +61,7 @@ public class MainActivity extends Activity{
     String[] details;
     ImageButton back,more,done;
     String pos;
+    MenuItem color;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +72,7 @@ public class MainActivity extends Activity{
         back=(ImageButton)findViewById(R.id.back);
         more=(ImageButton)findViewById(R.id.more);
         done=(ImageButton)findViewById(R.id.done);
-
+        color=(MenuItem)bottomNav.getMenu().findItem(R.id.color);
         bottomNav.setItemIconTintList(null);
         isChecked=0;
         pos= "detail";
@@ -79,6 +81,7 @@ public class MainActivity extends Activity{
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 return itemNavigationBottomSelected(item);
             }
+
         });
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -240,7 +243,6 @@ public class MainActivity extends Activity{
                 break;
             case R.id.color:
                 handleColor();
-
                 break;
             case R.id.pen:
                 break;
@@ -298,13 +300,10 @@ public class MainActivity extends Activity{
                         new ColorEnvelopeListener() {
                             @Override
                             public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
-                                done.setColorFilter(envelope.getColor());
-                                MenuItem item=bottomNav.getMenu().findItem(R.id.color);
-                                Drawable normalDrawable = item.getIcon();
-                                Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
+                                color= (MenuItem) bottomNav.getMenu().findItem(R.id.color);
+                                Drawable wrapDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_circle));
                                 DrawableCompat.setTint(wrapDrawable, envelope.getColor());
-                                item.setIcon(wrapDrawable);
-
+                                color.setIcon(wrapDrawable);
                             }
                         })
                 .setNegativeButton("cancel",
