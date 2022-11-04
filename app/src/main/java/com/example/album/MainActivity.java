@@ -62,6 +62,8 @@ public class MainActivity extends Activity{
     ImageButton back,more,done;
     String pos;
     MenuItem color;
+    Boolean isFlipped;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +77,7 @@ public class MainActivity extends Activity{
         color=(MenuItem)bottomNav.getMenu().findItem(R.id.color);
         bottomNav.setItemIconTintList(null);
         isChecked=0;
-        pos= "detail";
+        pos = "detail";
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -92,7 +94,6 @@ public class MainActivity extends Activity{
         });
 
 
-
         // details chứa name, date, location, size, description
         // theo thứ tự index 0 -> 4
         // name, date, location, size, description phải được lấy từ database
@@ -103,6 +104,7 @@ public class MainActivity extends Activity{
         details[2] = "Ho Chi Minh";
         details[3] = "5KB";
         details[4] = "Flexing at Circle K with my bros";
+        isFlipped = false;
     }
     public void showPopup(View v) {
         popup = new PopupMenu(this, v);
@@ -151,6 +153,7 @@ public class MainActivity extends Activity{
                 Toast.makeText(this, "set", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rename:
+                handleRename();
                 Toast.makeText(this, "rename", Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -227,9 +230,11 @@ public class MainActivity extends Activity{
                 Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rotate:
+                handleRotate();
                 Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.flip:
+                handleFlip();
                 Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.paint:
@@ -318,4 +323,21 @@ public class MainActivity extends Activity{
                 .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
                 .show();
     }
+
+    public void handleRotate() {
+        img.setPivotX(img.getWidth()/2);
+        img.setPivotY(img.getHeight()/2);
+        img.setRotation(img.getRotation() + 90);
+    }
+
+    public void handleFlip() {
+        if (isFlipped) {
+            img.setScaleX(+1f);
+        }
+        else {
+            img.setScaleX(-1f);
+        }
+        isFlipped = !isFlipped;
+    }
+
 }
