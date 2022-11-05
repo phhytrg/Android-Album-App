@@ -4,12 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -47,6 +50,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,13 +68,14 @@ public class MainActivity extends Activity{
     String pos;
     MenuItem color;
     Boolean isFlipped;
+    Bitmap image_bm_mod, image_bm_orig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
+        //img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
         bottomNav=(BottomNavigationView)findViewById(R.id.bottom_nav);
         back=(ImageButton)findViewById(R.id.back);
         more=(ImageButton)findViewById(R.id.more);
@@ -88,11 +94,26 @@ public class MainActivity extends Activity{
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick( View v) {
+            public void onClick(View v) {
                 handleBack(v);
             }
         });
 
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleDone(v);
+            }
+        });
+
+//        Bitmap image_bm0 = BitmapFactory.decodeResource(this.getResources(),
+//                R.drawable.img);
+//        String pathSaved = saveToInternalStorage(image_bm0);
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+
+        loadImageFromStorage(directory.getAbsolutePath());
 
         // details chứa name, date, location, size, description
         // theo thứ tự index 0 -> 4
@@ -104,7 +125,7 @@ public class MainActivity extends Activity{
         details[2] = "Ho Chi Minh";
         details[3] = "5KB";
         details[4] = "Flexing at Circle K with my bros";
-        isFlipped = false;
+
     }
     public void showPopup(View v) {
         popup = new PopupMenu(this, v);
@@ -133,10 +154,43 @@ public class MainActivity extends Activity{
                 done.getLayoutParams().height = 0;
                 done.requestLayout();
                 pos="detail";
+
+                // Trả lại ảnh cũ khi chưa chỉnh
+                image_bm_mod = image_bm_orig;
+                img.setImageBitmap(image_bm_mod);
+                //saveToInternalStorage(image_bm_mod);
                 break;
             case "paint":
                 //dang o paint
                 handleEdit();
+                break;
+        }
+    }
+    public void handleDone(View v){
+        switch (pos){
+            case "edit":
+                //dang o edit
+                bottomNav.getMenu().clear();
+                bottomNav.inflateMenu(R.menu.bottom_navigation);
+                more.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                more.requestLayout();
+                done.getLayoutParams().height = 0;
+                done.requestLayout();
+                pos="detail";
+
+                // Lưu ảnh đã chỉnh sửa vào Internal Storage
+                image_bm_orig = image_bm_mod;
+                img.setImageBitmap(image_bm_mod);
+                saveToInternalStorage(image_bm_mod);
+                break;
+            case "paint":
+                //dang o paint
+
+
+                // Lưu ảnh đã chỉnh sửa vào Internal Storage
+                image_bm_orig = image_bm_mod;
+                img.setImageBitmap(image_bm_mod);
+                saveToInternalStorage(image_bm_mod);
                 break;
         }
     }
@@ -231,11 +285,11 @@ public class MainActivity extends Activity{
                 break;
             case R.id.rotate:
                 handleRotate();
-                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "rotate", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.flip:
                 handleFlip();
-                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "flip", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.paint:
                 handleBrush();
@@ -324,20 +378,62 @@ public class MainActivity extends Activity{
                 .show();
     }
 
+    private String saveToInternalStorage(Bitmap bitmapImage){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory,"img.png");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
+    }
+
+    private void loadImageFromStorage(String path)
+    {
+        try {
+            File f = new File(path, "img.png");
+            image_bm_orig = BitmapFactory.decodeStream(new FileInputStream(f));
+            image_bm_mod = image_bm_orig;
+            img = (com.github.chrisbanes.photoview.PhotoView)findViewById(R.id.photo_view);
+            img.setImageBitmap(image_bm_orig);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
     public void handleRotate() {
-        img.setPivotX(img.getWidth()/2);
-        img.setPivotY(img.getHeight()/2);
-        img.setRotation(img.getRotation() + 90);
+        Matrix mat = new Matrix();
+        mat.postRotate(90);
+        Bitmap image_bm_rotated = Bitmap.createBitmap(image_bm_mod, 0, 0,image_bm_mod.getWidth(),image_bm_mod.getHeight(), mat, true);
+        image_bm_mod = image_bm_rotated;
+        img.setImageBitmap(image_bm_mod);
+        //saveToInternalStorage(image_bm_mod);
     }
 
     public void handleFlip() {
-        if (isFlipped) {
-            img.setScaleX(+1f);
-        }
-        else {
-            img.setScaleX(-1f);
-        }
-        isFlipped = !isFlipped;
+        Matrix mat = new Matrix();
+        mat.postScale(-1f, 1f, image_bm_mod.getWidth() / 2f, image_bm_mod.getHeight() / 2f);
+        Bitmap image_bm_flipped = Bitmap.createBitmap(image_bm_mod, 0, 0, image_bm_mod.getWidth(), image_bm_mod.getHeight(), mat, true);
+        image_bm_mod = image_bm_flipped;
+        img.setImageBitmap(image_bm_mod);
+        //saveToInternalStorage(image_bm_mod);
     }
 
 }
