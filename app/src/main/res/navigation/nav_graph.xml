@@ -10,17 +10,17 @@
         android:label="Albums">
         <action
             android:id="@+id/action_albumFragment_to_detailAlbumFragment"
-            app:destination="@id/detailAlbumFragment" />
+            app:destination="@id/detailAlbumFragment"/>
         <action
             android:id="@+id/action_albumFragment_to_galleryFragment"
             app:destination="@id/galleryFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="label"
+            app:argType="string"/>
     </fragment>
     <fragment
         android:id="@+id/detailAlbumFragment"
@@ -47,9 +47,7 @@
         <action
             android:id="@+id/action_galleryFragment_to_albumFragment"
             app:destination="@id/albumFragment"
-            app:launchSingleTop="true"
             app:popUpTo="@+id/nav_graph"
-            app:popUpToInclusive="true"
 
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

@@ -3,9 +3,11 @@ package com.example.album;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,14 +23,20 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends AppCompatActivity {
 
     private Menu navigationMenu;
+    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setUpNavController();
         setUpMainActionBar();
         setUpNavigationActionBar();
-
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment);
+        int a = navHostFragment.getChildFragmentManager().getBackStackEntryCount();
+        Log.d("AAA", Integer.toString(a));
 
 //        detailAlbumFragment = new GalleryFragment();
 //        FragmentManager fragmentManager = getSupportFragmentManager();
@@ -41,6 +49,14 @@ public class MainActivity extends AppCompatActivity {
 //        navController = navHostFragment != null ? navHostFragment.getNavController() : null;
 //        NavigationUI.setupActionBarWithNavController(this, navController);
 
+    }
+
+    private void setUpNavController(){
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment != null
+                ? navHostFragment.getNavController()
+                : null;
     }
 
     private void setUpMainActionBar(){
@@ -57,21 +73,21 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigateUp();
+            }
+        });
     }
 
     private void setUpNavigationActionBar(){
         SplitToolbar navigationBar = (SplitToolbar)findViewById(R.id.navigation_bar);
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment != null
-                ? navHostFragment.getNavController()
-                : null;
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(R.id.galleryFragment,R.id.albumFragment).build();
         if(navController!= null) {
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         }
-
         navigationBar.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -102,12 +118,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(currentId == R.id.albumFragment){
                     if(destinationId == R.id.galleryFragment) {
-                        navController.navigate(menuItem.getItemId(), null, setUpSpecificNavOpts(0));
+                        navController.navigate(R.id.action_albumFragment_to_galleryFragment,
+                                null, setUpSpecificNavOpts(0));
+
+
+//                        navController.clearBackStack(R.id.albumFragment);
+//                        Log.d("AAA", String
+//                                .valueOf(navController.getBackStackEntry(R.id.albumFragment)));
                     }
                 }
                 else if(currentId == R.id.galleryFragment){
                     if(destinationId == R.id.albumFragment){
-                        navController.navigate(menuItem.getItemId(), null, setUpSpecificNavOpts(1));
+                        navController.navigate(R.id.action_galleryFragment_to_albumFragment, null, setUpSpecificNavOpts(1));
                     }
                 }
                 return true;
@@ -141,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
                     .setExitAnim(R.anim.slide_out_right)
                     .setPopEnterAnim(R.anim.slide_in_right_slow)
                     .setPopExitAnim(R.anim.slide_out_left_slow)
+                    .setPopUpTo(R.id.nav_graph,false,true)
+                    .setLaunchSingleTop(true)
                     .build();
         }
         else {
@@ -150,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
                     .setExitAnim(R.anim.slide_out_left)
                     .setPopEnterAnim(R.anim.slide_in_left_slow)
                     .setPopExitAnim(R.anim.slide_in_right_slow)
+                    .setPopUpTo(R.id.nav_graph,false,true)
+                    .setLaunchSingleTop(true)
                     .build();
         }
     }

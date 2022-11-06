@@ -11,9 +11,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
@@ -33,8 +35,13 @@ public class AlbumFragment extends Fragment {
 //            R.drawable.photo8,
 //            R.drawable.photo7,
 //            R.drawable.photo9};
-    SplitToolbar splitToolbar;
+    SplitToolbar navigationBar;
     NavController navController;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -93,13 +100,14 @@ public class AlbumFragment extends Fragment {
 //        menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
 
 //        splitToolbar = getActivity().findViewById(R.id.navigation_bar);
-//        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
-//                .getSupportFragmentManager()
-//                .findFragmentById(R.id.nav_host_fragment);
-//        navController = navHostFragment != null
-//                ? navHostFragment.getNavController()
-//                : null;
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
+                .getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment != null
+                ? navHostFragment.getNavController()
+                : null;
 
+        navigationBar = (SplitToolbar) ((MainActivity)getActivity()).findViewById(R.id.navigation_bar);
         return inflater.inflate(R.layout.album_layout,container, false).getRootView();
     }
 
@@ -119,9 +127,9 @@ public class AlbumFragment extends Fragment {
         //Set Item Decoration
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(3,24,false));
 
-//
+        albumAdapter.setNavController(navController);
+        navigationBar.setVisibility(View.VISIBLE);
 //        //Navigation ToolBar's implement
-//        SplitToolbar navigationBar = (SplitToolbar) ((MainActivity)getActivity()).findViewById(R.id.navigation_bar);
 //        navigationBar.addMenuProvider(new MenuProvider() {
 //            @Override
 //            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {

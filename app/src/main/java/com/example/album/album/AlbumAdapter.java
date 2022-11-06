@@ -6,16 +6,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
 import com.google.android.material.imageview.ShapeableImageView;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>
-        implements View.OnClickListener{
+        implements View.OnClickListener, View.OnLongClickListener {
 
+    public void setNavController(NavController navController) {
+        this.navController = navController;
+    }
+
+    NavController navController;
     //data field
-    String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
+    String[] albumNames = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes"};
     int[] albumImages = {R.drawable.photo1, R.drawable.photo2, R.drawable.photo10,
             R.drawable.photo4, R.drawable.cat1, R.drawable.photo6, R.drawable.photo3,
@@ -33,19 +41,40 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     @Override
     public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
         holder.shapeableImageView.setImageResource(albumImages[position]);
-        holder.albumName.setText(albumName[position]);
-        holder.shapeableImageView.setOnClickListener(this);
-        holder.albumName.setOnClickListener(this);
+        holder.albumName.setText(albumNames[position]);
+        holder.shapeableImageView.setOnClickListener(v -> {
+            if(navController == null){
+                return;
+            }
+            String albumName = holder.albumName.getText().toString();
+            NavDirections action = AlbumFragmentDirections
+                    .actionAlbumFragmentToDetailAlbumFragment(albumName);
+            navController.navigate(action);
+        });
+        holder.albumName.setOnClickListener(v -> {
+            if(navController == null){
+                return;
+            }
+            String albumName = holder.albumName.getText().toString();
+            NavDirections action = AlbumFragmentDirections
+                    .actionAlbumFragmentToDetailAlbumFragment(albumName);
+            Navigation.findNavController(holder.itemView).navigate(action);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return albumName.length;
+        return albumNames.length;
     }
 
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        return false;
     }
 
     class AlbumViewHolder extends RecyclerView.ViewHolder {

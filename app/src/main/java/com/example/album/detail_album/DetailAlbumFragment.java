@@ -8,17 +8,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
+import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 
@@ -28,31 +35,97 @@ public class DetailAlbumFragment extends Fragment {
     RecyclerView recyclerView;
     DetailAlbumAdapter adapter;
 
-    boolean isLinearLayout = true;
+    String albumName;
+
+    boolean isLinearLayout = false;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.gallery_fragment, container, false).getRootView();
 
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(new MenuProvider() {
+        if(getActivity()!=null){
+            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+            if(actionBar!=null) {
+                actionBar.setTitle(albumName);
+            }
+        }
+
+        MenuHost menuHost = (MenuHost) getActivity();
+        MenuProvider menuProvider = new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.layout_option, menu);
+//                menuInflater.inflate(R.menu.switch_layout_menu, menu);
                 MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
                 setIcon(layoutMenu);
             }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                isLinearLayout = !isLinearLayout;
-                chooseLayout();
-                setIcon(menuItem);
+                if(menuItem.getItemId() == R.id.action_switch_layout) {
+                    isLinearLayout = !isLinearLayout;
+//                    adapter.setLinearLayout(isLinearLayout);
+//                    chooseLayout();
+                    setIcon(menuItem);
+                    if(isLinearLayout){
+                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
+//                            GalleryAdapter.GalleryViewHolder viewHolder =
+//                                    (GalleryAdapter.GalleryViewHolder) recyclerView
+//                                            .findViewHolderForAdapterPosition(i);
+                            adapter.setLinearLayout(isLinearLayout);
+                            adapter.notifyItemChanged(i);
+                        }
+                    }
+                    else{
+                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
+//                            GalleryAdapter.GalleryViewHolder viewHolder =
+//                                    (GalleryAdapter.GalleryViewHolder) recyclerView
+//                                            .findViewHolderForAdapterPosition(i);
+
+                            adapter.setLinearLayout(isLinearLayout);
+                            adapter.notifyItemChanged(i);
+                        }
+                    }
+                    chooseLayout();
+                }
+
                 return true;
             }
-        });
+
+        };
+        if(menuHost != null) {
+            menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+        }
+
+        SplitToolbar toolbar = getActivity().findViewById(R.id.navigation_bar);
+        toolbar.setVisibility(View.GONE);
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
+                .getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment != null
+                ? navHostFragment.getNavController()
+                : null;
+
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+            @Override
+            public void handleOnBackPressed() {
+                navController.navigateUp();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher()
+                .addCallback(this, callback);
+
+        if(getArguments() != null){
+            albumName = getArguments().getString("label");
+        }
     }
 
     @Override
@@ -76,9 +149,8 @@ public class DetailAlbumFragment extends Fragment {
     }
 
     private void chooseLayout(){
-        RecyclerView.LayoutManager layoutManager;
         if(isLinearLayout){
-            layoutManager = new LinearLayoutManager(getContext());
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(layoutManager);
             while (recyclerView.getItemDecorationCount() > 0) {
                 recyclerView.removeItemDecorationAt(0);
@@ -88,7 +160,7 @@ public class DetailAlbumFragment extends Fragment {
             );
         }
         else{
-            layoutManager = new GridLayoutManager(getContext(), 4);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 4);
             recyclerView.setLayoutManager(layoutManager);
             while (recyclerView.getItemDecorationCount() > 0) {
                 recyclerView.removeItemDecorationAt(0);
