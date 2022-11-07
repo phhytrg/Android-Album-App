@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int f = getIntent().getIntExtra("theme",0);
+        if (f == 1) {
+            setTheme(R.style.AppTheme_BrightSun);
+        }
         setContentView(R.layout.activity_main);
+
         setUpNavController();
         setUpMainActionBar();
         setUpNavigationActionBar();
@@ -37,17 +43,6 @@ public class MainActivity extends AppCompatActivity {
                         .findFragmentById(R.id.nav_host_fragment);
         int a = navHostFragment.getChildFragmentManager().getBackStackEntryCount();
         Log.d("AAA", Integer.toString(a));
-
-//        detailAlbumFragment = new GalleryFragment();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.nav_host_fragment,detailAlbumFragment);
-//        fragmentTransaction.commit();
-
-//        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.nav_host_fragment);
-//        navController = navHostFragment != null ? navHostFragment.getNavController() : null;
-//        NavigationUI.setupActionBarWithNavController(this, navController);
 
     }
 
@@ -70,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if(id == R.id.menu_choose_color){
+                    getIntent().putExtra("theme",1);
+                    recreate();
+                }
                 return false;
             }
         });
@@ -100,14 +100,18 @@ public class MainActivity extends AppCompatActivity {
                 for(int i =0; i < navigationMenu.size(); i++){
                     MenuItem currentItem = navigationMenu.getItem(i);
                     if (currentItem.getItemId() == R.id.galleryFragment) {
-                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
+                        currentItem.setTitle(
+                                getSpannableStringFromMenuItem(currentItem, R.attr.iconColor));
                     } else if (currentItem.getItemId() == R.id.albumFragment) {
-                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
+                        currentItem.setTitle(
+                                getSpannableStringFromMenuItem(currentItem, R.attr.iconColor));
                     } else if (currentItem.getItemId() == R.id.privacyFragment) {
-                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
+                        currentItem.setTitle(
+                                getSpannableStringFromMenuItem(currentItem, R.attr.iconColor));
                     }
                 }
-                menuItem.setTitle(getSpannableStringFromMenuItem(menuItem, R.color.highlightColorText));
+
+                menuItem.setTitle(getSpannableStringFromMenuItem(menuItem,R.attr.highlightTextColor));
 
                 int destinationId = menuItem.getItemId();
                 int currentId = (navController != null) ?
@@ -137,16 +141,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         MenuItem defaultItem = navigationMenu.getItem(1);
-        defaultItem.setTitle(getSpannableStringFromMenuItem(defaultItem,R.color.highlightColorText));
+        defaultItem.setTitle(getSpannableStringFromMenuItem(defaultItem,R.attr.highlightTextColor));
     }
 
     @NonNull
-    private SpannableString getSpannableStringFromMenuItem(@NonNull MenuItem item, int colorResource){
+    private SpannableString getSpannableStringFromMenuItem(@NonNull MenuItem item, int colorAttr){
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(colorAttr, typedValue, true);
+        int color = ContextCompat.getColor(this, typedValue.resourceId);
         SpannableString spanString =
                 new SpannableString(item.getTitle().toString());
         spanString.setSpan(
-                new ForegroundColorSpan(ContextCompat
-                        .getColor(this,colorResource)),
+                new ForegroundColorSpan(color),
                 0,
                 spanString.length(),
                 0
@@ -179,5 +185,4 @@ public class MainActivity extends AppCompatActivity {
                     .build();
         }
     }
-
 }

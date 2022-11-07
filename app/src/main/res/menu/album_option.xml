@@ -8,6 +8,10 @@
         android:title="@string/setting"
         android:id="@+id/menu_setting"/>
 
+    <item
+        android:title="Choose Color"
+        android:id="@+id/menu_choose_color"/>
+
     <item android:id="@+id/filter"
         android:title="@string/filter_item"
         android:icon="@drawable/ic_filter"
