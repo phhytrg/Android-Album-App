@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.album.ToggleButtonGroupTableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/radioGroup"
+    android:padding="32dp">
+    <TableRow
+        android:layout_marginBottom="32dp"
+        android:layout_width="match_parent"
+        android:gravity="center">
+        <RadioButton
+            android:id="@+id/sea_pink_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/seaPinkPrimaryDark"
+            app:buttonTint="@color/textSeaPinkPrimary"
+            android:button="@drawable/color_picker_item"
+            android:layout_marginEnd="32dp"/>
+
+        <RadioButton android:id="@+id/pink_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/pinkPrimaryDark"
+            app:buttonTint="@color/textPinkPrimary"
+            android:button="@drawable/color_picker_item"
+            android:layout_marginEnd="32dp"/>
+
+        <RadioButton android:id="@+id/red_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/redPrimaryDark"
+            app:buttonTint="@color/textRedPrimary"
+            android:button="@drawable/color_picker_item"
+            android:layout_marginEnd="32dp"/>
+
+        <RadioButton android:id="@+id/purple_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/purplePrimaryDark"
+            app:buttonTint="@color/textPurplePrimary"
+            android:button="@drawable/color_picker_item"/>
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:gravity="center">
+        <RadioButton android:id="@+id/blue_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/bluePrimaryDark"
+            app:buttonTint="@color/textBluePrimary"
+            android:button="@drawable/color_picker_item"
+            android:layout_marginEnd="32dp"/>
+        <RadioButton android:id="@+id/bermuda_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/bermudaPrimaryDark"
+            app:buttonTint="@color/textBermudaPrimary"
+            android:button="@drawable/color_picker_item"
+            android:layout_marginEnd="32dp"/>
+
+        <RadioButton android:id="@+id/garden_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/gardenPrimaryDark"
+            android:button="@drawable/color_picker_item"
+            app:buttonTint="@color/textGardenPrimary"
+            android:layout_marginEnd="32dp"/>
+
+        <RadioButton android:id="@+id/bright_sun_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/brightSunPrimaryDark"
+            app:buttonTint="@color/textBrightSunPrimary"
+            android:button="@drawable/color_picker_item"/>
+    </TableRow>
+</com.example.album.ToggleButtonGroupTableLayout>

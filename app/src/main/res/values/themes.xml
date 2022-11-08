@@ -46,6 +46,33 @@
         <item name="color">@color/white</item>
     </style>
 
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:background">@color/trans</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+        <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
+    </style>
+
+    <style name="DialogAnimation" parent="">
+        <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_left</item>
+    </style>
+
+    <style name="DialogCorners">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?attr/iconColor</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?attr/iconColor</item>
+    </style>
+
     <style name="AppTheme.SeaPink" parent="ThemeOverlay.Material3.DynamicColors.Light">
         <item name="colorPrimary">@color/seaPinkPrimary</item>
         <item name="colorPrimaryDark">@color/seaPinkPrimaryDark</item>

@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -21,6 +22,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 public class MainActivity extends AppCompatActivity {
 
     private Menu navigationMenu;
@@ -29,10 +32,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int f = getIntent().getIntExtra("theme",0);
-        if (f == 1) {
-            setTheme(R.style.AppTheme_BrightSun);
+
+        int style = getIntent().getIntExtra("theme",0);
+
+        if (style != 0) {
+            setTheme(style);
         }
+
         setContentView(R.layout.activity_main);
 
         setUpNavController();
@@ -67,8 +73,52 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if(id == R.id.menu_choose_color){
-                    getIntent().putExtra("theme",1);
-                    recreate();
+
+                    MaterialAlertDialogBuilder builder =
+                            new MaterialAlertDialogBuilder(
+                                    MainActivity.this, R.style.AlertDialogTheme);
+                    View view = getLayoutInflater().inflate(R.layout.choosing_color_dialog, null);
+                    builder.setView(view);
+                    ToggleButtonGroupTableLayout radioGroup;
+                    radioGroup = view.findViewById(R.id.radioGroup);
+                    builder.setNegativeButton("Cancel", (dialog12, which) -> {
+                    });
+                    builder.setPositiveButton("Select", (dialog1, which) -> {
+                        int radioButtonId = radioGroup.getCheckedRadioButtonId();
+                        int themeId;
+                        if(radioButtonId == R.id.sea_pink_button){
+                                themeId = R.style.AppTheme_SeaPink;
+                        }
+                        else if(radioButtonId == R.id.pink_button) {
+                            themeId = R.style.AppTheme_Pink;
+                        }
+                        else if(radioButtonId == R.id.red_button) {
+                            themeId = R.style.AppTheme_Red;
+                        }
+                        else if(radioButtonId == R.id.purple_button) {
+                            themeId = R.style.AppTheme_Purple;
+                        }
+                        else if(radioButtonId == R.id.blue_button){
+                                themeId = R.style.AppTheme_Blue;
+                        }
+                        else if(radioButtonId == R.id.garden_button){
+                                themeId = R.style.AppTheme_Bermuda;
+                        }
+                        else if(radioButtonId == R.id.bermuda_button){
+                                themeId = R.style.AppTheme_Bermuda;
+                        }
+                        else if(radioButtonId == R.id.bright_sun_button) {
+                            themeId = R.style.AppTheme_BrightSun;
+                        }
+                        else{
+                            return;
+                        }
+                        getIntent().putExtra("theme",themeId);
+                        recreate();
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                    dialog.show();
                 }
                 return false;
             }
