@@ -39,5 +39,5 @@ dependencies {
     //import lib zoom image
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation "com.github.skydoves:colorpickerview:2.2.4"
-
+    implementation 'com.github.yalantis:ucrop:2.2.6-native'
 }

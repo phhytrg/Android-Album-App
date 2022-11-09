@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,8 +35,14 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.github.chrisbanes.photoview.PhotoView;
@@ -45,6 +52,8 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.skydoves.colorpickerview.ColorEnvelope;
 import com.skydoves.colorpickerview.ColorPickerDialog;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
+import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropActivity;
 
 import org.json.JSONObject;
 
@@ -55,7 +64,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.UUID;
 
 
 public class MainActivity extends Activity{
@@ -69,7 +78,6 @@ public class MainActivity extends Activity{
     MenuItem color;
     Boolean isFlipped;
     Bitmap image_bm_mod, image_bm_orig;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,14 +114,15 @@ public class MainActivity extends Activity{
             }
         });
 
-//        Bitmap image_bm0 = BitmapFactory.decodeResource(this.getResources(),
-//                R.drawable.img);
-//        String pathSaved = saveToInternalStorage(image_bm0);
+        Bitmap image_bm0 = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.img);
+        String pathSaved = saveToInternalStorage(image_bm0);
+        loadImageFromStorage(pathSaved);
 
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-
-        loadImageFromStorage(directory.getAbsolutePath());
+//        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+//        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+//
+//        loadImageFromStorage(directory.getAbsolutePath());
 
         // details chứa name, date, location, size, description
         // theo thứ tự index 0 -> 4
@@ -281,15 +290,13 @@ public class MainActivity extends Activity{
                 handleShare();
                 return true;
             case R.id.crop:
-                Toast.makeText(this, "crop", Toast.LENGTH_SHORT).show();
+                handleCrop();
                 break;
             case R.id.rotate:
                 handleRotate();
-                Toast.makeText(this, "rotate", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.flip:
                 handleFlip();
-                Toast.makeText(this, "flip", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.paint:
                 handleBrush();
@@ -424,7 +431,7 @@ public class MainActivity extends Activity{
         Bitmap image_bm_rotated = Bitmap.createBitmap(image_bm_mod, 0, 0,image_bm_mod.getWidth(),image_bm_mod.getHeight(), mat, true);
         image_bm_mod = image_bm_rotated;
         img.setImageBitmap(image_bm_mod);
-        //saveToInternalStorage(image_bm_mod);
+        saveToInternalStorage(image_bm_mod);
     }
 
     public void handleFlip() {
@@ -433,7 +440,48 @@ public class MainActivity extends Activity{
         Bitmap image_bm_flipped = Bitmap.createBitmap(image_bm_mod, 0, 0, image_bm_mod.getWidth(), image_bm_mod.getHeight(), mat, true);
         image_bm_mod = image_bm_flipped;
         img.setImageBitmap(image_bm_mod);
-        //saveToInternalStorage(image_bm_mod);
+        saveToInternalStorage(image_bm_mod);
     }
 
+    public void handleCrop() {
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        image_bm_mod.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), image_bm_mod, "Title", null);
+        Uri imageUri =  Uri.parse(path);
+
+        String desFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+        File newFile = new File(getCacheDir(),desFileName);
+        Uri desUri=Uri.fromFile(newFile);
+
+        UCrop.Options options = new UCrop.Options();
+
+        // applying UI theme
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        options.setToolbarTitle("");
+        options.setFreeStyleCropEnabled(true);
+        UCrop.of(imageUri, desUri)
+                .withOptions(options)
+                .withMaxResultSize(1080, 1080)
+                .start(MainActivity.this);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+            try {
+                if (resultUri != null) {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                    img.setImageBitmap(bitmap);
+                    saveToInternalStorage(image_bm_orig);
+                }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+        }
+    }
 }
