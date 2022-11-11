@@ -66,11 +66,11 @@
     </style>
 
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">?attr/iconColor</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">?attr/iconColor</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="AppTheme.SeaPink" parent="ThemeOverlay.Material3.DynamicColors.Light">

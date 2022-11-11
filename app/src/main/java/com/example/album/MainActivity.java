@@ -3,7 +3,6 @@ package com.example.album;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
@@ -47,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.nav_host_fragment);
-        int a = navHostFragment.getChildFragmentManager().getBackStackEntryCount();
-        Log.d("AAA", Integer.toString(a));
 
     }
 
@@ -81,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
                     builder.setView(view);
                     ToggleButtonGroupTableLayout radioGroup;
                     radioGroup = view.findViewById(R.id.radioGroup);
-                    builder.setNegativeButton("Cancel", (dialog12, which) -> {
+                    builder.setNegativeButton("Cancel", (dialog, which) -> {
                     });
-                    builder.setPositiveButton("Select", (dialog1, which) -> {
+                    builder.setPositiveButton("Select", (dialog, which) -> {
                         int radioButtonId = radioGroup.getCheckedRadioButtonId();
                         int themeId;
                         if(radioButtonId == R.id.sea_pink_button){
@@ -123,12 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigateUp();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> navController.navigateUp());
     }
 
     private void setUpNavigationActionBar(){
@@ -190,8 +183,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        MenuItem defaultItem = navigationMenu.getItem(1);
-        defaultItem.setTitle(getSpannableStringFromMenuItem(defaultItem,R.attr.highlightTextColor));
+        String currentFragmentName = getForegroundFragment().getClass().getSimpleName();
+        if(currentFragmentName.equals("AlbumFragment")
+                || currentFragmentName.equals("DetailAlbumFragment")){
+            MenuItem currentItem = navigationMenu.getItem(1);
+            currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.attr.highlightTextColor));
+        }
+        else if(currentFragmentName.equals("DetailFragment")
+                || currentFragmentName.equals("GalleryFragment")) {
+            MenuItem currentItem = navigationMenu.getItem(0);
+            currentItem.setTitle(getSpannableStringFromMenuItem(currentItem, R.attr.highlightTextColor));
+        }
     }
 
     @NonNull
@@ -234,5 +236,10 @@ public class MainActivity extends AppCompatActivity {
                     .setLaunchSingleTop(true)
                     .build();
         }
+    }
+
+    public Fragment getForegroundFragment(){
+        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        return navHostFragment == null ? null : navHostFragment.getChildFragmentManager().getFragments().get(0);
     }
 }
