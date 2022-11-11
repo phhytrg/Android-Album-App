@@ -47,7 +47,6 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_weight="1"/>
-<!--        android:src="@drawable/img"-->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
@@ -59,5 +58,6 @@
         app:labelVisibilityMode="selected"
         app:elevation="16dp"
         app:menu="@menu/bottom_navigation"/>
+
 
 </LinearLayout>

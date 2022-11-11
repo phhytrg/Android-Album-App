@@ -193,13 +193,11 @@ public class MainActivity extends Activity{
                 saveToInternalStorage(image_bm_mod);
                 break;
             case "paint":
-                //dang o paint
-
-
-                // Lưu ảnh đã chỉnh sửa vào Internal Storage
                 image_bm_orig = image_bm_mod;
                 img.setImageBitmap(image_bm_mod);
                 saveToInternalStorage(image_bm_mod);
+
+                pos = "edit";
                 break;
         }
     }
@@ -291,6 +289,7 @@ public class MainActivity extends Activity{
                 return true;
             case R.id.crop:
                 handleCrop();
+
                 break;
             case R.id.rotate:
                 handleRotate();
@@ -444,7 +443,6 @@ public class MainActivity extends Activity{
     }
 
     public void handleCrop() {
-
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         image_bm_mod.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(getContentResolver(), image_bm_mod, "Title", null);
@@ -457,7 +455,9 @@ public class MainActivity extends Activity{
         UCrop.Options options = new UCrop.Options();
 
         // applying UI theme
+        options.setHideBottomControls(true);
         options.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        options.setToolbarWidgetColor(ContextCompat.getColor(this, R.color.white));
         options.setToolbarTitle("");
         options.setFreeStyleCropEnabled(true);
         UCrop.of(imageUri, desUri)
@@ -473,9 +473,8 @@ public class MainActivity extends Activity{
             final Uri resultUri = UCrop.getOutput(data);
             try {
                 if (resultUri != null) {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
-                    img.setImageBitmap(bitmap);
-                    saveToInternalStorage(image_bm_orig);
+                    image_bm_mod = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
+                    img.setImageBitmap(image_bm_mod);
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
