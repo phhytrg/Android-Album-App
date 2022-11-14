@@ -6,9 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.appcompat.widget.ActionMenuView;
-import androidx.appcompat.widget.Toolbar;
 
-public class SplitToolbar extends Toolbar {
+public class SplitToolbar extends com.google.android.material.appbar.MaterialToolbar {
 
     public SplitToolbar(Context context) {
         super(context);

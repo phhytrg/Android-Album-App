@@ -47,4 +47,6 @@ dependencies {
 
     implementation 'androidx.fragment:fragment-ktx:1.5.4'
 
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
+
 }

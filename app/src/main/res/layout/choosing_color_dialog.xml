@@ -15,7 +15,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:backgroundTint="@color/seaPinkPrimaryDark"
-            app:buttonTint="@color/textSeaPinkPrimary"
+            app:buttonTint="@color/seaPinkTextPrimary"
             android:button="@drawable/color_picker_item"
             android:layout_marginEnd="32dp"/>
 
@@ -24,7 +24,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:backgroundTint="@color/pinkPrimaryDark"
-            app:buttonTint="@color/textPinkPrimary"
+            app:buttonTint="@color/pinkTextPrimary"
             android:button="@drawable/color_picker_item"
             android:layout_marginEnd="32dp"/>
 
@@ -33,7 +33,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:backgroundTint="@color/redPrimaryDark"
-            app:buttonTint="@color/textRedPrimary"
+            app:buttonTint="@color/redTextPrimary"
             android:button="@drawable/color_picker_item"
             android:layout_marginEnd="32dp"/>
 
@@ -42,7 +42,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:backgroundTint="@color/purplePrimaryDark"
-            app:buttonTint="@color/textPurplePrimary"
+            app:buttonTint="@color/purpleTextPrimary"
             android:button="@drawable/color_picker_item"/>
     </TableRow>
     <TableRow
@@ -53,7 +53,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:backgroundTint="@color/bluePrimaryDark"
-            app:buttonTint="@color/textBluePrimary"
+            app:buttonTint="@color/blueTextPrimary"
             android:button="@drawable/color_picker_item"
             android:layout_marginEnd="32dp"/>
         <RadioButton android:id="@+id/bermuda_button"
@@ -61,7 +61,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:backgroundTint="@color/bermudaPrimaryDark"
-            app:buttonTint="@color/textBermudaPrimary"
+            app:buttonTint="@color/bermudaTextPrimary"
             android:button="@drawable/color_picker_item"
             android:layout_marginEnd="32dp"/>
 
@@ -71,7 +71,7 @@
             android:background="@drawable/round_button"
             android:backgroundTint="@color/gardenPrimaryDark"
             android:button="@drawable/color_picker_item"
-            app:buttonTint="@color/textGardenPrimary"
+            app:buttonTint="@color/gardenTextPrimary"
             android:layout_marginEnd="32dp"/>
 
         <RadioButton android:id="@+id/bright_sun_button"
@@ -79,7 +79,7 @@
             android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:backgroundTint="@color/brightSunPrimaryDark"
-            app:buttonTint="@color/textBrightSunPrimary"
+            app:buttonTint="@color/brightSunTextPrimary"
             android:button="@drawable/color_picker_item"/>
     </TableRow>
 </com.example.album.ToggleButtonGroupTableLayout>

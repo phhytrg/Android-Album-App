@@ -2,6 +2,7 @@
 <resources>
 
 <!--    colorPrimary – The color of the app bar.-->
+<!--    colorOnPrimary - The items' color on colorPrimary    -->
 <!--    colorPrimaryDark – The color of the status bar and contextual app bars; this is normally a dark version of colorPrimary.-->
 <!--    colorAccent – The color of UI controls such as check boxes, radio buttons, and edit text boxes.-->
 <!--    windowBackground – The color of the screen background.-->
@@ -13,6 +14,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="dark_grey">#ff121212</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="trans">#00000000 </color>
@@ -21,63 +23,79 @@
     <color name="seaPinkPrimary">#FEDBD0</color>
     <color name="seaPinkPrimaryDark">#FBB8AC</color>
     <color name="seaPinkAccent">#E0E0E0</color>
-    <color name="textSeaPinkPrimary">#442C2E</color>
+    <color name="seaPinkTextPrimary">#442C2E</color>
     <color name="highlightSeaPinkText">#D65E13</color>
     <color name="toolbarIconSeaPink">@color/highlightSeaPinkText</color>
+    <color name="lightSeaPinkText">#FCE9E9</color>
+    <color name="lightHighlightSeaPinkText">#EE823F</color>
 
 <!--    Pink    -->
     <color name="pinkPrimary">#f7afd0</color>
     <color name="pinkPrimaryDark">#F377B1</color>
     <color name="pinkAccent">#fbe3ed</color>
-    <color name="textPinkPrimary">#340018</color>
+    <color name="pinkTextPrimary">#340018</color>
+    <color name="lightPinkText">#FDF6FA</color>
     <color name="highlightPinkText">#e40071</color>
+    <color name="lightHighlightPinkText">#FF6BB5</color>
     <color name="toolbarIconPink">@color/highlightPinkText</color>
 
 <!--    Red  -->
     <color name="redPrimary">#ffb2ae</color>
     <color name="redPrimaryDark">#ff6961</color>
     <color name="redAccent">#ffc7b8</color>
-    <color name="textRedPrimary">#740000</color>
-    <color name="highlightRedText">#cc1f18</color>
+    <color name="redTextPrimary">#740000</color>
+    <color name="lightRedText">#FFF6F5</color>
+    <color name="highlightRedText">#A31914</color>
+    <color name="lightHighlightRedText">#EF7F7B</color>
     <color name="toolbarIconPurple">@color/highlightRedText</color>
 
 <!--    Purple    -->
     <color name="purplePrimary">#d691e5</color>
     <color name="purplePrimaryDark">#a900c9</color>
     <color name="purpleAccent">#e3bcee</color>
-    <color name="textPurplePrimary">#430148</color>
+    <color name="purpleTextPrimary">#430148</color>
+    <color name="lightPurpleText">#FCF6FE</color>
     <color name="highlightPurpleText">#a516a2</color>
+    <color name="lightHighlightPurpleText">#EB6FE9</color>
     <color name="toolbarIconRed">@color/highlightPurpleText</color>
 
 <!--    Blue    -->
     <color name="bluePrimary">#90caf9</color>
     <color name="bluePrimaryDark">#5d99c6</color>
     <color name="blueAccent">#e3f2fd</color>
-    <color name="textBluePrimary">#004370</color>
+    <color name="blueTextPrimary">#004370</color>
+    <color name="lightBlueText">#F1F8FE</color>
     <color name="highlightBlueText">#0072e2</color>
+    <color name="lightHighlightBlueText">#2994FF</color>
     <color name="toolbarIconBlue">@color/highlightBlueText</color>
 
 <!--    Bermuda     -->
     <color name="bermudaPrimary">#80cbc4</color>
     <color name="bermudaPrimaryDark">#4f9a94</color>
     <color name="bermudaAccent">#e0f2f1</color>
-    <color name="textBermudaPrimary">#1a423f</color>
+    <color name="bermudaTextPrimary">#1a423f</color>
+    <color name="lightBermudaText">#F1F9F9</color>
     <color name="highlightBermudaText">#2387c6</color>
+    <color name="lightHighlightBermudaText">#4DA8E0</color>
     <color name="toolbarIconBermuda">@color/highlightBermudaText</color>
 
 <!--    Garden      -->
     <color name="gardenPrimary">#66bb6a</color>
     <color name="gardenPrimaryDark">#338a3e</color>
     <color name="gardenAccent">#e0f2f1</color>
-    <color name="textGardenPrimary">#1a423f</color>
+    <color name="gardenTextPrimary">#1a423f</color>
+    <color name="lightGardenText">#F1F9F9</color>
     <color name="highlightGardenText">#2387c6</color>
+    <color name="lightHighlightGardenText">#46AFAA</color>
     <color name="toolbarIconGarden">@color/highlightGardenText</color>
 
 <!--    Bright Sun  -->
     <color name="brightSunPrimary">#fdd835</color>
     <color name="brightSunPrimaryDark">#c6a700</color>
     <color name="brightSunAccent">#fffde7</color>
-    <color name="textBrightSunPrimary">#4c3800</color>
+    <color name="brightSunTextPrimary">#4c3800</color>
+    <color name="lightBrightSunText">#FFF7E0</color>
     <color name="highlightBrightSunText">#c64200</color>
+    <color name="lightHighlightBrightSunText">#FF7733</color>
     <color name="toolbarIconBrightSun">@color/highlightBrightSunText</color>
 </resources>

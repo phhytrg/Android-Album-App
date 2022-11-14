@@ -1,5 +1,6 @@
 package com.example.album;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
-
         setUpNavController();
         setUpMainActionBar();
         setUpNavigationActionBar();
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpMainActionBar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        Toolbar toolbar = findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         addMenuProvider(new MenuProvider() {
             @Override
@@ -84,29 +84,49 @@ public class MainActivity extends AppCompatActivity {
                     builder.setPositiveButton("Select", (dialog, which) -> {
                         int radioButtonId = radioGroup.getCheckedRadioButtonId();
                         int themeId;
-                        if(radioButtonId == R.id.sea_pink_button){
+                        int nightModeFlag = getResources().getConfiguration().uiMode
+                                & Configuration.UI_MODE_NIGHT_MASK;
+                        if(nightModeFlag == Configuration.UI_MODE_NIGHT_NO) {
+                            if (radioButtonId == R.id.sea_pink_button) {
                                 themeId = R.style.AppTheme_SeaPink;
-                        }
-                        else if(radioButtonId == R.id.pink_button) {
-                            themeId = R.style.AppTheme_Pink;
-                        }
-                        else if(radioButtonId == R.id.red_button) {
-                            themeId = R.style.AppTheme_Red;
-                        }
-                        else if(radioButtonId == R.id.purple_button) {
-                            themeId = R.style.AppTheme_Purple;
-                        }
-                        else if(radioButtonId == R.id.blue_button){
+                            } else if (radioButtonId == R.id.pink_button) {
+                                themeId = R.style.AppTheme_Pink;
+                            } else if (radioButtonId == R.id.red_button) {
+                                themeId = R.style.AppTheme_Red;
+                            } else if (radioButtonId == R.id.purple_button) {
+                                themeId = R.style.AppTheme_Purple;
+                            } else if (radioButtonId == R.id.blue_button) {
                                 themeId = R.style.AppTheme_Blue;
-                        }
-                        else if(radioButtonId == R.id.garden_button){
+                            } else if (radioButtonId == R.id.garden_button) {
+                                themeId = R.style.AppTheme_Garden;
+                            } else if (radioButtonId == R.id.bermuda_button) {
                                 themeId = R.style.AppTheme_Bermuda;
+                            } else if (radioButtonId == R.id.bright_sun_button) {
+                                themeId = R.style.AppTheme_BrightSun;
+                            } else {
+                                return;
+                            }
                         }
-                        else if(radioButtonId == R.id.bermuda_button){
-                                themeId = R.style.AppTheme_Bermuda;
-                        }
-                        else if(radioButtonId == R.id.bright_sun_button) {
-                            themeId = R.style.AppTheme_BrightSun;
+                        else if (nightModeFlag == Configuration.UI_MODE_NIGHT_YES){
+                            if (radioButtonId == R.id.sea_pink_button) {
+                                themeId = R.style.AppTheme_Dark_SeaPink;
+                            } else if (radioButtonId == R.id.pink_button) {
+                                themeId = R.style.AppTheme_Dark_Pink;
+                            } else if (radioButtonId == R.id.red_button) {
+                                themeId = R.style.AppTheme_Dark_Red;
+                            } else if (radioButtonId == R.id.purple_button) {
+                                themeId = R.style.AppTheme_Dark_Purple;
+                            } else if (radioButtonId == R.id.blue_button) {
+                                themeId = R.style.AppTheme_Dark_Blue;
+                            } else if (radioButtonId == R.id.garden_button) {
+                                themeId = R.style.AppTheme_Dark_Garden;
+                            } else if (radioButtonId == R.id.bermuda_button) {
+                                themeId = R.style.AppTheme_Dark_Bermuda;
+                            } else if (radioButtonId == R.id.bright_sun_button) {
+                                themeId = R.style.AppTheme_Dark_BrightSun;
+                            } else {
+                                return;
+                            }
                         }
                         else{
                             return;

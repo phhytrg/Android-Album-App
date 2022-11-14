@@ -138,7 +138,6 @@ public class GalleryFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
         MenuHost menuHost = (MenuHost) getActivity();
         MenuProvider menuProvider = new MenuProvider() {
             @Override

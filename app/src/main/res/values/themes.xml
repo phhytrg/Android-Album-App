@@ -2,42 +2,38 @@
     <attr name="iconColor" format="color"/>
     <attr name="highlightTextColor" format="color"/>
     <!-- Base application theme. -->
-    <style name="Theme.Album" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.Album" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/seaPinkPrimary</item>
         <item name="colorPrimaryDark">@color/seaPinkPrimaryDark</item>
         <item name="colorAccent">@color/seaPinkAccent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="colorSecondary">@color/toolbarIconSeaPink</item>
-        <item name="android:textColorPrimary">@color/textSeaPinkPrimary</item>
+        <item name="android:textColorPrimary">@color/seaPinkTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="highlightTextColor">@color/highlightSeaPinkText</item>
-
     </style>
 
-    <style name="Widget.Album.Toolbar" parent="Widget.AppCompat.Toolbar">
+    <style name="Widget.Album.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="colorPrimary">?attr/colorPrimary</item>
         <item name="colorAccent">?attr/colorAccent</item>
         <item name="titleTextAppearance">@style/TextAppearance.Album.Toolbar</item>
+        <item name="android:elevation">1dp</item>
     </style>
 
     <style name="TextAppearance.Album.Toolbar" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="NavigationBar" parent="Widget.AppCompat.Toolbar">
+    <style name="NavigationBar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/white</item>
         <item name="colorPrimary">?attr/colorPrimary</item>
         <item name="colorAccent">?attr/colorAccent</item>
         <item name="titleTextAppearance">@style/TextAppearance.Album.Toolbar</item>
-        <item name="actionBarStyle">@style/Theme.Album.ActionBar</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="highlightTextColor">?attr/highlightTextColor</item>
-    </style>
-
-    <style name="Theme.Album.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="elevation">0dp</item>
+        <item name="android:elevation">0dp</item>
     </style>
 
     <style name="roundImageView" parent="">
@@ -73,83 +69,84 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="AppTheme.SeaPink" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.SeaPink" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/seaPinkPrimary</item>
         <item name="colorPrimaryDark">@color/seaPinkPrimaryDark</item>
         <item name="colorAccent">@color/seaPinkAccent</item>
-        <item name="android:textColorPrimary">@color/textSeaPinkPrimary</item>
+        <item name="android:textColorPrimary">@color/seaPinkTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightSeaPinkText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
     
-    <style name="AppTheme.Pink" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.Pink" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/pinkPrimary</item>
         <item name="colorPrimaryDark">@color/pinkPrimaryDark</item>
         <item name="colorAccent">@color/pinkAccent</item>
-        <item name="android:textColorPrimary">@color/textPinkPrimary</item>
+        <item name="android:textColorPrimary">@color/pinkTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightPinkText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
 
-    <style name="AppTheme.Purple" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.Purple" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/purplePrimary</item>
         <item name="colorPrimaryDark">@color/purplePrimaryDark</item>
         <item name="colorAccent">@color/purpleAccent</item>
-        <item name="android:textColorPrimary">@color/textPurplePrimary</item>
+        <item name="android:textColorPrimary">@color/purpleTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightPurpleText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
 
-    <style name="AppTheme.Red" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.Red" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/redPrimary</item>
         <item name="colorPrimaryDark">@color/redPrimaryDark</item>
         <item name="colorAccent">@color/redAccent</item>
-        <item name="android:textColorPrimary">@color/textRedPrimary</item>
+        <item name="android:textColorPrimary">@color/redTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightRedText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
 
-    <style name="AppTheme.Blue" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.Blue" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/bluePrimary</item>
         <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
         <item name="colorAccent">@color/blueAccent</item>
-        <item name="android:textColorPrimary">@color/textBluePrimary</item>
+        <item name="android:textColorPrimary">@color/blueTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightBlueText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
 
-    <style name="AppTheme.Bermuda" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.Bermuda" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/bermudaPrimary</item>
         <item name="colorPrimaryDark">@color/bermudaPrimaryDark</item>
         <item name="colorAccent">@color/bermudaAccent</item>
-        <item name="android:textColorPrimary">@color/textBermudaPrimary</item>
+        <item name="android:textColorPrimary">@color/bermudaTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightBermudaText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
 
-    <style name="AppTheme.Garden" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.Garden" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/gardenPrimary</item>
         <item name="colorPrimaryDark">@color/gardenPrimaryDark</item>
         <item name="colorAccent">@color/gardenAccent</item>
-        <item name="android:textColorPrimary">@color/textGardenPrimary</item>
+        <item name="android:textColorPrimary">@color/gardenTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightGardenText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
 
-    <style name="AppTheme.BrightSun" parent="ThemeOverlay.Material3.DynamicColors.Light">
+    <style name="AppTheme.BrightSun" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/brightSunPrimary</item>
         <item name="colorPrimaryDark">@color/brightSunPrimaryDark</item>
         <item name="colorAccent">@color/brightSunAccent</item>
-        <item name="android:textColorPrimary">@color/textBrightSunPrimary</item>
+        <item name="android:textColorPrimary">@color/brightSunTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightBrightSunText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
     </style>
+
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,12 +8,14 @@
     tools:context=".MainActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.appcompat.widget.Toolbar
+        android:layout_height="wrap_content"
+        android:elevation="0dp">
+        <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/app_bar"
-            style="@style/Widget.Album.Toolbar"/>
+            style="@style/Widget.Album.Toolbar"
+            app:layout_scrollFlags="scroll|enterAlways|snap"/>
 
         <com.example.album.SplitToolbar
             android:id="@+id/navigation_bar"
@@ -34,9 +36,11 @@
         android:layout_height="match_parent"
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:defaultNavHost = "true"
-        app:navGraph = "@navigation/nav_graph">
+        android:elevation="0dp"
+        app:navGraph = "@navigation/nav_graph"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </androidx.fragment.app.FragmentContainerView>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
