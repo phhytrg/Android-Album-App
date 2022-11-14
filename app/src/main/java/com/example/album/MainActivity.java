@@ -3,6 +3,8 @@ package com.example.album;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.WallpaperManager;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -21,16 +23,23 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -78,6 +87,7 @@ public class MainActivity extends Activity{
     MenuItem color;
     Boolean isFlipped;
     Bitmap image_bm_mod, image_bm_orig;
+    public static final int FLAG_LOCK = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -205,13 +215,12 @@ public class MainActivity extends Activity{
         switch (item.getItemId()) {
             case R.id.details:
                 handleDetails();
-                Toast.makeText(this, "details", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add:
                 Toast.makeText(this, "add", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.set:
-                Toast.makeText(this, "set", Toast.LENGTH_SHORT).show();
+                handleSet();
                 break;
             case R.id.rename:
                 handleRename();
@@ -245,6 +254,57 @@ public class MainActivity extends Activity{
         renameDialog.show();
     }
 
+    public void handleSet() {
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.setContentView(R.layout.custom_dialog_set);
+        final String[] options = {"man hinh chinh","man hinh khoa","ca 2"};
+        ListView listView = (ListView) dialog.findViewById(R.id.list_item);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, android.R.id.text1, options);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
+                switch(i) {
+                    case 0:
+                        setWallHome();
+                        break;
+                    case 1:
+                        setWallLock();
+                        break;
+                    case 2:
+                        setWallHome();
+                        setWallLock();
+                        break;
+                }
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_bg);
+    }
+
+    public void setWallHome(){
+        try {
+            WallpaperManager.getInstance(getApplicationContext()).setBitmap(image_bm_orig);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setWallLock(){
+        try {
+            WallpaperManager.getInstance(getApplicationContext()).setBitmap(image_bm_orig,null,true,WallpaperManager.FLAG_LOCK);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void handleDetails() {
         final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(MainActivity.this);
         detailsDialog.setTitle("Details");
