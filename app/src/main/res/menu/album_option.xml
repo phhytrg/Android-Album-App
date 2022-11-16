@@ -6,7 +6,7 @@
         android:id="@+id/menu_newAlbum" />
     <item
         android:title="@string/setting"
-        android:id="@+id/menu_setting"/>
+        android:id="@+id/menu_settings"/>
 
     <item
         android:title="Choose Color"

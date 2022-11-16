@@ -29,11 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
     private Menu navigationMenu;
     NavController navController;
+    SplitToolbar navigationBar;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         int style = getIntent().getIntExtra("theme",0);
 
         if (style != 0) {
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+        navigationBar = findViewById(R.id.navigation_bar);
+        toolbar = findViewById(R.id.app_bar);
         setUpNavController();
         setUpMainActionBar();
         setUpNavigationActionBar();
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpMainActionBar(){
-        Toolbar toolbar = findViewById(R.id.app_bar);
+
         setSupportActionBar(toolbar);
         addMenuProvider(new MenuProvider() {
             @Override
@@ -71,72 +74,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if(id == R.id.menu_choose_color){
-
-                    MaterialAlertDialogBuilder builder =
-                            new MaterialAlertDialogBuilder(
-                                    MainActivity.this, R.style.AlertDialogTheme);
-                    View view = getLayoutInflater().inflate(R.layout.choosing_color_dialog, null);
-                    builder.setView(view);
-                    ToggleButtonGroupTableLayout radioGroup;
-                    radioGroup = view.findViewById(R.id.radioGroup);
-                    builder.setNegativeButton("Cancel", (dialog, which) -> {
-                    });
-                    builder.setPositiveButton("Select", (dialog, which) -> {
-                        int radioButtonId = radioGroup.getCheckedRadioButtonId();
-                        int themeId;
-                        int nightModeFlag = getResources().getConfiguration().uiMode
-                                & Configuration.UI_MODE_NIGHT_MASK;
-                        if(nightModeFlag == Configuration.UI_MODE_NIGHT_NO) {
-                            if (radioButtonId == R.id.sea_pink_button) {
-                                themeId = R.style.AppTheme_SeaPink;
-                            } else if (radioButtonId == R.id.pink_button) {
-                                themeId = R.style.AppTheme_Pink;
-                            } else if (radioButtonId == R.id.red_button) {
-                                themeId = R.style.AppTheme_Red;
-                            } else if (radioButtonId == R.id.purple_button) {
-                                themeId = R.style.AppTheme_Purple;
-                            } else if (radioButtonId == R.id.blue_button) {
-                                themeId = R.style.AppTheme_Blue;
-                            } else if (radioButtonId == R.id.garden_button) {
-                                themeId = R.style.AppTheme_Garden;
-                            } else if (radioButtonId == R.id.bermuda_button) {
-                                themeId = R.style.AppTheme_Bermuda;
-                            } else if (radioButtonId == R.id.bright_sun_button) {
-                                themeId = R.style.AppTheme_BrightSun;
-                            } else {
-                                return;
-                            }
-                        }
-                        else if (nightModeFlag == Configuration.UI_MODE_NIGHT_YES){
-                            if (radioButtonId == R.id.sea_pink_button) {
-                                themeId = R.style.AppTheme_Dark_SeaPink;
-                            } else if (radioButtonId == R.id.pink_button) {
-                                themeId = R.style.AppTheme_Dark_Pink;
-                            } else if (radioButtonId == R.id.red_button) {
-                                themeId = R.style.AppTheme_Dark_Red;
-                            } else if (radioButtonId == R.id.purple_button) {
-                                themeId = R.style.AppTheme_Dark_Purple;
-                            } else if (radioButtonId == R.id.blue_button) {
-                                themeId = R.style.AppTheme_Dark_Blue;
-                            } else if (radioButtonId == R.id.garden_button) {
-                                themeId = R.style.AppTheme_Dark_Garden;
-                            } else if (radioButtonId == R.id.bermuda_button) {
-                                themeId = R.style.AppTheme_Dark_Bermuda;
-                            } else if (radioButtonId == R.id.bright_sun_button) {
-                                themeId = R.style.AppTheme_Dark_BrightSun;
-                            } else {
-                                return;
-                            }
-                        }
-                        else{
-                            return;
-                        }
-                        getIntent().putExtra("theme",themeId);
-                        recreate();
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-                    dialog.show();
+                    execChooseTheme();
+                }
+                if(id == R.id.menu_settings){
+                    navController.navigate(R.id.settingsFragment);
+                    navigationBar.setVisibility(View.GONE);
                 }
                 return false;
             }
@@ -145,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpNavigationActionBar(){
-        SplitToolbar navigationBar = (SplitToolbar)findViewById(R.id.navigation_bar);
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(R.id.galleryFragment,R.id.albumFragment).build();
         if(navController!= null) {
@@ -261,5 +202,73 @@ public class MainActivity extends AppCompatActivity {
     public Fragment getForegroundFragment(){
         Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         return navHostFragment == null ? null : navHostFragment.getChildFragmentManager().getFragments().get(0);
+    }
+
+    private void execChooseTheme(){
+        MaterialAlertDialogBuilder builder =
+                new MaterialAlertDialogBuilder(
+                        MainActivity.this, R.style.AlertDialogTheme);
+        View view = getLayoutInflater().inflate(R.layout.choosing_color_dialog, null);
+        builder.setView(view);
+        ToggleButtonGroupTableLayout radioGroup;
+        radioGroup = view.findViewById(R.id.radioGroup);
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        });
+        builder.setPositiveButton("Select", (dialog, which) -> {
+            int radioButtonId = radioGroup.getCheckedRadioButtonId();
+            int themeId;
+            int nightModeFlag = getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            if(nightModeFlag == Configuration.UI_MODE_NIGHT_NO) {
+                if (radioButtonId == R.id.sea_pink_button) {
+                    themeId = R.style.AppTheme_SeaPink;
+                } else if (radioButtonId == R.id.pink_button) {
+                    themeId = R.style.AppTheme_Pink;
+                } else if (radioButtonId == R.id.red_button) {
+                    themeId = R.style.AppTheme_Red;
+                } else if (radioButtonId == R.id.purple_button) {
+                    themeId = R.style.AppTheme_Purple;
+                } else if (radioButtonId == R.id.blue_button) {
+                    themeId = R.style.AppTheme_Blue;
+                } else if (radioButtonId == R.id.garden_button) {
+                    themeId = R.style.AppTheme_Garden;
+                } else if (radioButtonId == R.id.bermuda_button) {
+                    themeId = R.style.AppTheme_Bermuda;
+                } else if (radioButtonId == R.id.bright_sun_button) {
+                    themeId = R.style.AppTheme_BrightSun;
+                } else {
+                    return;
+                }
+            }
+            else if (nightModeFlag == Configuration.UI_MODE_NIGHT_YES){
+                if (radioButtonId == R.id.sea_pink_button) {
+                    themeId = R.style.AppTheme_Dark_SeaPink;
+                } else if (radioButtonId == R.id.pink_button) {
+                    themeId = R.style.AppTheme_Dark_Pink;
+                } else if (radioButtonId == R.id.red_button) {
+                    themeId = R.style.AppTheme_Dark_Red;
+                } else if (radioButtonId == R.id.purple_button) {
+                    themeId = R.style.AppTheme_Dark_Purple;
+                } else if (radioButtonId == R.id.blue_button) {
+                    themeId = R.style.AppTheme_Dark_Blue;
+                } else if (radioButtonId == R.id.garden_button) {
+                    themeId = R.style.AppTheme_Dark_Garden;
+                } else if (radioButtonId == R.id.bermuda_button) {
+                    themeId = R.style.AppTheme_Dark_Bermuda;
+                } else if (radioButtonId == R.id.bright_sun_button) {
+                    themeId = R.style.AppTheme_Dark_BrightSun;
+                } else {
+                    return;
+                }
+            }
+            else{
+                return;
+            }
+            getIntent().putExtra("theme",themeId);
+            recreate();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.show();
     }
 }

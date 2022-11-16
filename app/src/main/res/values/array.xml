@@ -5,4 +5,15 @@
         <item>Dark</item>
         <item>Custom</item>
     </string-array>
+    <string-array name="showtime_entries">
+        <item>3 second</item>
+        <item>5 second</item>
+        <item>10 second</item>
+    </string-array>
+
+    <string-array name="showtime_values">
+        <item>3 second</item>
+        <item>5 second</item>
+        <item>10 second</item>
+    </string-array>
 </resources>

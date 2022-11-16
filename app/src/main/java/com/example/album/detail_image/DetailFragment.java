@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.album.R;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -25,18 +26,22 @@ public class DetailFragment extends Fragment {
     PopupMenu popup;
     //com.github.chrisbanes.photoview.PhotoView img;
     int isChecked;
+    int resourceId;
     String[] details;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        resourceId = getArguments().getInt("image");
+        String a = getActivity().getResources().getResourceName(resourceId);
         return inflater.inflate(R.layout.activity_main1,container,false).getRootView();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        PhotoView imageView = view.findViewById(R.id.photo_view);
+        imageView.setImageResource(resourceId);
         //img = (com.github.chrisbanes.photoview.PhotoView) findViewById(R.id.photo_view);
         bottomNav=(BottomNavigationView)view.findViewById(R.id.bottom_nav);
         bottomNav.setItemIconTintList(null);

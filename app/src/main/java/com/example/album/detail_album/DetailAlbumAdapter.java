@@ -7,6 +7,9 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
@@ -15,7 +18,10 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
 
     View view;
 
-    boolean isLinearLayout = false;
+    boolean isLinearLayout;
+
+    NavController navController;
+
 
     public void setLinearLayout(boolean linearLayout) {
         isLinearLayout = linearLayout;
@@ -49,6 +55,12 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
             a.width=0;
             a.height=0;
         }
+        holder.imageView.setOnClickListener(v -> {
+            NavDirections action = DetailAlbumFragmentDirections
+                    .actionDetailAlbumFragmentToDetailFragment(images[position]);
+            Navigation.findNavController(v)
+                    .navigate(action);
+        });
     }
 
     @Override

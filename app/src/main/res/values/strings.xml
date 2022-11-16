@@ -9,4 +9,27 @@
     <string name="switch_layout_item">switch_layout_item</string>
     <string name="filter_item">Filter</string>
     <string name="camera_item">camera_item</string>
+
+    <!-- Preference Titles -->
+    <string name="choose_photo_header">Choose photo</string>
+    <string name="examine_header">Examine</string>
+    <string name="send_header">Send</string>
+
+
+    <!-- Choose photo Preferences -->
+    <string name="choose_photo_title">Choose the best photo</string>
+    <string name="choose_photo_describe">The system will analyze similar photos and mark the best
+        ones for you. Turn off this feature to remove marks from photos</string>
+
+    <!-- Examine Preferences -->
+    <string name="view_title">View hidden albums</string>
+    <string name="view_describe">View and manage hidden albums</string>
+    <string name="showtime_title">Showtime</string>
+    <string name="repeat">Repeat slides multiple times</string>
+
+    <!-- Send Preferences -->
+    <string name="share_title">Secure sharing</string>
+    <string name="change_title">Convert HEIF to JPEG when sending</string>
+    <string name="change_describe">Convert HEIF images to JPEG to ensure compatibility</string>
+
 </resources>

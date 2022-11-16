@@ -30,14 +30,15 @@
             app:popupTheme="@drawable/menu_bg"
             android:onClick="showPopup" />
     </RelativeLayout>
+
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/img"
-        android:layout_weight="1"/>
+        android:layout_centerVertical="true"
+        android:layout_weight="1"
+        android:src="@drawable/img" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
