@@ -282,31 +282,5 @@ public class DetailImageFragment extends Fragment {
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    public void handleDone(View v){
-        switch (pos){
-            case "edit":
-                //dang o edit
-                toolbar.getMenu().clear();
-                toolbar.inflateMenu(R.menu.bottom_navigation);
-                overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                overflowButton.requestLayout();
-                done.getLayoutParams().height = 0;
-                done.requestLayout();
-                pos="detail";
-
-                // Lưu ảnh đã chỉnh sửa vào Internal Storage
-                image_bm_orig = image_bm_mod;
-                img.setImageBitmap(image_bm_mod);
-                saveToInternalStorage(image_bm_mod);
-                break;
-            case "paint":
-                image_bm_orig = image_bm_mod;
-                img.setImageBitmap(image_bm_mod);
-                saveToInternalStorage(image_bm_mod);
-
-                pos = "edit";
-                break;
-        }
-    }
 
 }
