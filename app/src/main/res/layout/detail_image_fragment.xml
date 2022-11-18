@@ -41,9 +41,17 @@
             android:src="@drawable/ic_more"
             app:popupTheme="@drawable/menu_bg"
             android:elevation="1dp"/>
+        <ImageButton
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/trans"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_done"
+            />
     </RelativeLayout>
 
-    <com.example.album.SplitToolbar
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
