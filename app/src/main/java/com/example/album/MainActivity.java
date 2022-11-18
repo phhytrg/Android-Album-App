@@ -27,8 +27,10 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.album.album.AlbumFragmentDirections;
 import com.example.album.gallery.GalleryFragmentDirections;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.yalantis.ucrop.UCropFragment;
+import com.yalantis.ucrop.UCropFragmentCallback;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UCropFragmentCallback {
 
     private Menu navigationMenu;
     NavController navController;
@@ -271,5 +273,15 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.show();
+    }
+
+    @Override
+    public void loadingProgress(boolean showLoader) {
+
+    }
+
+    @Override
+    public void onCropFinish(UCropFragment.UCropResult result) {
+
     }
 }

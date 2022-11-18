@@ -52,6 +52,7 @@ import com.skydoves.colorpickerview.ColorEnvelope;
 import com.skydoves.colorpickerview.ColorPickerDialog;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -157,23 +158,23 @@ public class DetailImageFragment extends Fragment {
         navigationView = view.findViewById(R.id.bottom_nav);
 
         Bitmap image_bm0 = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.img);
+                resourceId);
         String pathSaved = saveToInternalStorage(image_bm0);
         loadImageFromStorage(pathSaved);
 
         Resources resources = getActivity().getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            int androidBarHeight = resources.getDimensionPixelSize(resourceId);
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) navigationView.getLayoutParams();
-            params.bottomMargin = androidBarHeight + 10;
-            navigationView.setLayoutParams(params);
-
-
-            params = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
-            params.bottomMargin = androidBarHeight;
-            imageView.setLayoutParams(params);
-        }
+//        if (resourceId > 0) {
+//            int androidBarHeight = resources.getDimensionPixelSize(resourceId);
+//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) navigationView.getLayoutParams();
+//            params.bottomMargin = androidBarHeight + 10;
+//            navigationView.setLayoutParams(params);
+//
+//
+//            params = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
+//            params.bottomMargin = androidBarHeight;
+//            imageView.setLayoutParams(params);
+//        }
 //        navigationView.setItemIconTintList(null);
         isChecked=0;
         navigationView.setOnItemSelectedListener(this::itemNavigationBottomSelected);
@@ -185,25 +186,7 @@ public class DetailImageFragment extends Fragment {
 //            }
 //        });
 
-        navigateUpButton.setOnClickListener( v -> {
-
-            Window window = getActivity().getWindow();
-            TypedValue outValue = new TypedValue();
-            getActivity().getTheme()
-                    .resolveAttribute(androidx.appcompat.R.attr.colorPrimaryDark,outValue,true);
-            window.setStatusBarColor(outValue.data);
-
-            window.getDecorView().setSystemUiVisibility(0);
-
-            NavHostFragment hostFragment = (NavHostFragment) getActivity()
-                    .getSupportFragmentManager()
-                    .findFragmentById(R.id.nav_host_fragment);
-            NavController navController = hostFragment != null ? hostFragment.getNavController() : null;
-
-            if(navController!= null){
-                navController.navigateUp();
-            }
-        });
+        navigateUpButton.setOnClickListener(this::handleBack);
         overflowButton.setOnClickListener(this::showPopup);
 
         doneButton.setOnClickListener(this::handleDone);
@@ -302,6 +285,9 @@ public class DetailImageFragment extends Fragment {
             handleShare();
 //            Toast.makeText(requireContext(), "share", Toast.LENGTH_SHORT).show();
         }
+        else if(id == R.id.crop){
+            handleCrop();
+        }
         else if(id == R.id.rotate){
             handleRotate();
         }
@@ -330,12 +316,55 @@ public class DetailImageFragment extends Fragment {
     }
 
     ///////////////////////////////////////////////////////////////////////////////
+    public void handleBack(View v){
+        switch (currentState){
+            case DETAIL:
+                // dang o layout_detail
+                Window window = getActivity().getWindow();
+                TypedValue outValue = new TypedValue();
+                getActivity().getTheme()
+                        .resolveAttribute(androidx.appcompat.R.attr.colorPrimaryDark,outValue,true);
+                window.setStatusBarColor(outValue.data);
+
+                window.getDecorView().setSystemUiVisibility(0);
+
+                NavHostFragment hostFragment = (NavHostFragment) getActivity()
+                        .getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment);
+                NavController navController = hostFragment != null ? hostFragment.getNavController() : null;
+
+                if(navController!= null){
+                    navController.navigateUp();
+                }
+                break;
+            case EDIT:
+                //dang o edit
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.image_option);
+                overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                overflowButton.requestLayout();
+                doneButton.getLayoutParams().height = 0;
+                doneButton.requestLayout();
+                currentState = CurrentState.DETAIL;
+
+                // Trả lại ảnh cũ khi chưa chỉnh
+                image_bm_mod = image_bm_orig;
+                imageView.setImageBitmap(image_bm_mod);
+                //saveToInternalStorage(image_bm_mod);
+                break;
+            case PAINT:
+                //dang o paint
+                handleEdit();
+                break;
+        }
+    }
+
     public void handleDone(View v){
         switch (currentState){
             case EDIT:
                 //dang o edit
                 navigationView.getMenu().clear();
-                navigationView.inflateMenu(R.menu.image_menu);
+                navigationView.inflateMenu(R.menu.image_option);
                 overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
                 overflowButton.requestLayout();
                 doneButton.getLayoutParams().height = 0;
@@ -600,7 +629,11 @@ public class DetailImageFragment extends Fragment {
     public void handleCrop() {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         image_bm_mod.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), image_bm_mod, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(
+                getActivity().getContentResolver(),
+                image_bm_mod,
+                "Title", null
+        );
         Uri imageUri =  Uri.parse(path);
 
         String desFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
@@ -611,18 +644,34 @@ public class DetailImageFragment extends Fragment {
 
         // applying UI theme
         options.setHideBottomControls(true);
-        options.setToolbarColor(ContextCompat.getColor(requireContext(), getActivity()
+        options.setToolbarColor(getActivity()
                 .getTheme()
                 .obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary})
-                .getInt(0,0))
+                .getInt(0,0)
         );
         options.setToolbarWidgetColor(ContextCompat.getColor(requireContext(), R.color.white));
         options.setToolbarTitle("");
         options.setFreeStyleCropEnabled(true);
-        UCrop.of(imageUri, desUri)
+        UCropFragment a = UCrop.of(imageUri, desUri)
                 .withOptions(options)
                 .withMaxResultSize(1080, 1080)
-                .start(getActivity());
+                .getFragment();
+
+        UCrop u = UCrop.of(imageUri, desUri)
+                .withOptions(options)
+                .withMaxResultSize(1080, 1080);
+        UCropFragment fragment = u.getFragment(u.getIntent(requireContext()).getExtras());
+//                .start(getActivity(), this);
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
+                .getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment != null
+                ? navHostFragment.getNavController()
+                : null;
+//        getActivity().getSupportFragmentManager().beginTransaction()
+//                .add(R.id.nav_host_fragment, fragment, UCropFragment.TAG)
+//                .commit();
+//        navController.navigate(fragment.getView().getId());
     }
 
     @Override
