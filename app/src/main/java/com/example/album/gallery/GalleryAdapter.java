@@ -50,7 +50,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     @Override
     public void onBindViewHolder(@NonNull GalleryViewHolder holder, int position) {
         holder.textView.setText(dates[position]);
-        DetailAlbumAdapter detailAlbumAdapter = new DetailAlbumAdapter();
+        DetailAlbumAdapter detailAlbumAdapter = new DetailAlbumAdapter(view.getContext());
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(holder.recyclerView.getContext());
         GridLayoutManager gridLayoutManager =
@@ -91,7 +91,5 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
             textView = itemView.findViewById(R.id.date_modify_textview);
         }
     }
-
-
 
 }

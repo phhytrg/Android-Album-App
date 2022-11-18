@@ -2,8 +2,6 @@ package com.example.album.detail_album;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -43,7 +38,6 @@ public class DetailAlbumFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.gallery_fragment, container, false).getRootView();
-
         if(getActivity()!=null){
             ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
             if(actionBar!=null) {
@@ -51,51 +45,51 @@ public class DetailAlbumFragment extends Fragment {
             }
         }
 
-        MenuHost menuHost = (MenuHost) getActivity();
-        MenuProvider menuProvider = new MenuProvider() {
-            @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-//                menuInflater.inflate(R.menu.switch_layout_menu, menu);
-                MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
-                setIcon(layoutMenu);
-            }
-
-            @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.action_switch_layout) {
-                    isLinearLayout = !isLinearLayout;
-//                    adapter.setLinearLayout(isLinearLayout);
+//        MenuHost menuHost = getActivity();
+//        MenuProvider menuProvider = new MenuProvider() {
+//            @Override
+//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+////                menuInflater.inflate(R.menu.switch_layout_menu, menu);
+//                MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
+//                setIcon(layoutMenu);
+//            }
+//
+//            @Override
+//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+//                if(menuItem.getItemId() == R.id.action_switch_layout) {
+//                    isLinearLayout = !isLinearLayout;
+////                    adapter.setLinearLayout(isLinearLayout);
+////                    chooseLayout();
+//                    setIcon(menuItem);
+//                    if(isLinearLayout){
+//                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
+////                            GalleryAdapter.GalleryViewHolder viewHolder =
+////                                    (GalleryAdapter.GalleryViewHolder) recyclerView
+////                                            .findViewHolderForAdapterPosition(i);
+//                            adapter.setLinearLayout(isLinearLayout);
+//                            adapter.notifyItemChanged(i);
+//                        }
+//                    }
+//                    else{
+//                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
+////                            GalleryAdapter.GalleryViewHolder viewHolder =
+////                                    (GalleryAdapter.GalleryViewHolder) recyclerView
+////                                            .findViewHolderForAdapterPosition(i);
+//
+//                            adapter.setLinearLayout(isLinearLayout);
+//                            adapter.notifyItemChanged(i);
+//                        }
+//                    }
 //                    chooseLayout();
-                    setIcon(menuItem);
-                    if(isLinearLayout){
-                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
-//                            GalleryAdapter.GalleryViewHolder viewHolder =
-//                                    (GalleryAdapter.GalleryViewHolder) recyclerView
-//                                            .findViewHolderForAdapterPosition(i);
-                            adapter.setLinearLayout(isLinearLayout);
-                            adapter.notifyItemChanged(i);
-                        }
-                    }
-                    else{
-                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
-//                            GalleryAdapter.GalleryViewHolder viewHolder =
-//                                    (GalleryAdapter.GalleryViewHolder) recyclerView
-//                                            .findViewHolderForAdapterPosition(i);
-
-                            adapter.setLinearLayout(isLinearLayout);
-                            adapter.notifyItemChanged(i);
-                        }
-                    }
-                    chooseLayout();
-                }
-
-                return true;
-            }
-
-        };
-        if(menuHost != null) {
-            menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
-        }
+//                }
+//
+//                return true;
+//            }
+//
+//        };
+//        if(menuHost != null) {
+//            menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+//        }
 
         SplitToolbar toolbar = getActivity().findViewById(R.id.navigation_bar);
         toolbar.setVisibility(View.GONE);
@@ -132,7 +126,7 @@ public class DetailAlbumFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.gallery_recyclerview);
-        adapter = new DetailAlbumAdapter();
+        adapter = new DetailAlbumAdapter(requireContext());
         recyclerView.setAdapter(adapter);
         chooseLayout();
     }

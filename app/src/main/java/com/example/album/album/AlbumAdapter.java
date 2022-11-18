@@ -51,6 +51,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     .actionAlbumFragmentToDetailAlbumFragment(albumName);
             navController.navigate(action);
         });
+
         holder.albumName.setOnClickListener(v -> {
             if(navController == null){
                 return;

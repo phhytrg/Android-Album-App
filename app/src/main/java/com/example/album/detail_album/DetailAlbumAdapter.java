@@ -1,5 +1,6 @@
 package com.example.album.detail_album;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,21 +8,26 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.navigation.NavController;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
+import com.example.album.gallery.GalleryFragment;
+import com.example.album.gallery.GalleryFragmentDirections;
 
 public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.GalleryViewHolder> {
 
     View view;
-
+    Context context;
     boolean isLinearLayout;
 
-    NavController navController;
-
+    public DetailAlbumAdapter(Context context) {
+        this.context = context;
+    }
 
     public void setLinearLayout(boolean linearLayout) {
         isLinearLayout = linearLayout;
@@ -56,10 +62,35 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
             a.height=0;
         }
         holder.imageView.setOnClickListener(v -> {
-            NavDirections action = DetailAlbumFragmentDirections
-                    .actionDetailAlbumFragmentToDetailFragment(images[position]);
-            Navigation.findNavController(v)
-                    .navigate(action);
+            NavHostFragment hostFragment = (NavHostFragment) ((FragmentActivity)context)
+                    .getSupportFragmentManager()
+                    .findFragmentById(R.id.nav_host_fragment);
+            if(hostFragment == null)
+                return;
+
+            //Get current fragment
+            Fragment fragment = hostFragment
+                    .getChildFragmentManager()
+                    .getFragments().get(0);
+
+            //Get current fragment's name
+            String currentFragment = fragment.getClass().getSimpleName();
+
+            //There are 2 different path for navigation.
+            //The first comes from DetailAlbumFragment -> DetailFragment
+            //The second comes from GalleryFragment -> Detail Fragment
+            if(currentFragment.equals(DetailAlbumFragment.class.getSimpleName())){
+                NavDirections action = DetailAlbumFragmentDirections
+                        .actionDetailAlbumFragmentToDetailFragment(images[position]);
+                Navigation.findNavController(v)
+                        .navigate(action);
+            }
+            if(currentFragment.equals(GalleryFragment.class.getSimpleName())){
+                NavDirections action = GalleryFragmentDirections
+                        .actionGalleryFragmentToDetailFragment(images[position]);
+                Navigation.findNavController(v)
+                        .navigate(action);
+            }
         });
     }
 
@@ -68,7 +99,7 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
         return images.length;
     }
 
-    public class GalleryViewHolder extends RecyclerView.ViewHolder{
+    public static class GalleryViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
         public GalleryViewHolder(@NonNull View itemView) {
             super(itemView);

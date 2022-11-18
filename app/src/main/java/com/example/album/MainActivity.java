@@ -18,11 +18,14 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.album.album.AlbumFragmentDirections;
+import com.example.album.gallery.GalleryFragmentDirections;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Menu navigationMenu;
     NavController navController;
     SplitToolbar navigationBar;
-    Toolbar toolbar;
+    Toolbar app_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +41,18 @@ public class MainActivity extends AppCompatActivity {
         int style = getIntent().getIntExtra("theme",0);
 
         if (style != 0) {
-            setTheme(style);
+            getTheme().applyStyle(style,true);
         }
 
         setContentView(R.layout.activity_main);
         navigationBar = findViewById(R.id.navigation_bar);
-        toolbar = findViewById(R.id.app_bar);
+        app_bar = findViewById(R.id.app_bar);
         setUpNavController();
         setUpMainActionBar();
         setUpNavigationActionBar();
-        NavHostFragment navHostFragment =
-                (NavHostFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.nav_host_fragment);
+//        NavHostFragment navHostFragment =
+//                (NavHostFragment) getSupportFragmentManager()
+//                        .findFragmentById(R.id.nav_host_fragment);
 
     }
 
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpMainActionBar(){
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(app_bar);
         addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        toolbar.setNavigationOnClickListener(v -> navController.navigateUp());
+        app_bar.setNavigationOnClickListener(v -> navController.navigateUp());
     }
 
     private void setUpNavigationActionBar(){
@@ -126,18 +129,16 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(currentId == R.id.albumFragment){
                     if(destinationId == R.id.galleryFragment) {
-                        navController.navigate(R.id.action_albumFragment_to_galleryFragment,
-                                null, setUpSpecificNavOpts(0));
-
-
-//                        navController.clearBackStack(R.id.albumFragment);
-//                        Log.d("AAA", String
-//                                .valueOf(navController.getBackStackEntry(R.id.albumFragment)));
+                        NavDirections action = AlbumFragmentDirections
+                                .actionAlbumFragmentToGalleryFragment();
+                        navController.navigate(action, setUpSpecificNavOpts(0));
                     }
                 }
                 else if(currentId == R.id.galleryFragment){
                     if(destinationId == R.id.albumFragment){
-                        navController.navigate(R.id.action_galleryFragment_to_albumFragment, null, setUpSpecificNavOpts(1));
+                        NavDirections action = GalleryFragmentDirections
+                                .actionGalleryFragmentToAlbumFragment();
+                        navController.navigate(action, setUpSpecificNavOpts(1));
                     }
                 }
                 return true;

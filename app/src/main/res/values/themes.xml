@@ -12,6 +12,7 @@
         <item name="android:textColorPrimary">@color/seaPinkTextPrimary</item>
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="highlightTextColor">@color/highlightSeaPinkText</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="Widget.Album.Toolbar" parent="Widget.MaterialComponents.Toolbar">
@@ -77,6 +78,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightSeaPinkText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
     
     <style name="AppTheme.Pink" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -87,6 +89,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightPinkText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="AppTheme.Purple" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -97,6 +100,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightPurpleText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="AppTheme.Red" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -107,6 +111,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightRedText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="AppTheme.Blue" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -117,6 +122,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightBlueText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="AppTheme.Bermuda" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -127,6 +133,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightBermudaText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="AppTheme.Garden" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -137,6 +144,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightGardenText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="AppTheme.BrightSun" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -147,6 +155,7 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="android:colorFocusedHighlight">@color/highlightBrightSunText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
     </style>
 
 </resources>

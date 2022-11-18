@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
+import com.example.album.SplitToolbar;
 
 public class GalleryFragment extends Fragment {
 
@@ -138,7 +139,14 @@ public class GalleryFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        MenuHost menuHost = (MenuHost) getActivity();
+        if(getActivity() != null){
+            SplitToolbar navigationBar = getActivity().findViewById(R.id.navigation_bar);
+            if(navigationBar.getVisibility() == View.GONE){
+                navigationBar.setVisibility(View.VISIBLE);
+            }
+        }
+
+        MenuHost menuHost = getActivity();
         MenuProvider menuProvider = new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
