@@ -7,11 +7,9 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +32,10 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -52,7 +54,6 @@ import com.skydoves.colorpickerview.ColorEnvelope;
 import com.skydoves.colorpickerview.ColorPickerDialog;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,6 +61,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -69,6 +73,7 @@ public class DetailImageFragment extends Fragment {
     ImageButton navigateUpButton;
     ImageButton overflowButton;
     ImageButton doneButton;
+    ImageButton favoriteButton;
     ActionBar app_bar;
     SplitToolbar navigationBar;
 //    com.github.chrisbanes.photoview.PhotoView img;
@@ -105,40 +110,8 @@ public class DetailImageFragment extends Fragment {
 
         navigationBar = getActivity().findViewById(R.id.navigation_bar);
         navigationBar.setVisibility(View.GONE);
-//        Window window = null;
-//        getActivity().findViewById(R.id.app_bar).setVisibility(View.GONE);
-//        if(getActivity() != null) {
-//            app_bar = ((MainActivity)getActivity()).getSupportActionBar();
-//            if(app_bar!=null){
-//                app_bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#121212")));
-//                app_bar.setTitle("");
-//
-//                @SuppressLint("ResourceType") @StyleableRes
-//                app_bar.setHomeAsUpIndicator(R.drawable.ic_back);
-////                Toolbar navigationView = getActivity().findViewById(R.id.app_bar);
-////                navigationView.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more, getActivity().getTheme()));
-//                getActivity().closeOptionsMenu();
-//                getActivity().addMenuProvider(new MenuProvider() {
-//                @Override
-//                public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-//                    menuInflater.inflate(R.menu.ic_more_submenu, menu);
-//                }
-//
-//                @Override
-//                public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//                    return false;
-//                }
-//            }, getViewLifecycleOwner(), Lifecycle.State.CREATED);
-//            }
-//            window = getActivity().getWindow();
-//        }
-//        if(window != null) {
-//            window.setStatusBarColor(getResources()
-//                    .getColor(R.color.dark_grey, getActivity().getTheme()));
-//            window.getDecorView().setSystemUiVisibility(0);
-//        }
 
-        return inflater.inflate(R.layout.detail_image_fragment,container,false).getRootView();
+        return inflater.inflate(R.layout.fragment_image_detail,container,false).getRootView();
     }
 
     @Override
@@ -153,6 +126,7 @@ public class DetailImageFragment extends Fragment {
         navigateUpButton = view.findViewById(R.id.back_button);
         overflowButton = view.findViewById(R.id.overflow_button);
         doneButton = view.findViewById(R.id.done);
+        favoriteButton = view.findViewById(R.id.favorite);
         imageView = view.findViewById(R.id.photo_view);
         imageView.setImageResource(resourceId);
         navigationView = view.findViewById(R.id.bottom_nav);
@@ -162,33 +136,12 @@ public class DetailImageFragment extends Fragment {
         String pathSaved = saveToInternalStorage(image_bm0);
         loadImageFromStorage(pathSaved);
 
-        Resources resources = getActivity().getResources();
-        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-//        if (resourceId > 0) {
-//            int androidBarHeight = resources.getDimensionPixelSize(resourceId);
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) navigationView.getLayoutParams();
-//            params.bottomMargin = androidBarHeight + 10;
-//            navigationView.setLayoutParams(params);
-//
-//
-//            params = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
-//            params.bottomMargin = androidBarHeight;
-//            imageView.setLayoutParams(params);
-//        }
-//        navigationView.setItemIconTintList(null);
         isChecked=0;
         navigationView.setOnItemSelectedListener(this::itemNavigationBottomSelected);
-//        bottomNav.setOnItemSelectedListener(item -> itemNavigationBottomSelected(item));
-//        bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                return itemNavigationBottomSelected(item);
-//            }
-//        });
 
         navigateUpButton.setOnClickListener(this::handleBack);
         overflowButton.setOnClickListener(this::showPopup);
-
+        favoriteButton.setOnClickListener(v -> handleFavorite());
         doneButton.setOnClickListener(this::handleDone);
 
         // details chứa name, date, location, size, description
@@ -202,6 +155,7 @@ public class DetailImageFragment extends Fragment {
         details[3] = "5KB";
         details[4] = "Flexing at Circle K with my bros";
         //Drawable drawable = img.getDrawable();
+
     }
     public void showPopup(View v) {
         popup = new PopupMenu(requireContext(), v);
@@ -267,17 +221,17 @@ public class DetailImageFragment extends Fragment {
         if(id == R.id.edit){
             handleEdit();
         }
-        if(id == R.id.favorite){
-            handleFavorite();
-//            if(isChecked==0){
-//                navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
-//                isChecked=1;
-//            }else {
-//                navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
-//                isChecked=0;
-//            }
-//            Toast.makeText(requireContext(), "favorite", Toast.LENGTH_SHORT).show();
-        }
+//        if(id == R.id.favorite){
+//            handleFavorite();
+////            if(isChecked==0){
+////                navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
+////                isChecked=1;
+////            }else {
+////                navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
+////                isChecked=0;
+////            }
+////            Toast.makeText(requireContext(), "favorite", Toast.LENGTH_SHORT).show();
+//        }
         else if(id == R.id.delete) {
             Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show();
         }
@@ -316,7 +270,7 @@ public class DetailImageFragment extends Fragment {
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    public void handleBack(View v){
+    private void handleBack(View v){
         switch (currentState){
             case DETAIL:
                 // dang o layout_detail
@@ -343,6 +297,8 @@ public class DetailImageFragment extends Fragment {
                 navigationView.inflateMenu(R.menu.image_option);
                 overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
                 overflowButton.requestLayout();
+                favoriteButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                favoriteButton.requestLayout();
                 doneButton.getLayoutParams().height = 0;
                 doneButton.requestLayout();
                 currentState = CurrentState.DETAIL;
@@ -367,6 +323,8 @@ public class DetailImageFragment extends Fragment {
                 navigationView.inflateMenu(R.menu.image_option);
                 overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
                 overflowButton.requestLayout();
+                favoriteButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                favoriteButton.requestLayout();
                 doneButton.getLayoutParams().height = 0;
                 doneButton.requestLayout();
                 currentState = CurrentState.DETAIL;
@@ -435,7 +393,7 @@ public class DetailImageFragment extends Fragment {
     public void handleSet() {
         final Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.custom_dialog_set);
-        final String[] options = {"man hinh chinh","man hinh khoa","ca 2"};
+        final String[] options = {"Set Lock Screen","Set Home Screen","Set Both"};
         ListView listView = dialog.findViewById(R.id.list_item);
         ArrayAdapter arrayAdapter =
                 new ArrayAdapter(
@@ -518,21 +476,23 @@ public class DetailImageFragment extends Fragment {
 
     public void handleFavorite() {
         if(isChecked==0){
-            navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
+//            navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
+            favoriteButton.setImageResource(R.drawable.ic_favorite_colored);
             isChecked=1;
         }else {
-            navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
+//            navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
+            favoriteButton.setImageResource(R.drawable.ic_favorite);
             isChecked=0;
         }
     }
 
     public void handleShare() {
-        Bitmap b = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        b.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), b, "Title", null);
+        if(getActivity() == null)
+            return;
+        String path = MediaStore.Images.Media.insertImage(getActivity().
+                getContentResolver(), image_bm_mod,null, null);
         Uri imageUri =  Uri.parse(path);
         share.putExtra(Intent.EXTRA_STREAM, imageUri);
         startActivity(Intent.createChooser(share, "Select"));
@@ -543,6 +503,8 @@ public class DetailImageFragment extends Fragment {
         navigationView.inflateMenu(R.menu.edit_nav);
         doneButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         doneButton.requestLayout();
+        favoriteButton.getLayoutParams().height = 0;
+        favoriteButton.requestLayout();
         overflowButton.getLayoutParams().height = 0;
         overflowButton.requestLayout();
         navigationView.setVisibility(View.VISIBLE);
@@ -580,12 +542,7 @@ public class DetailImageFragment extends Fragment {
                             }
                         })
                 .setNegativeButton("cancel",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        })
+                        (dialogInterface, i) -> dialogInterface.dismiss())
                 .attachAlphaSlideBar(true) // the default value is true.
                 .attachBrightnessSlideBar(true)  // the default value is true.
                 .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
@@ -630,64 +587,91 @@ public class DetailImageFragment extends Fragment {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         image_bm_mod.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(
-                getActivity().getContentResolver(),
+                requireContext().getContentResolver(),
                 image_bm_mod,
-                "Title", null
+                Integer.toString(new Random().nextInt()), null
         );
+
         Uri imageUri =  Uri.parse(path);
 
         String desFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
         File newFile = new File(getActivity().getCacheDir(),desFileName);
         Uri desUri=Uri.fromFile(newFile);
 
-        UCrop.Options options = new UCrop.Options();
+        ArrayList<Uri> listUri = new ArrayList<>();
+        listUri.add(imageUri);
+        listUri.add(desUri);
+        cropImage.launch(listUri);
 
-        // applying UI theme
-        options.setHideBottomControls(true);
-        options.setToolbarColor(getActivity()
-                .getTheme()
-                .obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary})
-                .getInt(0,0)
-        );
-        options.setToolbarWidgetColor(ContextCompat.getColor(requireContext(), R.color.white));
-        options.setToolbarTitle("");
-        options.setFreeStyleCropEnabled(true);
-        UCropFragment a = UCrop.of(imageUri, desUri)
-                .withOptions(options)
-                .withMaxResultSize(1080, 1080)
-                .getFragment();
 
-        UCrop u = UCrop.of(imageUri, desUri)
-                .withOptions(options)
-                .withMaxResultSize(1080, 1080);
-        UCropFragment fragment = u.getFragment(u.getIntent(requireContext()).getExtras());
-//                .start(getActivity(), this);
-        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
-                .getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment != null
-                ? navHostFragment.getNavController()
-                : null;
-//        getActivity().getSupportFragmentManager().beginTransaction()
-//                .add(R.id.nav_host_fragment, fragment, UCropFragment.TAG)
-//                .commit();
-//        navController.navigate(fragment.getView().getId());
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-            final Uri resultUri = UCrop.getOutput(data);
-            try {
-                if (resultUri != null) {
-                    image_bm_mod = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), resultUri);
-                    imageView.setImageBitmap(image_bm_mod);
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        } else if (resultCode == UCrop.RESULT_ERROR) {
-            final Throwable cropError = UCrop.getError(data);
+    private ActivityResultContract<List<Uri>, Uri> uCropConstract = new ActivityResultContract<List<Uri>, Uri>() {
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, List<Uri> uri) {
+            UCrop.Options options = new UCrop.Options();
+
+            Uri imageUri = uri.get(0);
+            Uri desUri = uri.get(1);
+            options.setToolbarColor(getActivity()
+                    .getTheme()
+                    .obtainStyledAttributes(new int[]{android.R.attr.background})
+                    .getInt(0,0)
+            );
+            options.setStatusBarColor(getActivity()
+                    .getTheme()
+                    .obtainStyledAttributes(new int[]{android.R.attr.colorPrimaryDark})
+                    .getInt(0,0)
+            );
+            options.setToolbarWidgetColor(getActivity()
+                    .getTheme()
+                    .obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary})
+                    .getInt(0,0)
+            );
+            options.setActiveControlsWidgetColor(getActivity()
+                    .getTheme()
+                    .obtainStyledAttributes(new int[]{R.attr.highlightTextColor})
+                    .getInt(0,0));
+
+            options.setToolbarTitle("");
+            options.setFreeStyleCropEnabled(true);
+            UCrop uCrop = UCrop.of(imageUri, desUri)
+                    .withOptions(options)
+                    .withMaxResultSize(1080, 1080);
+            return uCrop.getIntent(requireContext());
         }
-    }
+
+        @Override
+        public Uri parseResult(int i, @Nullable Intent intent) {
+            if(intent == null){
+                return null;
+            }
+            return UCrop.getOutput(intent);
+        }
+    };
+
+    private ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri result) {
+                    imageView.setImageURI(result);
+                }
+            });
+
+    private ActivityResultLauncher<List<Uri>> cropImage
+            = registerForActivityResult(uCropConstract,
+            result -> {
+//                imageView.setImageURI(result);
+                try {
+                    if(result != null){
+                        image_bm_mod = MediaStore.Images.Media.getBitmap(getActivity()
+                                .getContentResolver(), result);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imageView.setImageBitmap(image_bm_mod);
+            });
+
 }

@@ -5,10 +5,10 @@
         android:icon="@drawable/ic_edit"
         android:title="Edit"
         app:showAsAction="always"/>
-    <item android:id="@+id/favorite"
-        android:icon="@drawable/ic_favorite_selector"
-        android:title="Favorite"
-        app:showAsAction="always"/>
+<!--    <item android:id="@+id/favorite"-->
+<!--        android:icon="@drawable/ic_favorite_selector"-->
+<!--        android:title="Favorite"-->
+<!--        app:showAsAction="always"/>-->
     <item android:id="@+id/delete"
         android:icon="@drawable/ic_delete"
         android:title="Delete"

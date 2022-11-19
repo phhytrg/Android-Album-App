@@ -38,7 +38,10 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.album.detail_image.DetailImageFragment"
-        android:label="DetailFragment" />
+        android:label="DetailFragment" >
+
+
+    </fragment>
     <fragment
         android:id="@+id/galleryFragment"
         android:name="com.example.album.gallery.GalleryFragment"

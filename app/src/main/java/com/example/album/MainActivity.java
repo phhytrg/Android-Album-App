@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements UCropFragmentCall
     private void setUpMainActionBar(){
 
         setSupportActionBar(app_bar);
+        AppBarConfiguration config = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this,navController,config);
         addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
