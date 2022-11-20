@@ -23,19 +23,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.animation.AlphaAnimation;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -48,8 +45,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.SplitToolbar;
-import com.github.chrisbanes.photoview.PhotoView;
+import com.example.album.ZoomableImageView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.skydoves.colorpickerview.ColorEnvelope;
 import com.skydoves.colorpickerview.ColorPickerDialog;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
@@ -76,8 +74,7 @@ public class DetailImageFragment extends Fragment {
     ImageButton favoriteButton;
     ActionBar app_bar;
     SplitToolbar navigationBar;
-//    com.github.chrisbanes.photoview.PhotoView img;
-    PhotoView imageView;
+    ZoomableImageView imageView;
     int isChecked;
     int resourceId;
     String[] details;
@@ -137,8 +134,9 @@ public class DetailImageFragment extends Fragment {
         loadImageFromStorage(pathSaved);
 
         isChecked=0;
-        navigationView.setOnItemSelectedListener(this::itemNavigationBottomSelected);
 
+        navigationView.getMenu().getItem(0).setCheckable(false);
+        navigationView.setOnItemSelectedListener(this::itemNavigationBottomSelected);
         navigateUpButton.setOnClickListener(this::handleBack);
         overflowButton.setOnClickListener(this::showPopup);
         favoriteButton.setOnClickListener(v -> handleFavorite());
@@ -155,6 +153,16 @@ public class DetailImageFragment extends Fragment {
         details[3] = "5KB";
         details[4] = "Flexing at Circle K with my bros";
         //Drawable drawable = img.getDrawable();
+
+        //Android default back button now acts as "Action bar" Back button
+        OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBack(view);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher()
+                .addCallback(getViewLifecycleOwner(), callback);
 
     }
     public void showPopup(View v) {
@@ -221,17 +229,6 @@ public class DetailImageFragment extends Fragment {
         if(id == R.id.edit){
             handleEdit();
         }
-//        if(id == R.id.favorite){
-//            handleFavorite();
-////            if(isChecked==0){
-////                navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_colored);
-////                isChecked=1;
-////            }else {
-////                navigationView.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite);
-////                isChecked=0;
-////            }
-////            Toast.makeText(requireContext(), "favorite", Toast.LENGTH_SHORT).show();
-//        }
         else if(id == R.id.delete) {
             Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show();
         }
@@ -269,80 +266,6 @@ public class DetailImageFragment extends Fragment {
         return true;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////
-    private void handleBack(View v){
-        switch (currentState){
-            case DETAIL:
-                // dang o layout_detail
-                Window window = getActivity().getWindow();
-                TypedValue outValue = new TypedValue();
-                getActivity().getTheme()
-                        .resolveAttribute(androidx.appcompat.R.attr.colorPrimaryDark,outValue,true);
-                window.setStatusBarColor(outValue.data);
-
-                window.getDecorView().setSystemUiVisibility(0);
-
-                NavHostFragment hostFragment = (NavHostFragment) getActivity()
-                        .getSupportFragmentManager()
-                        .findFragmentById(R.id.nav_host_fragment);
-                NavController navController = hostFragment != null ? hostFragment.getNavController() : null;
-
-                if(navController!= null){
-                    navController.navigateUp();
-                }
-                break;
-            case EDIT:
-                //dang o edit
-                navigationView.getMenu().clear();
-                navigationView.inflateMenu(R.menu.image_option);
-                overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                overflowButton.requestLayout();
-                favoriteButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                favoriteButton.requestLayout();
-                doneButton.getLayoutParams().height = 0;
-                doneButton.requestLayout();
-                currentState = CurrentState.DETAIL;
-
-                // Trả lại ảnh cũ khi chưa chỉnh
-                image_bm_mod = image_bm_orig;
-                imageView.setImageBitmap(image_bm_mod);
-                //saveToInternalStorage(image_bm_mod);
-                break;
-            case PAINT:
-                //dang o paint
-                handleEdit();
-                break;
-        }
-    }
-
-    public void handleDone(View v){
-        switch (currentState){
-            case EDIT:
-                //dang o edit
-                navigationView.getMenu().clear();
-                navigationView.inflateMenu(R.menu.image_option);
-                overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                overflowButton.requestLayout();
-                favoriteButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                favoriteButton.requestLayout();
-                doneButton.getLayoutParams().height = 0;
-                doneButton.requestLayout();
-                currentState = CurrentState.DETAIL;
-
-                // Lưu ảnh đã chỉnh sửa vào Internal Storage
-                image_bm_orig = image_bm_mod;
-                imageView.setImageBitmap(image_bm_mod);
-                saveToInternalStorage(image_bm_mod);
-                break;
-            case PAINT:
-                image_bm_orig = image_bm_mod;
-                imageView.setImageBitmap(image_bm_mod);
-                saveToInternalStorage(image_bm_mod);
-
-                currentState = CurrentState.EDIT;
-                break;
-        }
-    }
 
     private String saveToInternalStorage(Bitmap bitmapImage){
         ContextWrapper cw = new ContextWrapper(requireContext());
@@ -368,6 +291,22 @@ public class DetailImageFragment extends Fragment {
         return directory.getAbsolutePath();
     }
 
+    private void loadImageFromStorage(String path)
+    {
+        try {
+            File f = new File(path, "img.png");
+            image_bm_orig = BitmapFactory.decodeStream(new FileInputStream(f));
+            image_bm_mod = image_bm_orig;
+//            img = (com.github.chrisbanes.photoview.PhotoView)getView().findViewById(R.id.photo_view);
+            imageView.setImageBitmap(image_bm_orig);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
     public void handleRename() {
         final AlertDialog.Builder renameDialog = new AlertDialog.Builder(requireContext());
         renameDialog.setTitle("Rename to:");
@@ -390,37 +329,39 @@ public class DetailImageFragment extends Fragment {
         renameDialog.show();
     }
 
-    public void handleSet() {
+
+    private void handleSet() {
+
+//        MaterialAlertDialogBuilder builder =
+//                new MaterialAlertDialogBuilder(
+//                        requireContext(), R.style.AlertDialogTheme);
+//        View view = getLayoutInflater().inflate(R.layout.custom_dialog_set, null);
+//        builder.setView(view);
+
         final Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.custom_dialog_set);
-        final String[] options = {"Set Lock Screen","Set Home Screen","Set Both"};
-        ListView listView = dialog.findViewById(R.id.list_item);
-        ArrayAdapter arrayAdapter =
-                new ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_list_item_1,
-                        android.R.id.text1, options
-                );
-        listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
-                switch(i) {
-                    case 0:
-                        setWallHome();
-                        break;
-                    case 1:
-                        setWallLock();
-                        break;
-                    case 2:
-                        setWallHome();
-                        setWallLock();
-                        break;
-                }
-                dialog.dismiss();
-            }
+        ImageButton homeOption = dialog.findViewById(R.id.home_option);
+        ImageButton lockOption = dialog.findViewById(R.id.lock_option);
+        ImageButton homeNLock = dialog.findViewById(R.id.home_lock_option);
+        AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
+        homeOption.setOnClickListener(view -> {
+            view.startAnimation(buttonClick);
+            setWallHome();
+            dialog.dismiss();
+        });
+        lockOption.setOnClickListener(view -> {
+            view.startAnimation(buttonClick);
+            setWallLock();
+            dialog.dismiss();
+        });
+        homeNLock.setOnClickListener(view -> {
+            view.startAnimation(buttonClick);
+            setWallLock();
+            setWallLock();
+            dialog.dismiss();
         });
 
+        dialog.getWindow().getAttributes().windowAnimations = R.style.SetWallpaperDialog;
         dialog.show();
         dialog.getWindow().setGravity(Gravity.BOTTOM);
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
@@ -447,8 +388,85 @@ public class DetailImageFragment extends Fragment {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////
+    private void handleBack(View v){
+        switch (currentState){
+            case DETAIL:
+                // dang o layout_detail
+                Window window = getActivity().getWindow();
+                TypedValue outValue = new TypedValue();
+                getActivity().getTheme()
+                        .resolveAttribute(androidx.appcompat.R.attr.colorPrimaryDark,outValue,true);
+                window.setStatusBarColor(outValue.data);
 
-    public void handleDetails() {
+                window.getDecorView().setSystemUiVisibility(0);
+
+                NavHostFragment hostFragment = (NavHostFragment) getActivity()
+                        .getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment);
+                NavController navController = hostFragment != null ? hostFragment.getNavController() : null;
+
+                if(navController!= null){
+                    navController.navigateUp();
+                }
+                break;
+            case EDIT:
+                //dang o edit
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.image_option);
+                navigationView.getMenu().getItem(0).setCheckable(false);
+                overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                overflowButton.requestLayout();
+                favoriteButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                favoriteButton.requestLayout();
+                doneButton.getLayoutParams().height = 0;
+                doneButton.requestLayout();
+                currentState = CurrentState.DETAIL;
+
+                // Trả lại ảnh cũ khi chưa chỉnh
+                image_bm_mod = image_bm_orig;
+                imageView.setImageBitmap(image_bm_mod);
+                //saveToInternalStorage(image_bm_mod);
+                break;
+            case PAINT:
+                //dang o paint
+                handleEdit();
+                break;
+        }
+    }
+
+    public void handleDone(View v){
+        switch (currentState){
+            case EDIT:
+                //dang o edit
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.image_option);
+                navigationView.getMenu().getItem(0).setCheckable(false);
+                overflowButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                overflowButton.requestLayout();
+                favoriteButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                favoriteButton.requestLayout();
+                doneButton.getLayoutParams().height = 0;
+                doneButton.requestLayout();
+                currentState = CurrentState.DETAIL;
+
+                // Lưu ảnh đã chỉnh sửa vào Internal Storage
+                image_bm_orig = image_bm_mod;
+                imageView.setImageBitmap(image_bm_mod);
+                saveToInternalStorage(image_bm_mod);
+                break;
+            case PAINT:
+                image_bm_orig = image_bm_mod;
+                imageView.setImageBitmap(image_bm_mod);
+                saveToInternalStorage(image_bm_mod);
+
+                currentState = CurrentState.EDIT;
+                break;
+        }
+    }
+
+
+    private void handleDetails() {
         final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(requireContext());
         detailsDialog.setTitle("Details");
         final EditText input = new EditText(requireContext());
@@ -508,7 +526,7 @@ public class DetailImageFragment extends Fragment {
         overflowButton.getLayoutParams().height = 0;
         overflowButton.requestLayout();
         navigationView.setVisibility(View.VISIBLE);
-//        navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+        navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         currentState = CurrentState.EDIT;
     }
 
@@ -519,7 +537,7 @@ public class DetailImageFragment extends Fragment {
         doneButton.requestLayout();
         overflowButton.getLayoutParams().height = 0;
         overflowButton.requestLayout();
-//        navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
+        navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         currentState = CurrentState.PAINT;
     }
 
@@ -549,21 +567,6 @@ public class DetailImageFragment extends Fragment {
                 .show();
     }
 
-    private void loadImageFromStorage(String path)
-    {
-        try {
-            File f = new File(path, "img.png");
-            image_bm_orig = BitmapFactory.decodeStream(new FileInputStream(f));
-            image_bm_mod = image_bm_orig;
-//            img = (com.github.chrisbanes.photoview.PhotoView)getView().findViewById(R.id.photo_view);
-            imageView.setImageBitmap(image_bm_orig);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
 
     public void handleRotate() {
         Matrix mat = new Matrix();
@@ -571,7 +574,7 @@ public class DetailImageFragment extends Fragment {
         Bitmap image_bm_rotated = Bitmap.createBitmap(image_bm_mod, 0, 0,image_bm_mod.getWidth(),image_bm_mod.getHeight(), mat, true);
         image_bm_mod = image_bm_rotated;
         imageView.setImageBitmap(image_bm_mod);
-        saveToInternalStorage(image_bm_mod);
+//        saveToInternalStorage(image_bm_mod);
     }
 
     public void handleFlip() {
@@ -580,7 +583,7 @@ public class DetailImageFragment extends Fragment {
         Bitmap image_bm_flipped = Bitmap.createBitmap(image_bm_mod, 0, 0, image_bm_mod.getWidth(), image_bm_mod.getHeight(), mat, true);
         image_bm_mod = image_bm_flipped;
         imageView.setImageBitmap(image_bm_mod);
-        saveToInternalStorage(image_bm_mod);
+//        saveToInternalStorage(image_bm_mod);
     }
 
     public void handleCrop() {
@@ -616,7 +619,7 @@ public class DetailImageFragment extends Fragment {
             Uri desUri = uri.get(1);
             options.setToolbarColor(getActivity()
                     .getTheme()
-                    .obtainStyledAttributes(new int[]{android.R.attr.background})
+                    .obtainStyledAttributes(new int[]{R.attr.ucrop_actionbar_color})
                     .getInt(0,0)
             );
             options.setStatusBarColor(getActivity()
@@ -634,6 +637,9 @@ public class DetailImageFragment extends Fragment {
                     .obtainStyledAttributes(new int[]{R.attr.highlightTextColor})
                     .getInt(0,0));
 
+            options.setRootViewBackgroundColor(ContextCompat
+                    .getColor(requireContext(), R.color.white)
+            );
             options.setToolbarTitle("");
             options.setFreeStyleCropEnabled(true);
             UCrop uCrop = UCrop.of(imageUri, desUri)
@@ -650,14 +656,6 @@ public class DetailImageFragment extends Fragment {
             return UCrop.getOutput(intent);
         }
     };
-
-    private ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri result) {
-                    imageView.setImageURI(result);
-                }
-            });
 
     private ActivityResultLauncher<List<Uri>> cropImage
             = registerForActivityResult(uCropConstract,

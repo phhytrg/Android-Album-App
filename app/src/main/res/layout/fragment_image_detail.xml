@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
 
-    <com.github.chrisbanes.photoview.PhotoView
+    <com.example.album.ZoomableImageView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -68,6 +68,7 @@
         android:elevation="1dp"
         app:menu="@menu/image_option"
         app:itemIconTint="@color/icon_selector"
-        app:itemTextColor="@color/icon_selector"/>
+        app:itemTextColor="@color/icon_selector"
+        android:visibility="visible"/>
 
 </RelativeLayout>

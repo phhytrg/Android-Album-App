@@ -64,16 +64,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         if(isLinearLayout) {
             holder.recyclerView.setLayoutManager(linearLayoutManager);
             holder.recyclerView.addItemDecoration(new LinearSpacingItemDecoration(8,false));
-            for (int childCount = detailAlbumAdapter.getItemCount(), i = 0; i < childCount; ++i) {
-                detailAlbumAdapter.notifyItemChanged(i);
-            }
         }
         else{
             holder.recyclerView.setLayoutManager(gridLayoutManager);
             holder.recyclerView.addItemDecoration(new GridSpacingItemDecoration(4,8,false));
-            for (int childCount = detailAlbumAdapter.getItemCount(), i = 0; i < childCount; ++i) {
-                detailAlbumAdapter.notifyItemChanged(i);
-            }
+        }
+        for (int childCount = detailAlbumAdapter.getItemCount(), i = 0; i < childCount; ++i) {
+            detailAlbumAdapter.notifyItemChanged(i);
         }
     }
 

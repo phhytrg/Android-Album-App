@@ -22,12 +22,13 @@
 <!--    Sea Pink    -->
     <color name="seaPinkPrimary">#FEDBD0</color>
     <color name="seaPinkPrimaryDark">#FBB8AC</color>
-    <color name="seaPinkAccent">#E0E0E0</color>
+    <color name="seaPinkAccent">#F5F5F5</color>
     <color name="seaPinkTextPrimary">#442C2E</color>
     <color name="highlightSeaPinkText">#D65E13</color>
     <color name="toolbarIconSeaPink">@color/highlightSeaPinkText</color>
     <color name="lightSeaPinkText">#FCE9E9</color>
     <color name="lightHighlightSeaPinkText">#EE823F</color>
+    <color name="secondGradientSeaPink">#F3A06D</color>
 
 <!--    Pink    -->
     <color name="pinkPrimary">#f7afd0</color>
@@ -38,6 +39,7 @@
     <color name="highlightPinkText">#e40071</color>
     <color name="lightHighlightPinkText">#FF6BB5</color>
     <color name="toolbarIconPink">@color/highlightPinkText</color>
+    <color name="secondGradientPink">#FF70B8</color>
 
 <!--    Red  -->
     <color name="redPrimary">#ffb2ae</color>
@@ -48,6 +50,7 @@
     <color name="highlightRedText">#A31914</color>
     <color name="lightHighlightRedText">#EF7F7B</color>
     <color name="toolbarIconPurple">@color/highlightRedText</color>
+    <color name="secondGradientRed">#EE7672</color>
 
 <!--    Purple    -->
     <color name="purplePrimary">#d691e5</color>
@@ -58,6 +61,7 @@
     <color name="highlightPurpleText">#a516a2</color>
     <color name="lightHighlightPurpleText">#EB6FE9</color>
     <color name="toolbarIconRed">@color/highlightPurpleText</color>
+    <color name="secondGradientPurple">#E95DE7</color>
 
 <!--    Blue    -->
     <color name="bluePrimary">#90caf9</color>
@@ -68,6 +72,7 @@
     <color name="highlightBlueText">#0072e2</color>
     <color name="lightHighlightBlueText">#2994FF</color>
     <color name="toolbarIconBlue">@color/highlightBlueText</color>
+    <color name="secondGradientBlue">#66B3FF</color>
 
 <!--    Bermuda     -->
     <color name="bermudaPrimary">#80cbc4</color>
@@ -78,6 +83,7 @@
     <color name="highlightBermudaText">#2387c6</color>
     <color name="lightHighlightBermudaText">#4DA8E0</color>
     <color name="toolbarIconBermuda">@color/highlightBermudaText</color>
+    <color name="secondGradientBermuda">#7CBFE9</color>
 
 <!--    Garden      -->
     <color name="gardenPrimary">#66bb6a</color>
@@ -88,6 +94,7 @@
     <color name="highlightGardenText">#2387c6</color>
     <color name="lightHighlightGardenText">#46AFAA</color>
     <color name="toolbarIconGarden">@color/highlightGardenText</color>
+    <color name="secondGradientGarden">#7CBFE9</color>
 
 <!--    Bright Sun  -->
     <color name="brightSunPrimary">#fdd835</color>
@@ -98,13 +105,10 @@
     <color name="highlightBrightSunText">#c64200</color>
     <color name="lightHighlightBrightSunText">#FF7733</color>
     <color name="toolbarIconBrightSun">@color/highlightBrightSunText</color>
+    <color name="secondGradientBrightSun">#FFA375</color>
 
 <!--    <color name="ucrop_color_toolbar_widget">@color/white</color>-->
 <!--    <color name="ucrop_color_blaze_orange">#fff</color>-->
-
-    <color name="ucrop_color_toolbar">#fff</color>
-    <color name="ucrop_color_statusbar">#f5f5f5</color>
-    <color name="ucrop_color_toolbar_widget">#000000</color>
 
     <color name="ucrop_color_widget_background">#121212</color>
     <color name="ucrop_color_widget_active">#f5f5f5</color>

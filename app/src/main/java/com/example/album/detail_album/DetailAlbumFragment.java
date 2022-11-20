@@ -2,6 +2,8 @@ package com.example.album.detail_album;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +14,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
@@ -29,6 +34,7 @@ public class DetailAlbumFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
     DetailAlbumAdapter adapter;
+    ActionBar appbar;
 
     String albumName;
 
@@ -120,6 +126,8 @@ public class DetailAlbumFragment extends Fragment {
         if(getArguments() != null){
             albumName = getArguments().getString("label");
         }
+
+        appbar = ((MainActivity)getActivity()).getSupportActionBar();
     }
 
     @Override
@@ -129,6 +137,23 @@ public class DetailAlbumFragment extends Fragment {
         adapter = new DetailAlbumAdapter(requireContext());
         recyclerView.setAdapter(adapter);
         chooseLayout();
+        getActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {}
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.action_switch_layout) {
+                    isLinearLayout = !isLinearLayout;
+                    chooseLayout();
+                    setIcon(menuItem);
+                    for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
+                        adapter.notifyItemChanged(i);
+                    }
+                }
+                return true;
+            }
+        },getViewLifecycleOwner(), Lifecycle.State.CREATED);
     }
 
     private void setIcon(MenuItem menuItem){
@@ -143,6 +168,7 @@ public class DetailAlbumFragment extends Fragment {
     }
 
     private void chooseLayout(){
+        adapter.setLinearLayout(isLinearLayout);
         if(isLinearLayout){
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(layoutManager);

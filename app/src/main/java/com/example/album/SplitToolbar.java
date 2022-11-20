@@ -28,4 +28,6 @@ public class SplitToolbar extends com.google.android.material.appbar.MaterialToo
         }
         super.addView(child, params);
     }
+
+
 }

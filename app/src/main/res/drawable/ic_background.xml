@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <gradient
+        android:startColor="?attr/secondaryGradient"
+        android:endColor="?attr/firstGradient"
+        android:angle="45" />
+
+    <size
+        android:width="30dp"
+        android:height="30dp"/>
+    <corners
+        android:radius="5dp"/>
+
+
+</shape>

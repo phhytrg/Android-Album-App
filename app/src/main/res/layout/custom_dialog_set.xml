@@ -5,20 +5,87 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/set_wallpaper_dialog_bg">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Dat lam man hinh nen"
+        android:text="@string/set_as_wallpaper"
+        android:textColor="@color/dark_grey"
+        android:textStyle="bold"
         android:textSize="20sp"
-        android:padding="10dp"
-        android:background="?android:attr/colorPrimaryDark" />
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"/>
 
-    <ListView
-        android:id="@+id/list_item"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"/>
+        android:layout_marginBottom="16dp">
 
+        <ImageButton
+            android:id="@+id/home_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/home_screen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/lock_option"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="@color/trans"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/home_option"
+            android:text="@string/home_screen"
+            app:layout_constraintStart_toStartOf="@id/home_option"
+            app:layout_constraintEnd_toEndOf="@id/home_option"
+            android:maxWidth="100dp"
+            android:textColor="@color/dark_grey"/>
+
+        <ImageButton
+            android:id="@+id/lock_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/lock_screen"
+            app:layout_constraintStart_toEndOf="@id/home_option"
+            app:layout_constraintEnd_toStartOf="@id/home_lock_option"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="@color/trans"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/lock_option"
+            android:text="@string/lock_screen"
+            app:layout_constraintStart_toStartOf="@id/lock_option"
+            app:layout_constraintEnd_toEndOf="@id/lock_option"
+            android:maxWidth="100dp"
+            android:textColor="@color/dark_grey"/>
+
+        <ImageButton
+            android:id="@+id/home_lock_option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/home_lock_screen"
+            app:layout_constraintStart_toEndOf="@id/lock_option"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="@color/trans"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/home_lock_option"
+            android:text="@string/home_and_lock_screen"
+            app:layout_constraintStart_toStartOf="@id/home_lock_option"
+            app:layout_constraintEnd_toEndOf="@id/home_lock_option"
+            android:maxWidth="100dp"
+            android:textAlignment="center"
+            android:textColor="@color/dark_grey"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

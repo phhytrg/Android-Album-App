@@ -79,4 +79,11 @@
     <string name="file_provider_authorities">com.yalantis.ucrop.provider</string>
     <string name="channel_name">ucrop_chanel</string>
     <string name="channel_description">ucrop result image</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
+    <string name="home_screen">Home screen</string>
+    <string name="lock_screen">Lock screen</string>
+    <string name="home_and_lock_screen">Home and lock screen</string>
+    <string name="set_as_wallpaper">Set as wallpaper</string>
 </resources>

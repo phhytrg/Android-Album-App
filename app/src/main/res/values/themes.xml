@@ -1,6 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <attr name="iconColor" format="color"/>
     <attr name="highlightTextColor" format="color"/>
+    <attr name="lightOrDarkTextColor" format="color"/>
+    <attr name="secondaryGradient" format="color"/>
+    <attr name="firstGradient" format="color"/>
+    <attr name="ucrop_actionbar_color" format="color"/>
     <!-- Base application theme. -->
     <style name="Theme.Album" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -13,8 +17,11 @@
         <item name="iconColor">?android:attr/textColorPrimary</item>
         <item name="highlightTextColor">@color/highlightSeaPinkText</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="lightOrDarkTextColor">@color/black</item>
+        <item name="secondaryGradient">@color/secondGradientSeaPink</item>
+        <item name="firstGradient">?attr/highlightTextColor</item>
+        <item name="ucrop_actionbar_color">?attr/colorPrimary</item>
     </style>
-
 
 
     <style name="Widget.Album.Toolbar" parent="Widget.MaterialComponents.Toolbar">
@@ -28,6 +35,11 @@
     <style name="TextAppearance.Album.Toolbar" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="SetWallpaperDialog">
+    <item name="android:windowEnterAnimation">@anim/slide_up</item>
+    <item name="android:windowExitAnimation">@anim/slide_bottom</item>
+</style>"
 
     <style name="NavigationBar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/white</item>
@@ -81,6 +93,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightSeaPinkText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientSeaPink</item>
+
     </style>
     
     <style name="AppTheme.Pink" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -92,6 +106,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightPinkText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientPink</item>
+
     </style>
 
     <style name="AppTheme.Purple" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -103,6 +119,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightPurpleText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientPurple</item>
+
     </style>
 
     <style name="AppTheme.Red" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -114,6 +132,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightRedText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientRed</item>
+
     </style>
 
     <style name="AppTheme.Blue" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -125,6 +145,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightBlueText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientBlue</item>
+
     </style>
 
     <style name="AppTheme.Bermuda" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -136,6 +158,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightBermudaText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientBermuda</item>
+
     </style>
 
     <style name="AppTheme.Garden" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -147,6 +171,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightGardenText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientGarden</item>
+
     </style>
 
     <style name="AppTheme.BrightSun" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -158,6 +184,8 @@
         <item name="android:colorFocusedHighlight">@color/highlightBrightSunText</item>
         <item name="highlightTextColor">?android:attr/colorFocusedHighlight</item>
         <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+        <item name="secondaryGradient">@color/secondGradientBrightSun</item>
+
     </style>
 
 </resources>
