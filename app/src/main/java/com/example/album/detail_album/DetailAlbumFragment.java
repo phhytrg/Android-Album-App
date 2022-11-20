@@ -160,10 +160,12 @@ public class DetailAlbumFragment extends Fragment {
         if(menuItem == null)
             return;
         if(isLinearLayout){
-            menuItem.setIcon(ContextCompat.getDrawable(this.requireContext(),R.drawable.ic_grid_layout));
+            menuItem.setIcon(ContextCompat
+                    .getDrawable(this.requireContext(),R.drawable.ic_grid_layout));
         }
         else{
-            menuItem.setIcon(ContextCompat.getDrawable(this.requireContext(),R.drawable.ic_linear_layout));
+            menuItem.setIcon(ContextCompat
+                    .getDrawable(this.requireContext(),R.drawable.ic_linear_layout));
         }
     }
 
