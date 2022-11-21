@@ -87,12 +87,18 @@ public class DetailImageFragment extends Fragment {
         PAINT
     }
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(getArguments()!=null){
-            bitmap = getArguments().getParcelable("image");
-            bitmap_mod = bitmap;
+        if(getArguments() != null){
+            Uri imageUri = getArguments().getParcelable("image");
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                bitmap_mod = bitmap;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         app_bar = ((MainActivity)getActivity()).getSupportActionBar();
         if (app_bar != null) {

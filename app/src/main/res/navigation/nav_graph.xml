@@ -25,20 +25,18 @@
     </fragment>
     <fragment
         android:id="@+id/detailAlbumFragment"
-        android:name="com.example.album.detail_album.DetailAlbumFragment"
-        android:label="DetailAlbumFragment" >
+        android:name="com.example.album.detail_album.DetailAlbumFragment" >
         <action
             android:id="@+id/action_detailAlbumFragment_to_detailFragment"
             app:destination="@id/detailFragment" >
             <argument
                 android:name="image"
-                app:argType="android.graphics.Bitmap"/>
+                app:argType="android.net.Uri"/>
         </action>
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.album.detail_image.DetailImageFragment"
-        android:label="DetailFragment" >
+        android:name="com.example.album.detail_image.DetailImageFragment" >
 
 
     </fragment>
@@ -50,7 +48,7 @@
             android:id="@+id/action_galleryFragment_to_detailFragment"
             app:destination="@id/detailFragment">
             <argument android:name="image"
-                app:argType="android.graphics.Bitmap"/>
+                app:argType="android.net.Uri"/>
         </action>
         <action
             android:id="@+id/action_galleryFragment_to_albumFragment"

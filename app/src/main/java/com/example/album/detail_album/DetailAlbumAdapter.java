@@ -3,6 +3,7 @@ package com.example.album.detail_album;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.ImageUri;
 import com.example.album.R;
 import com.example.album.gallery.GalleryFragment;
 import com.example.album.gallery.GalleryFragmentDirections;
@@ -82,16 +84,19 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
             //The first comes from DetailAlbumFragment -> DetailFragment
             //The second comes from GalleryFragment -> Detail Fragment
             Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), images[position]);
+            Uri imageUri = ImageUri.getImageUri(context, largeIcon);
+//            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+//            largeIcon.compress(Bitmap.CompressFormat.JPEG,100, bs);
 
             if(currentFragment.equals(DetailAlbumFragment.class.getSimpleName())){
                 NavDirections action = DetailAlbumFragmentDirections
-                        .actionDetailAlbumFragmentToDetailFragment(largeIcon);
+                        .actionDetailAlbumFragmentToDetailFragment(imageUri);
                 Navigation.findNavController(v)
                         .navigate(action);
             }
             if(currentFragment.equals(GalleryFragment.class.getSimpleName())){
                 NavDirections action = GalleryFragmentDirections
-                        .actionGalleryFragmentToDetailFragment(largeIcon);
+                        .actionGalleryFragmentToDetailFragment(imageUri);
                 Navigation.findNavController(v)
                         .navigate(action);
             }
