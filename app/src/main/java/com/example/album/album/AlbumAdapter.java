@@ -17,8 +17,20 @@ import com.google.android.material.imageview.ShapeableImageView;
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>
         implements View.OnClickListener, View.OnLongClickListener {
 
+    public final static int LINEAR_LAYOUT = 0;
+    public final static int GRID_LAYOUT = 1;
+    private int layoutType;
+
+    public void setLayoutType(int layoutType) {
+        this.layoutType = layoutType;
+    }
+
     public void setNavController(NavController navController) {
         this.navController = navController;
+    }
+
+    public AlbumAdapter(int layoutType) {
+        this.layoutType = layoutType;
     }
 
     NavController navController;
@@ -32,8 +44,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     @NonNull
     @Override
     public AlbumViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.album_item,parent,false)
+        View view;
+        if(layoutType == GRID_LAYOUT){
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.grid_album_item, parent, false)
+                    .getRootView();
+            return new AlbumViewHolder(view);
+        }
+        view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.linear_album_item, parent, false)
                 .getRootView();
         return new AlbumViewHolder(view);
     }
@@ -61,6 +80,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     .actionAlbumFragmentToDetailAlbumFragment(albumName);
             Navigation.findNavController(holder.itemView).navigate(action);
         });
+        if(layoutType == LINEAR_LAYOUT){
+            holder.numImages.setText(Integer.toString(100));
+        }
     }
 
     @Override
@@ -81,10 +103,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     class AlbumViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView shapeableImageView;
         TextView albumName;
+        TextView numImages;
         public AlbumViewHolder(@NonNull View itemView) {
             super(itemView);
             shapeableImageView = itemView.findViewById(R.id.album_image);
             albumName = itemView.findViewById(R.id.album_name);
+            if(layoutType == LINEAR_LAYOUT){
+                numImages = itemView.findViewById(R.id.number_of_images);
+            }
         }
     }
 }

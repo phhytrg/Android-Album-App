@@ -2,6 +2,9 @@ package com.example.album.album;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -9,16 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
+import com.example.album.item_decoration.LinearSpacingItemDecoration;
 
 public class AlbumFragment extends Fragment {
 
@@ -37,15 +45,114 @@ public class AlbumFragment extends Fragment {
 //            R.drawable.photo9};
     SplitToolbar navigationBar;
     NavController navController;
+    boolean isLinearLayout = true;
+    AlbumAdapter adapter;
+    RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getActivity() == null)
+            return;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        if(getActivity()!=null){
+            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+            if(actionBar!=null) {
+                actionBar.setTitle(getString(R.string.albums));
+            }
+        }
+
+        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
+                .getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+        navController = navHostFragment != null
+                ? navHostFragment.getNavController()
+                : null;
+
+        navigationBar = (SplitToolbar) ((MainActivity)getActivity()).findViewById(R.id.navigation_bar);
+        return inflater.inflate(R.layout.album_layout,container, false).getRootView();
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        //Set Adapter for RecyclerView
+        adapter = new AlbumAdapter(AlbumAdapter.LINEAR_LAYOUT);
+        recyclerView = view.findViewById(R.id.album_list);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter.setNavController(navController);
+        navigationBar.setVisibility(View.VISIBLE);
+
+        if(getActivity() == null)
+            return;
+        getActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {}
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.action_switch_layout){
+                    isLinearLayout = !isLinearLayout;
+                    chooseLayout();
+                    setIcon(menuItem);
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+    }
+
+    private void setIcon(MenuItem menuItem){
+        if(menuItem == null)
+            return;
+        if(isLinearLayout){
+            menuItem.setIcon(ContextCompat
+                    .getDrawable(this.requireContext(),R.drawable.ic_grid_layout));
+        }
+        else{
+            menuItem.setIcon(ContextCompat
+                    .getDrawable(this.requireContext(),R.drawable.ic_linear_layout));
+        }
+    }
+
+    private void chooseLayout(){
+        if(isLinearLayout){
+            adapter = new AlbumAdapter(AlbumAdapter.LINEAR_LAYOUT);
+            recyclerView.setAdapter(adapter);
+            adapter.setLayoutType(AlbumAdapter.LINEAR_LAYOUT);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(layoutManager);
+            while (recyclerView.getItemDecorationCount() > 0) {
+                recyclerView.removeItemDecorationAt(0);
+            }
+            recyclerView.addItemDecoration(
+                    new LinearSpacingItemDecoration(8,false)
+            );
+        }
+        else{
+            adapter = new AlbumAdapter(AlbumAdapter.GRID_LAYOUT);
+            recyclerView.setAdapter(adapter);
+            adapter.setLayoutType(AlbumAdapter.GRID_LAYOUT);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+            recyclerView.setLayoutManager(layoutManager);
+            while (recyclerView.getItemDecorationCount() > 0) {
+                recyclerView.removeItemDecorationAt(0);
+            }
+            recyclerView.addItemDecoration(
+                    new GridSpacingItemDecoration(3,32,false)
+            );
+        }
+    }
+}
+
 
 //        boolean flag = setUpMainActionbar(view);
 //        MenuHost menuHost = requireActivity();
@@ -77,12 +184,7 @@ public class AlbumFragment extends Fragment {
 //
 //
 //        });
-        if(getActivity()!=null){
-            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-            if(actionBar!=null) {
-                actionBar.setTitle(getString(R.string.albums));
-            }
-        }
+
 //        MenuHost menuHost = requireActivity();
 //        MenuProvider menuProvider = new MenuProvider() {
 //            @Override
@@ -100,35 +202,12 @@ public class AlbumFragment extends Fragment {
 //        menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
 
 //        splitToolbar = getActivity().findViewById(R.id.navigation_bar);
-        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
-                .getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment);
-        navController = navHostFragment != null
-                ? navHostFragment.getNavController()
-                : null;
 
-        navigationBar = (SplitToolbar) ((MainActivity)getActivity()).findViewById(R.id.navigation_bar);
-        return inflater.inflate(R.layout.album_layout,container, false).getRootView();
-    }
+//Set Layout Manager
+//        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(),3));
+//        //Set Item Decoration
+//        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3,24,false));
 
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-//        GridAdapter gridAdapter = new GridAdapter(requireContext(), albumName, albumImages);
-
-        //Set Adapter for RecyclerView
-        AlbumAdapter albumAdapter = new AlbumAdapter();
-        //    private GridView gridView;
-        RecyclerView recyclerView = view.findViewById(R.id.album_list);
-        recyclerView.setAdapter(albumAdapter);
-        //Set Layout Manager
-        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(),3));
-        //Set Item Decoration
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3,24,false));
-
-        albumAdapter.setNavController(navController);
-        navigationBar.setVisibility(View.VISIBLE);
 //        //Navigation ToolBar's implement
 //        navigationBar.addMenuProvider(new MenuProvider() {
 //            @Override
@@ -192,7 +271,7 @@ public class AlbumFragment extends Fragment {
 //                navigationBar.setTitle("");
 //            }
 //        });
-    }
+
 
 //    private boolean setUpMainActionbar(View view){
 //        AppCompatActivity activity = (AppCompatActivity)getActivity();
@@ -217,7 +296,7 @@ public class AlbumFragment extends Fragment {
 //        return spanString;
 //    }
 
-    //    public void showAlbumOption(View v){
+//    public void showAlbumOption(View v){
 //          PopupMenu popupMenu = new PopupMenu(requireContext(), v);
 //          popupMenu.setOnMenuItemClickListener(requireContext());
 //          popupMenu.inflate(R.menu.album_option);
@@ -253,4 +332,3 @@ public class AlbumFragment extends Fragment {
 //        };
 //        splitToolbar.addMenuProvider(menuProvider,getViewLifecycleOwner(), Lifecycle.State.CREATED);
 //    }
-}

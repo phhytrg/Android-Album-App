@@ -32,7 +32,7 @@
             app:destination="@id/detailFragment" >
             <argument
                 android:name="image"
-                app:argType="integer"/>
+                app:argType="android.graphics.Bitmap"/>
         </action>
     </fragment>
     <fragment
@@ -50,7 +50,7 @@
             android:id="@+id/action_galleryFragment_to_detailFragment"
             app:destination="@id/detailFragment">
             <argument android:name="image"
-                app:argType="integer"/>
+                app:argType="android.graphics.Bitmap"/>
         </action>
         <action
             android:id="@+id/action_galleryFragment_to_albumFragment"

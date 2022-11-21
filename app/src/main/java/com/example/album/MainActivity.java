@@ -1,11 +1,12 @@
 package com.example.album;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
@@ -14,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -22,7 +22,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -37,6 +36,7 @@ import com.example.album.gallery.GalleryFragmentDirections;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -312,199 +312,42 @@ public class MainActivity extends AppCompatActivity{
         return image;
     }
 
-    private ActivityResultContracts.TakePicture takePictureContract
-            = new ActivityResultContracts.TakePicture();
+    private void startCamera(){
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        takePicture.launch(cameraIntent);
 
-    private ActivityResultLauncher<Uri> takePicture
-            = registerForActivityResult(
-            takePictureContract,
-            new ActivityResultCallback<Boolean>() {
-                @Override
-                public void onActivityResult(Boolean result) {
-                    if(result){
+    }
 
+    ActivityResultLauncher<Intent> takePicture
+            = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Bitmap bmp = (Bitmap) result.getData().getExtras().get("data");
+                    // Create imageDir
+                    File mypath = null;
+                    try {
+                        mypath = createImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+
+                    FileOutputStream fos = null;
+                    try {
+                        fos = new FileOutputStream(mypath);
+                        // Use the compress method on the BitMap object to write image to the OutputStream
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("image",bmp);
+                    navController.navigate(R.id.detailFragment, bundle);
                 }
-            }
-    );
-
-
-    private void startCamera() {
-        Intent takePictureIntent
-                = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = getTmpFileDir();
-                File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),"APPTAG");
-                File file = new File(mediaStorageDir.getPath() + File.separator + "photo.jpg");
-                Uri uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", file);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                takePicture.launch(uri);
-
-            }
-        }
-    }
-
-
-//    private ActivityResultContract<Uri, Pair<Boolean, Uri>> cameraActivityContract
-//            = new ActivityResultContract<Uri, Pair<Boolean,Uri>> () {
-//        Uri imageUri;
-//
-//        @Nullable
-//        @Override
-//        public SynchronousResult<Pair<Boolean, Uri>> getSynchronousResult(@NonNull Context context, Uri input) {
-//            return null;
-//        }
-//
-//        @NonNull
-//        @Override
-//        public Intent createIntent(@NonNull Context context, Uri uri) {
-//            Intent takePictureIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//            imageUri = uri;
-//            return takePictureIntent;
-//        }
-//
-//        @Override
-//        public Pair<Boolean, Uri> parseResult(int i, @Nullable Intent intent) {
-//            Bundle bundle = intent.getExtras();
-//            if (bundle != null) {
-//                for (String key : bundle.keySet()) {
-//                    Log.e("AAA", key + " : " + (bundle.get(key) != null ? bundle.get(key) : "NULL"));
-//                }
-//            }
-//            if(i == Activity.RESULT_OK){
-//                return new Pair<>(true, imageUri);
-//            }
-//            return new Pair<>(false,null);
-//        }
-//    };
-
-
-
-
-
-//    static final int REQUEST_IMAGE_CAPTURE = 1;
-//
-//    private ActivityResultLauncher<Intent> startCameraActivityIntent
-//            = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            (ActivityResultCallback<ActivityResult>) result -> {
-//                if(result.getResultCode() == RESULT_OK){
-//                    Log.d("Album", this.imageUri.toString());
-//                }
-//            }
-////            result -> {
-////            }
-////                if(result.first){
-////                    Uri imageUri = result.second;
-////                    InputStream imageStream = null;
-////                    try {
-////                        ContentResolver resolver = getContentResolver();
-////                        imageStream = getContentResolver()
-////                                .openInputStream(imageUri);
-////
-////                        Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-////                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-////                        selectedImage.compress(Bitmap.CompressFormat.JPEG,100,baos);
-////                        byte[] byteArray = baos.toByteArray();
-////                        try {
-////                        String uniqueString = UUID.randomUUID().toString();
-////                        FileOutputStream fo = new FileOutputStream(
-////                                Environment.getExternalStorageDirectory()
-////                                        + uniqueString
-////                                        + "/_camera.JPEG"
-////                        );
-////                        fo.write(byteArray);
-////                        fo.flush();
-////                        fo.close();
-////                    } catch (FileNotFoundException e) {
-////                        e.printStackTrace();
-////                    } catch (IOException e) {
-////                        e.printStackTrace();
-////                    }
-////                    } catch (FileNotFoundException e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-//
-////                if(result.first){
-////                    Uri imageUri = result.second;
-////                    Bitmap bitmap = null;
-////                    try {
-////                        bitmap = (Bitmap) MediaStore.Images.Media
-////                                .getBitmap(getContentResolver(),imageUri);
-////                    } catch (IOException e) {
-////                        e.printStackTrace();
-////                    }
-////                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-////                    bitmap.compress(Bitmap.CompressFormat.PNG,100, stream);
-////                    byte[] byteArray = stream.toByteArray();
-////                    try {
-////                        String uniqueString = UUID.randomUUID().toString();
-////                        FileOutputStream fo = new FileOutputStream(
-////                                Environment.getExternalStorageDirectory()
-////                                        + uniqueString
-////                                        + "/_camera.png"
-////                        );
-////                        fo.write(byteArray);
-////                        fo.flush();
-////                        fo.close();
-////                    } catch (FileNotFoundException e) {
-////                        e.printStackTrace();
-////                    } catch (IOException e) {
-////                        e.printStackTrace();
-////                    }
-////                }
-////            }
-//    );
-
-    private Uri getTmpFileDir(){
-        File mediaStorageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),"APPTAG");
-        if(mediaStorageDir.exists() && !mediaStorageDir.mkdir()) {
-            try {
-                throw new Exception("Failed to create directory to store media temp file");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-//        String uniqueString = UUID.randomUUID().toString();
-//        FileOutputStream fo = new FileOutputStream(
-//                Environment.getExternalStorageDirectory()
-//                        + uniqueString
-//                        + "/_camera.png"
-//        );
-        return FileProvider.getUriForFile(this,
-                getApplicationContext().getPackageName() + ".provider",
-                new File(mediaStorageDir.getPath() + File.separator + "photo.jpg"));
-    }
-//    private void startCamera(){
-//        Intent takePictureIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        imageUri = getTmpFileDir();
-//        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-////        takePictureIntent.putExtra("requestCode", REQUEST_IMAGE_CAPTURE);
-//        try{
-//            startCamera.launch(imageUri);
-//        }
-//        catch (ActivityNotFoundException e){
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    ActivityResultLauncher<Uri> startCamera = registerForActivityResult(
-//            new ActivityResultContracts.TakePicture(),
-//            result -> {
-//                if(result){
-//
-//                }
-//            });
+            });
 }

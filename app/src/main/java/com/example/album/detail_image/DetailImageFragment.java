@@ -55,8 +55,6 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,7 +76,8 @@ public class DetailImageFragment extends Fragment {
     int isChecked;
     int resourceId;
     String[] details;
-    Bitmap image_bm_mod, image_bm_orig;
+//    Bitmap image_bm_mod, image_bm_orig;
+    Bitmap bitmap, bitmap_mod;
 
     CurrentState currentState = CurrentState.DETAIL;
 
@@ -92,7 +91,8 @@ public class DetailImageFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(getArguments()!=null){
-            resourceId = getArguments().getInt("image");
+            bitmap = getArguments().getParcelable("image");
+            bitmap_mod = bitmap;
         }
         app_bar = ((MainActivity)getActivity()).getSupportActionBar();
         if (app_bar != null) {
@@ -125,13 +125,14 @@ public class DetailImageFragment extends Fragment {
         doneButton = view.findViewById(R.id.done);
         favoriteButton = view.findViewById(R.id.favorite);
         imageView = view.findViewById(R.id.photo_view);
-        imageView.setImageResource(resourceId);
+        imageView.setImageBitmap(bitmap);
+//        imageView.setImageResource(resourceId);
         navigationView = view.findViewById(R.id.bottom_nav);
 
         Bitmap image_bm0 = BitmapFactory.decodeResource(this.getResources(),
                 resourceId);
-        String pathSaved = saveToInternalStorage(image_bm0);
-        loadImageFromStorage(pathSaved);
+//        String pathSaved = saveToInternalStorage(image_bm0);
+//        loadImageFromStorage(pathSaved);
 
         isChecked=0;
 
@@ -291,21 +292,21 @@ public class DetailImageFragment extends Fragment {
         return directory.getAbsolutePath();
     }
 
-    private void loadImageFromStorage(String path)
-    {
-        try {
-            File f = new File(path, "img.png");
-            image_bm_orig = BitmapFactory.decodeStream(new FileInputStream(f));
-            image_bm_mod = image_bm_orig;
-//            img = (com.github.chrisbanes.photoview.PhotoView)getView().findViewById(R.id.photo_view);
-            imageView.setImageBitmap(image_bm_orig);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
+//    private void loadImageFromStorage(String path)
+//    {
+//        try {
+//            File f = new File(path, "img.png");
+//            image_bm_orig = BitmapFactory.decodeStream(new FileInputStream(f));
+//            image_bm_mod = image_bm_orig;
+////            img = (com.github.chrisbanes.photoview.PhotoView)getView().findViewById(R.id.photo_view);
+//            imageView.setImageBitmap(bitmap);
+//        }
+//        catch (FileNotFoundException e)
+//        {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     public void handleRename() {
         final AlertDialog.Builder renameDialog = new AlertDialog.Builder(requireContext());
@@ -373,7 +374,7 @@ public class DetailImageFragment extends Fragment {
 
     public void setWallHome(){
         try {
-            WallpaperManager.getInstance(requireContext()).setBitmap(image_bm_orig);
+            WallpaperManager.getInstance(requireContext()).setBitmap(bitmap);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -382,7 +383,7 @@ public class DetailImageFragment extends Fragment {
 
     public void setWallLock(){
         try {
-            WallpaperManager.getInstance(requireContext()).setBitmap(image_bm_orig,null,true,WallpaperManager.FLAG_LOCK);
+            WallpaperManager.getInstance(requireContext()).setBitmap(bitmap,null,true,WallpaperManager.FLAG_LOCK);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -424,8 +425,8 @@ public class DetailImageFragment extends Fragment {
                 currentState = CurrentState.DETAIL;
 
                 // Trả lại ảnh cũ khi chưa chỉnh
-                image_bm_mod = image_bm_orig;
-                imageView.setImageBitmap(image_bm_mod);
+                bitmap_mod = bitmap;
+                imageView.setImageBitmap(bitmap);
                 //saveToInternalStorage(image_bm_mod);
                 break;
             case PAINT:
@@ -451,14 +452,14 @@ public class DetailImageFragment extends Fragment {
                 currentState = CurrentState.DETAIL;
 
                 // Lưu ảnh đã chỉnh sửa vào Internal Storage
-                image_bm_orig = image_bm_mod;
-                imageView.setImageBitmap(image_bm_mod);
-                saveToInternalStorage(image_bm_mod);
+                bitmap = bitmap_mod;
+                imageView.setImageBitmap(bitmap_mod);
+                saveToInternalStorage(bitmap_mod);
                 break;
             case PAINT:
-                image_bm_orig = image_bm_mod;
-                imageView.setImageBitmap(image_bm_mod);
-                saveToInternalStorage(image_bm_mod);
+                bitmap = bitmap_mod;
+                imageView.setImageBitmap(bitmap_mod);
+                saveToInternalStorage(bitmap_mod);
 
                 currentState = CurrentState.EDIT;
                 break;
@@ -510,7 +511,7 @@ public class DetailImageFragment extends Fragment {
         if(getActivity() == null)
             return;
         String path = MediaStore.Images.Media.insertImage(getActivity().
-                getContentResolver(), image_bm_mod,null, null);
+                getContentResolver(), bitmap_mod,null, null);
         Uri imageUri =  Uri.parse(path);
         share.putExtra(Intent.EXTRA_STREAM, imageUri);
         startActivity(Intent.createChooser(share, "Select"));
@@ -571,27 +572,27 @@ public class DetailImageFragment extends Fragment {
     public void handleRotate() {
         Matrix mat = new Matrix();
         mat.postRotate(90);
-        Bitmap image_bm_rotated = Bitmap.createBitmap(image_bm_mod, 0, 0,image_bm_mod.getWidth(),image_bm_mod.getHeight(), mat, true);
-        image_bm_mod = image_bm_rotated;
-        imageView.setImageBitmap(image_bm_mod);
+        Bitmap image_bm_rotated = Bitmap.createBitmap(bitmap_mod, 0, 0,bitmap_mod.getWidth(),bitmap_mod.getHeight(), mat, true);
+        bitmap_mod = image_bm_rotated;
+        imageView.setImageBitmap(bitmap_mod);
 //        saveToInternalStorage(image_bm_mod);
     }
 
     public void handleFlip() {
         Matrix mat = new Matrix();
-        mat.postScale(-1f, 1f, image_bm_mod.getWidth() / 2f, image_bm_mod.getHeight() / 2f);
-        Bitmap image_bm_flipped = Bitmap.createBitmap(image_bm_mod, 0, 0, image_bm_mod.getWidth(), image_bm_mod.getHeight(), mat, true);
-        image_bm_mod = image_bm_flipped;
-        imageView.setImageBitmap(image_bm_mod);
+        mat.postScale(-1f, 1f, bitmap_mod.getWidth() / 2f, bitmap_mod.getHeight() / 2f);
+        Bitmap image_bm_flipped = Bitmap.createBitmap(bitmap_mod, 0, 0, bitmap_mod.getWidth(), bitmap_mod.getHeight(), mat, true);
+        bitmap_mod = image_bm_flipped;
+        imageView.setImageBitmap(bitmap_mod);
 //        saveToInternalStorage(image_bm_mod);
     }
 
     public void handleCrop() {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        image_bm_mod.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        bitmap_mod.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(
                 requireContext().getContentResolver(),
-                image_bm_mod,
+                bitmap_mod,
                 Integer.toString(new Random().nextInt()), null
         );
 
@@ -663,13 +664,13 @@ public class DetailImageFragment extends Fragment {
 //                imageView.setImageURI(result);
                 try {
                     if(result != null){
-                        image_bm_mod = MediaStore.Images.Media.getBitmap(getActivity()
+                        bitmap_mod = MediaStore.Images.Media.getBitmap(getActivity()
                                 .getContentResolver(), result);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imageView.setImageBitmap(image_bm_mod);
+                imageView.setImageBitmap(bitmap_mod);
             });
 
 }
