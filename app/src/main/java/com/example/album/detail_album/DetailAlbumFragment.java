@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
@@ -34,8 +33,6 @@ public class DetailAlbumFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
     DetailAlbumAdapter adapter;
-    ActionBar appbar;
-
     String albumName;
 
     boolean isLinearLayout = false;
@@ -126,8 +123,6 @@ public class DetailAlbumFragment extends Fragment {
         if(getArguments() != null){
             albumName = getArguments().getString("label");
         }
-
-        appbar = ((MainActivity)getActivity()).getSupportActionBar();
     }
 
     @Override
@@ -137,6 +132,9 @@ public class DetailAlbumFragment extends Fragment {
         adapter = new DetailAlbumAdapter(requireContext());
         recyclerView.setAdapter(adapter);
         chooseLayout();
+        if(getActivity() == null){
+            return;
+        }
         getActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {}
