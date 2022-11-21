@@ -36,7 +36,7 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="SetWallpaperDialog">
+    <style name="DialogPopupStyle">
     <item name="android:windowEnterAnimation">@anim/slide_up</item>
     <item name="android:windowExitAnimation">@anim/slide_bottom</item>
 </style>"
@@ -67,8 +67,8 @@
     </style>
 
     <style name="DialogAnimation" parent="">
-        <item name="android:windowEnterAnimation">@anim/slide_in_right</item>
-        <item name="android:windowExitAnimation">@anim/slide_out_left</item>
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_bottom</item>
     </style>
 
     <style name="DialogCorners">

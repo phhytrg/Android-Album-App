@@ -361,7 +361,7 @@ public class DetailImageFragment extends Fragment {
             dialog.dismiss();
         });
 
-        dialog.getWindow().getAttributes().windowAnimations = R.style.SetWallpaperDialog;
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogPopupStyle;
         dialog.show();
         dialog.getWindow().setGravity(Gravity.BOTTOM);
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
