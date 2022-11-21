@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -29,8 +30,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         this.navController = navController;
     }
 
-    public AlbumAdapter(int layoutType) {
+    public AlbumAdapter(NavController navController, int layoutType) {
         this.layoutType = layoutType;
+        this.navController = navController;
     }
 
     NavController navController;
@@ -61,28 +63,20 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
         holder.shapeableImageView.setImageResource(albumImages[position]);
         holder.albumName.setText(albumNames[position]);
-        holder.shapeableImageView.setOnClickListener(v -> {
-            if(navController == null){
-                return;
-            }
-            String albumName = holder.albumName.getText().toString();
-            NavDirections action = AlbumFragmentDirections
-                    .actionAlbumFragmentToDetailAlbumFragment(albumName);
-            navController.navigate(action);
-        });
-
-        holder.albumName.setOnClickListener(v -> {
-            if(navController == null){
-                return;
-            }
-            String albumName = holder.albumName.getText().toString();
-            NavDirections action = AlbumFragmentDirections
-                    .actionAlbumFragmentToDetailAlbumFragment(albumName);
-            Navigation.findNavController(holder.itemView).navigate(action);
-        });
+        holder.item.setOnClickListener(v -> onItemClick(holder));
         if(layoutType == LINEAR_LAYOUT){
             holder.numImages.setText(Integer.toString(100));
         }
+    }
+
+    private void onItemClick(AlbumViewHolder holder){
+        if(navController == null){
+            return;
+        }
+        String albumName = holder.albumName.getText().toString();
+        NavDirections action = AlbumFragmentDirections
+                .actionAlbumFragmentToDetailAlbumFragment(albumName);
+        Navigation.findNavController(holder.itemView).navigate(action);
     }
 
     @Override
@@ -104,10 +98,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         ShapeableImageView shapeableImageView;
         TextView albumName;
         TextView numImages;
+        ConstraintLayout item;
         public AlbumViewHolder(@NonNull View itemView) {
             super(itemView);
             shapeableImageView = itemView.findViewById(R.id.album_image);
             albumName = itemView.findViewById(R.id.album_name);
+            item = itemView.findViewById(R.id.album_item);
+            if(layoutType == GRID_LAYOUT){
+            }
             if(layoutType == LINEAR_LAYOUT){
                 numImages = itemView.findViewById(R.id.number_of_images);
             }

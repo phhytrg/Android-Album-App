@@ -46,6 +46,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/lock_screen.xml" value="0.13" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/round_fill_color_button.xml" value="0.1215" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/set_wallpaper_dialog.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/set_wallpaper_dialog_bg.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/activity_main.xml" value="0.1334853090172239" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/activity_main1.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/activity_main2.xml" value="0.24003623188405798" />
@@ -63,8 +64,10 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/fragment_image_detail.xml" value="0.2361111111111111" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/gallery_fragment.xml" value="0.1265625" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/gallery_item.xml" value="0.4" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/grid_album_item.xml" value="0.2368659420289855" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/image_item.xml" value="0.25" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/include_setting.xml" value="0.20878623188405798" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/linear_album_item.xml" value="0.2368659420289855" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/set_wallpaper_sign.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/settings_activity.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/album_navigation_bar.xml" value="0.2734375" />

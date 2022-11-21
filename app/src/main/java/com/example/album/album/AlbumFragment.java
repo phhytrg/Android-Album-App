@@ -45,7 +45,7 @@ public class AlbumFragment extends Fragment {
 //            R.drawable.photo9};
     SplitToolbar navigationBar;
     NavController navController;
-    boolean isLinearLayout = true;
+    boolean isLinearLayout = false;
     AlbumAdapter adapter;
     RecyclerView recyclerView;
 
@@ -82,10 +82,12 @@ public class AlbumFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //Set Adapter for RecyclerView
-        adapter = new AlbumAdapter(AlbumAdapter.LINEAR_LAYOUT);
         recyclerView = view.findViewById(R.id.album_list);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+//        adapter = new AlbumAdapter(AlbumAdapter.LINEAR_LAYOUT);
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        chooseLayout();
         adapter.setNavController(navController);
         navigationBar.setVisibility(View.VISIBLE);
 
@@ -123,7 +125,7 @@ public class AlbumFragment extends Fragment {
 
     private void chooseLayout(){
         if(isLinearLayout){
-            adapter = new AlbumAdapter(AlbumAdapter.LINEAR_LAYOUT);
+            adapter = new AlbumAdapter(navController, AlbumAdapter.LINEAR_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.LINEAR_LAYOUT);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -136,7 +138,8 @@ public class AlbumFragment extends Fragment {
             );
         }
         else{
-            adapter = new AlbumAdapter(AlbumAdapter.GRID_LAYOUT);
+
+            adapter = new AlbumAdapter(navController, AlbumAdapter.GRID_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.GRID_LAYOUT);
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
