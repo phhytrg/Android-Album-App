@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
 
-    <com.example.album.ZoomableImageView
+    <com.example.album.ui.ZoomableImageView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"

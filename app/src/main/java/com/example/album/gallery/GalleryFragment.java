@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
-import com.example.album.SplitToolbar;
+import com.example.album.ui.SplitToolbar;
 
 public class GalleryFragment extends Fragment {
 

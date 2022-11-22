@@ -44,8 +44,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.album.MainActivity;
 import com.example.album.R;
-import com.example.album.SplitToolbar;
-import com.example.album.ZoomableImageView;
+import com.example.album.ui.SplitToolbar;
+import com.example.album.ui.ZoomableImageView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.skydoves.colorpickerview.ColorEnvelope;

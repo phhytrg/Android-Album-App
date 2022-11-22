@@ -1,4 +1,4 @@
-package com.example.album;
+package com.example.album.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;

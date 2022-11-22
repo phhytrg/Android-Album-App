@@ -5,9 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
-    android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:id="@+id/album_item">
+
+    <CheckBox
+        android:id="@+id/selected_item"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:buttonTint="@color/bluePrimaryDark"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:visibility="visible"
+        android:layout_marginStart="-4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/album_image"
@@ -15,6 +27,7 @@
         android:layout_height="70dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        app:layout_constraintStart_toEndOf="@id/selected_item"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"

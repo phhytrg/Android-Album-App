@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.album.ToggleButtonGroupTableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.album.ui.ToggleButtonGroupTableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -82,4 +82,4 @@
             app:buttonTint="@color/brightSunTextPrimary"
             android:button="@drawable/color_picker_item"/>
     </TableRow>
-</com.example.album.ToggleButtonGroupTableLayout>
+</com.example.album.ui.ToggleButtonGroupTableLayout>

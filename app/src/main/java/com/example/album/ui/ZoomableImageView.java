@@ -1,4 +1,4 @@
-package com.example.album;
+package com.example.album.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.ImageView;
 
 
 //Source: https://stackoverflow.com/a/17649895

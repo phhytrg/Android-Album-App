@@ -33,6 +33,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.album.album.AlbumFragmentDirections;
 import com.example.album.gallery.GalleryFragmentDirections;
+import com.example.album.ui.SplitToolbar;
+import com.example.album.ui.ToggleButtonGroupTableLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
