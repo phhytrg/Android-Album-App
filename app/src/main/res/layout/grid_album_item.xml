@@ -24,6 +24,17 @@
         app:shapeAppearanceOverlay="@style/roundImageView"
         tools:src="@drawable/image3"/>
 
+    <CheckBox
+        android:id="@+id/selected_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/album_image"
+        app:layout_constraintLeft_toLeftOf="@id/album_image"
+        android:buttonTint="@color/bluePrimaryDark"
+        android:scaleX="1.1"
+        android:scaleY="1.1"
+        android:visibility="gone"/>
+    
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
