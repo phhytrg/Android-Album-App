@@ -1,33 +1,32 @@
 package com.example.album.album;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.ui.SplitToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +40,16 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     private Context context;
     public final static int CHANGED_MODE = 1;
     public final static int UNCHANGED_MODE = 0;
+    int countItems = 0;
+    private MutableLiveData<Integer>totalItemsSelected;
+    private TextView countItemTextView;
+
+    public MutableLiveData<Integer> getTotalItemsSelected(){
+        if(totalItemsSelected == null){
+            totalItemsSelected = new MutableLiveData<>();
+        }
+        return totalItemsSelected;
+    }
 
     private int currentMode = UNCHANGED_MODE;
     Fragment fragment;
@@ -119,13 +128,16 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             //Blur item here
             if(holder.checked.isChecked()){
                 selectedItems.add(holder.getAdapterPosition());
+                countItems++;
                 //Blur item here
             }
             else{
                 selectedItems.remove((Object)holder.getAdapterPosition());
                 holder.isCheckedFlag = true;
+                countItems--;
                 //Back
             }
+            countItemTextView.setText(Integer.toString(countItems));
         }
     }
 
@@ -153,11 +165,12 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             checked.setOnClickListener(v -> {
                 //Blur item here
                 if(checked.isChecked()){
-                    selectedItems.add(getAdapterPosition());
+                    selectedItems.add((int)getAdapterPosition());
                     //Blur item here
                 }
                 else{
-                    selectedItems.remove(getAdapterPosition());
+                    Log.d("AAA",Integer.toString(getAdapterPosition()));
+                    selectedItems.remove((int)getAdapterPosition());
                     isCheckedFlag = true;
                     //Back
                 }
@@ -171,43 +184,54 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 public final SplitToolbar navigationBar =
                         fragment.requireActivity().findViewById(R.id.navigation_bar);
+                final ActionBar appbar = ((MainActivity)fragment.requireActivity()).getSupportActionBar();
 
                 @Override
                 public boolean onLongClick(View v) {
                     if(currentMode == CHANGED_MODE)
                         return false;
                     currentMode = CHANGED_MODE;
-                    for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
-                        navigationBar.getMenu().getItem(i).setEnabled(false);
-                    }
+//                    for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
+//                        navigationBar.getMenu().getItem(i).setEnabled(false);
+//                    }
                     for (int i = 0; i < getItemCount(); i++) {
                         notifyItemChanged(i);
                     }
+                    navigationBar.setVisibility(View.GONE);
+                    appbar.hide();
                     showDialog();
                     return true;
                 }
 
                 private void showDialog() {
-                    final Dialog dialog = new Dialog(context, R.style.Theme_Album);
-                    dialog.setContentView(R.layout.selected_option);
-                    WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-                    params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                    params.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    params.format = PixelFormat.TRANSLUCENT;
-                    params.gravity = Gravity.TOP;
-                    params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-                    dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                    dialog.getWindow().setAttributes(params);
+//                    final Dialog dialog = new Dialog(context, R.style.Theme_Album);
+//                    dialog.setContentView(R.layout.selected_option);
+//                    WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+//                    params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//                    params.width = WindowManager.LayoutParams.MATCH_PARENT;
+//                    params.format = PixelFormat.TRANSLUCENT;
+//                    params.gravity = Gravity.TOP;
+//                    params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+//                    dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+//                    dialog.getWindow().setAttributes(params);
+
+
+
+                    View fragmentView = fragment.getView();
+                    ConstraintLayout bar  = fragment.getView().findViewById(R.id.front_album_nav);
+                    bar.setVisibility(View.VISIBLE);
 
                     final ImageButton backButton
-                            = dialog.findViewById(R.id.go_back_option);
+                            = fragmentView.findViewById(R.id.go_back_option);
                     final ImageButton deleteButton
-                            = dialog.findViewById(R.id.delete_option);
+                            = fragmentView.findViewById(R.id.delete_option);
                     final CheckBox selectAll
-                            = dialog.findViewById(R.id.select_all_option);
+                            = fragmentView.findViewById(R.id.select_all_option);
+                    countItemTextView
+                            = fragmentView.findViewById(R.id.count_item);
 
                     backButton.setOnClickListener(v -> {
-                        dialog.dismiss();
+                        bar.setVisibility(View.GONE);
                         currentMode = UNCHANGED_MODE;
                         checked.setVisibility(View.GONE);
                         for (int i = 0; i < getItemCount(); i++) {
@@ -216,6 +240,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                         for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
                             navigationBar.getMenu().getItem(i).setEnabled(true);
                         }
+                        appbar.show();
+                        navigationBar.setVisibility(View.VISIBLE);
                     });
 
                     deleteButton.setOnClickListener(v -> {
@@ -263,8 +289,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                             allUnselected();
                         }
                     });
-
-                    dialog.show();
                 }
 
                 private void allSelected() {
