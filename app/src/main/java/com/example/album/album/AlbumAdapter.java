@@ -14,6 +14,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -41,7 +42,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public final static int CHANGED_MODE = 1;
     public final static int UNCHANGED_MODE = 0;
     int countItems = 0;
-    private MutableLiveData<Integer>totalItemsSelected;
+    private MutableLiveData<Integer> totalItemsSelected;
     private TextView countItemTextView;
 
     public MutableLiveData<Integer> getTotalItemsSelected(){
@@ -128,6 +129,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             //Blur item here
             if(holder.checked.isChecked()){
                 selectedItems.add(holder.getAdapterPosition());
+//                totalItemsSelected.setValue();
                 countItems++;
                 //Blur item here
             }

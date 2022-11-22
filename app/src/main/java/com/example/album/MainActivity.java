@@ -7,8 +7,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +43,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity{
@@ -54,10 +57,20 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int style = getIntent().getIntExtra("theme",0);
+        ArrayList<Integer> extra = (ArrayList<Integer>) getIntent().getSerializableExtra("theme");
+//        int style = getIntent().getIntExtra("theme",0);
 
-        if (style != 0) {
-            getTheme().applyStyle(style,true);
+        if (extra != null) {
+            int nightModeFlag = getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            if(nightModeFlag == Configuration.UI_MODE_NIGHT_YES){
+                int style = extra.get(1);
+                getTheme().applyStyle(style,true);
+            }
+            else{
+                int style = extra.get(0);
+                getTheme().applyStyle(style,true);
+            }
         }
 
         setContentView(R.layout.activity_main);
@@ -239,55 +252,41 @@ public class MainActivity extends AppCompatActivity{
         });
         builder.setPositiveButton("Select", (dialog, which) -> {
             int radioButtonId = radioGroup.getCheckedRadioButtonId();
-            int themeId;
-            int nightModeFlag = getResources().getConfiguration().uiMode
-                    & Configuration.UI_MODE_NIGHT_MASK;
-            if(nightModeFlag == Configuration.UI_MODE_NIGHT_NO) {
-                if (radioButtonId == R.id.sea_pink_button) {
-                    themeId = R.style.AppTheme_SeaPink;
-                } else if (radioButtonId == R.id.pink_button) {
-                    themeId = R.style.AppTheme_Pink;
-                } else if (radioButtonId == R.id.red_button) {
-                    themeId = R.style.AppTheme_Red;
-                } else if (radioButtonId == R.id.purple_button) {
-                    themeId = R.style.AppTheme_Purple;
-                } else if (radioButtonId == R.id.blue_button) {
-                    themeId = R.style.AppTheme_Blue;
-                } else if (radioButtonId == R.id.garden_button) {
-                    themeId = R.style.AppTheme_Garden;
-                } else if (radioButtonId == R.id.bermuda_button) {
-                    themeId = R.style.AppTheme_Bermuda;
-                } else if (radioButtonId == R.id.bright_sun_button) {
-                    themeId = R.style.AppTheme_BrightSun;
-                } else {
-                    return;
-                }
+//            int themeId;
+            ArrayList<Integer> themeId = new ArrayList<>();
+//            int nightModeFlag = getResources().getConfiguration().uiMode
+//                    & Configuration.UI_MODE_NIGHT_MASK;
+            if (radioButtonId == R.id.sea_pink_button) {
+                themeId.add(R.style.AppTheme_SeaPink);
+                themeId.add(R.style.AppTheme_Dark_SeaPink);
+            } else if (radioButtonId == R.id.pink_button) {
+                themeId.add(R.style.AppTheme_Pink);
+                themeId.add(R.style.AppTheme_Dark_Pink);
+            } else if (radioButtonId == R.id.red_button) {
+                themeId.add(R.style.AppTheme_Red);
+                themeId.add(R.style.AppTheme_Dark_Red);
+            } else if (radioButtonId == R.id.purple_button) {
+                themeId.add(R.style.AppTheme_Purple);
+                themeId.add(R.style.AppTheme_Dark_Purple);
+            } else if (radioButtonId == R.id.blue_button) {
+                themeId.add(R.style.AppTheme_Blue);
+                themeId.add(R.style.AppTheme_Dark_Blue);
+            } else if (radioButtonId == R.id.garden_button) {
+                themeId.add(R.style.AppTheme_Garden);
+                themeId.add(R.style.AppTheme_Dark_Garden);
+            } else if (radioButtonId == R.id.bermuda_button) {
+                themeId.add(R.style.AppTheme_Bermuda);
+                themeId.add(R.style.AppTheme_Dark_Bermuda);
+            } else if (radioButtonId == R.id.bright_sun_button) {
+                themeId.add(R.style.AppTheme_BrightSun);
+                themeId.add(R.style.AppTheme_Dark_BrightSun);
+            } else {
+                themeId.add(R.style.AppTheme_SeaPink);
+                themeId.add(R.style.AppTheme_Dark_SeaPink);
             }
-            else if (nightModeFlag == Configuration.UI_MODE_NIGHT_YES){
-                if (radioButtonId == R.id.sea_pink_button) {
-                    themeId = R.style.AppTheme_Dark_SeaPink;
-                } else if (radioButtonId == R.id.pink_button) {
-                    themeId = R.style.AppTheme_Dark_Pink;
-                } else if (radioButtonId == R.id.red_button) {
-                    themeId = R.style.AppTheme_Dark_Red;
-                } else if (radioButtonId == R.id.purple_button) {
-                    themeId = R.style.AppTheme_Dark_Purple;
-                } else if (radioButtonId == R.id.blue_button) {
-                    themeId = R.style.AppTheme_Dark_Blue;
-                } else if (radioButtonId == R.id.garden_button) {
-                    themeId = R.style.AppTheme_Dark_Garden;
-                } else if (radioButtonId == R.id.bermuda_button) {
-                    themeId = R.style.AppTheme_Dark_Bermuda;
-                } else if (radioButtonId == R.id.bright_sun_button) {
-                    themeId = R.style.AppTheme_Dark_BrightSun;
-                } else {
-                    return;
-                }
-            }
-            else{
-                return;
-            }
+
             getIntent().putExtra("theme",themeId);
+//            getIntent().putExtra("theme", (Parcelable) themeId);
             recreate();
         });
         AlertDialog dialog = builder.create();
@@ -351,4 +350,16 @@ public class MainActivity extends AppCompatActivity{
                     navController.navigate(R.id.detailFragment, bundle);
                 }
             });
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+
 }
