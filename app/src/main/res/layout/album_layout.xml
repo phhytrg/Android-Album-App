@@ -6,6 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <include layout="@layout/selected_option"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/album_list"

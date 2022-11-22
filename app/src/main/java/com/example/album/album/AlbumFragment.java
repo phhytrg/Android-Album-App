@@ -1,12 +1,20 @@
 package com.example.album.album;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +35,10 @@ import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 import com.example.album.ui.SplitToolbar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class AlbumFragment extends Fragment{
 
@@ -35,6 +47,13 @@ public class AlbumFragment extends Fragment{
     boolean isLinearLayout = false;
     AlbumAdapter adapter;
     RecyclerView recyclerView;
+
+    List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
+            "Picnic", "Friends", "Selfie", "Memes"));
+    List<Integer> albumImages = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
+            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
+            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
+            R.drawable.photo9));
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,14 +97,21 @@ public class AlbumFragment extends Fragment{
 
         requireActivity().addMenuProvider(new MenuProvider() {
             @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {}
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.album_option, menu);
+            }
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.action_switch_layout){
+                int id = menuItem.getItemId();
+                if(id == R.id.action_switch_layout){
                     isLinearLayout = !isLinearLayout;
                     chooseLayout();
                     setIcon(menuItem);
+                    return true;
+                }
+                if(id == R.id.menu_newAlbum){
+                    showCreateAlbumDialog();
                     return true;
                 }
                 return false;
@@ -108,7 +134,7 @@ public class AlbumFragment extends Fragment{
 
     private void chooseLayout(){
         if(isLinearLayout){
-            adapter = new AlbumAdapter(requireContext(),
+            adapter = new AlbumAdapter(albumNames, albumImages,requireContext(),
                     this, navController, AlbumAdapter.LINEAR_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.LINEAR_LAYOUT);
@@ -123,7 +149,7 @@ public class AlbumFragment extends Fragment{
         }
         else{
 
-            adapter = new AlbumAdapter(requireContext(),
+            adapter = new AlbumAdapter(albumNames, albumImages, requireContext(),
                     this, navController, AlbumAdapter.GRID_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.GRID_LAYOUT);
@@ -136,6 +162,47 @@ public class AlbumFragment extends Fragment{
                     new GridSpacingItemDecoration(3,32,false)
             );
         }
+    }
+
+    public void showCreateAlbumDialog(){
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.new_album_dialog_layout);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        final EditText nameEt = (EditText) dialog.findViewById(R.id.userInputDialog);
+        Button okButton = dialog.findViewById(R.id.okDialogBtn);
+        Button cancelButton = dialog.findViewById(R.id.cancelDialogBtn);
+
+        nameEt.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                okButton.setEnabled(!nameEt.getText().toString().isEmpty());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        cancelButton.setOnClickListener(view -> dialog.dismiss());
+
+        okButton.setOnClickListener(view -> {
+            String name = nameEt.getText().toString();
+            albumNames.add(name);
+            albumImages.add(R.drawable.image2);
+            adapter.notifyItemChanged(albumImages.size() - 1);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }
 

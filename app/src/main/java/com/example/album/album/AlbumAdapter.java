@@ -35,6 +35,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     public final static int LINEAR_LAYOUT = 0;
     public final static int GRID_LAYOUT = 1;
+    private List<Integer> albumImages;
+    private List<String> albumNames;
     private int layoutType;
     private Context context;
     public final static int CHANGED_MODE = 1;
@@ -51,22 +53,19 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         this.navController = navController;
     }
 
-    public AlbumAdapter(Context context, Fragment fragment, NavController navController, int layoutType) {
+    public AlbumAdapter(List<String> albumNames, List<Integer>albumImages,
+                        Context context, Fragment fragment, NavController navController, int layoutType) {
         this.layoutType = layoutType;
         this.navController = navController;
         this.context = context;
         this.fragment = fragment;
         selectedItems = new ArrayList<>();
+        this.albumImages = albumImages;
+        this.albumNames = albumNames;
     }
 
     NavController navController;
     //data field
-    List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
-            "Picnic", "Friends", "Selfie", "Memes"));
-    List<Integer> albumImages = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
-            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
-            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
-            R.drawable.photo9));
     List<Integer>selectedItems;
 
     @NonNull

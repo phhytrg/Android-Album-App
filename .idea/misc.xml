@@ -51,6 +51,9 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/ic_share_appbar.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/icon_selector.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/lock_screen.xml" value="0.13" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/my_edittext.xml" value="0.1455" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/mybutton.xml" value="0.1455" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/mydialog.xml" value="0.1455" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/round_fill_color_button.xml" value="0.1215" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/set_wallpaper_dialog.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/set_wallpaper_dialog_bg.xml" value="0.1" />
@@ -89,6 +92,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/album_option.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/bottom_navigation.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/crop_confirmation.xml" value="0.27447916666666666" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/default_menu.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/edit_nav.xml" value="0.16574074074074074" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/ic_more_submenu.xml" value="0.2671794871794872" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/image_menu.xml" value="0.27447916666666666" />

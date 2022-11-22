@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/setting"
+        android:id="@+id/menu_settings"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_switch_layout"
+        android:title="@string/switch_layout_item"
+        android:icon="@drawable/ic_linear_layout"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/camera"
+        android:title="@string/camera_item"
+        android:icon="@drawable/ic_camera"
+        app:showAsAction="always" />
+</menu>
