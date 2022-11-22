@@ -86,4 +86,6 @@
     <string name="lock_screen">Lock screen</string>
     <string name="home_and_lock_screen">Home and lock screen</string>
     <string name="set_as_wallpaper">Set as wallpaper</string>
+    <string name="all">All</string>
+    <string name="DELETE">DELETE</string>
 </resources>

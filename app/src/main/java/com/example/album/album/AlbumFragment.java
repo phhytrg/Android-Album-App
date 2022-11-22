@@ -28,21 +28,8 @@ import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 
-public class AlbumFragment extends Fragment {
+public class AlbumFragment extends Fragment{
 
-//    String[] albumName = {"Camera","Videos", "Favorites","Screens","Locations","Download", "Collages",
-//            "Picnic", "Friends", "Selfie", "Memes"};
-//    int[] albumImages = {R.drawable.photo1,
-//            R.drawable.photo2,
-//            R.drawable.photo10,
-//            R.drawable.photo4,
-//            R.drawable.cat1,
-//            R.drawable.photo6,
-//            R.drawable.photo3,
-//            R.drawable.photo5,
-//            R.drawable.photo8,
-//            R.drawable.photo7,
-//            R.drawable.photo9};
     SplitToolbar navigationBar;
     NavController navController;
     boolean isLinearLayout = false;
@@ -125,7 +112,8 @@ public class AlbumFragment extends Fragment {
 
     private void chooseLayout(){
         if(isLinearLayout){
-            adapter = new AlbumAdapter(navController, AlbumAdapter.LINEAR_LAYOUT);
+            adapter = new AlbumAdapter(requireContext(),
+                    this, navController, AlbumAdapter.LINEAR_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.LINEAR_LAYOUT);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -139,7 +127,8 @@ public class AlbumFragment extends Fragment {
         }
         else{
 
-            adapter = new AlbumAdapter(navController, AlbumAdapter.GRID_LAYOUT);
+            adapter = new AlbumAdapter(requireContext(),
+                    this, navController, AlbumAdapter.GRID_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.GRID_LAYOUT);
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);

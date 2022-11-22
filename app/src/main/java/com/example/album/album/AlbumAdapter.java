@@ -1,12 +1,18 @@
 package com.example.album.album;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.PixelFormat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -21,6 +27,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public final static int LINEAR_LAYOUT = 0;
     public final static int GRID_LAYOUT = 1;
     private int layoutType;
+    private Context context;
+    Fragment fragment;
 
     public void setLayoutType(int layoutType) {
         this.layoutType = layoutType;
@@ -30,9 +38,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         this.navController = navController;
     }
 
-    public AlbumAdapter(NavController navController, int layoutType) {
+    public AlbumAdapter(Context context, Fragment fragment, NavController navController, int layoutType) {
         this.layoutType = layoutType;
         this.navController = navController;
+        this.context = context;
+        this.fragment = fragment;
     }
 
     NavController navController;
@@ -63,10 +73,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
         holder.shapeableImageView.setImageResource(albumImages[position]);
         holder.albumName.setText(albumNames[position]);
-        holder.item.setOnClickListener(v -> onItemClick(holder));
-        if(layoutType == LINEAR_LAYOUT){
-            holder.numImages.setText(Integer.toString(100));
-        }
     }
 
     private void onItemClick(AlbumViewHolder holder){
@@ -109,6 +115,46 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             if(layoutType == LINEAR_LAYOUT){
                 numImages = itemView.findViewById(R.id.number_of_images);
             }
+
+            itemView.setOnClickListener(v -> onItemClick(this));
+            if(layoutType == LINEAR_LAYOUT){
+                numImages.setText(Integer.toString(100));
+            }
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showDialog();
+
+                    return true;
+                }
+            });
         }
+    }
+
+    private void showDialog(){
+
+//        final BottomSheetDialog dialog = new BottomSheetDialog(context);
+//        dialog.setContentView(R.layout.multi_items_selected);
+//        dialog.set
+        final Dialog dialog = new Dialog(context, R.style.Theme_Album);
+        dialog.setContentView(R.layout.multi_items_selected);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.format = PixelFormat.TRANSLUCENT;
+
+        params.gravity = Gravity.TOP;
+        dialog.getWindow().setAttributes(params);
+
+//        Window window = dialog.getWindow();
+//        WindowManager.LayoutParams wlp
+//                = window.getAttributes();
+//        wlp.width =
+//                wlp.gravity = Gravity.TOP;
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//        window.setAttributes(wlp);
+        dialog.show();
     }
 }
