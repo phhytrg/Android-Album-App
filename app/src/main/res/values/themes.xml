@@ -35,6 +35,14 @@
         <item name="android:textColorPrimary">?android:attr/textColorPrimary</item>
     </style>
 
+    <style name="AlertDialog.AppCompat.Submit">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:background">@color/trans</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+    </style>
+
 
     <style name="Widget.Album.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>

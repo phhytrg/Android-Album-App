@@ -5,9 +5,6 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -16,8 +13,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -26,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
 import com.example.album.SplitToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
@@ -125,7 +123,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                 //Blur item here
             }
             else{
-                selectedItems.remove(holder.getAdapterPosition());
+                selectedItems.remove((Object)holder.getAdapterPosition());
                 holder.isCheckedFlag = true;
                 //Back
             }
@@ -165,20 +163,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     //Back
                 }
             });
-
-            if (layoutType == GRID_LAYOUT) {
-            }
             if (layoutType == LINEAR_LAYOUT) {
                 numImages = itemView.findViewById(R.id.number_of_images);
+                numImages.setText(Integer.toString(100));
             }
 
             itemView.setOnClickListener(v -> onItemClick(this));
-            if (layoutType == LINEAR_LAYOUT) {
-                numImages.setText(Integer.toString(100));
-            }
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 public final SplitToolbar navigationBar =
-                        fragment.getActivity().findViewById(R.id.navigation_bar);
+                        fragment.requireActivity().findViewById(R.id.navigation_bar);
 
                 @Override
                 public boolean onLongClick(View v) {
@@ -227,14 +220,41 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     });
 
                     deleteButton.setOnClickListener(v -> {
-                        selectedItems.sort(Collections.reverseOrder());
-                        while (!selectedItems.isEmpty()) {
-                            int selectedIndex = selectedItems.get(0);
-                            selectedItems.remove(0);
-                            albumImages.remove(selectedIndex);
-                            albumNames.remove(selectedIndex);
-                            notifyItemRemoved(selectedIndex);
+                        MaterialAlertDialogBuilder builder
+                                = new MaterialAlertDialogBuilder(fragment.getActivity()
+                                , R.style.AlertDialog_AppCompat_Submit);
+
+                        View view = fragment.getLayoutInflater().inflate(R.layout.submit_dialog,null);
+                        TextView notification = (TextView)view.findViewById(R.id.notification);
+                        String albumSyntax;
+                        if(selectedItems.size() >= 1){
+                            albumSyntax = "albums";
+                        }else{
+                            albumSyntax = "album";
                         }
+                        notification.setText(context.getString(
+                                R.string.delete_notification,
+                                selectedItems.size(),
+                                albumSyntax)
+                        );
+                        builder.setView(view);
+                        builder.setPositiveButton(R.string.label_ok, (dialog1, id) -> {
+                            selectedItems.sort(Collections.reverseOrder());
+                            while (!selectedItems.isEmpty()) {
+                                int selectedIndex = selectedItems.get(0);
+                                selectedItems.remove(0);
+                                albumImages.remove(selectedIndex);
+                                albumNames.remove(selectedIndex);
+                                notifyItemRemoved(selectedIndex);
+                            }
+                        });
+                        builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
+
+                        });
+                        AlertDialog submitDialog = builder.create();
+                        submitDialog.show();
+
+
                     });
 
                     selectAll.setOnClickListener(v -> {

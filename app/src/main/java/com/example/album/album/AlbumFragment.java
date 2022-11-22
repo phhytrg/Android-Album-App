@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.SplitToolbar;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
@@ -45,21 +44,19 @@ public class AlbumFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        if(getActivity()!=null){
-            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+            ActionBar actionBar = ((AppCompatActivity)requireActivity()).getSupportActionBar();
             if(actionBar!=null) {
                 actionBar.setTitle(getString(R.string.albums));
-            }
         }
 
-        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
+        NavHostFragment navHostFragment = (NavHostFragment) requireActivity()
                 .getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment != null
                 ? navHostFragment.getNavController()
                 : null;
 
-        navigationBar = (SplitToolbar) ((MainActivity)getActivity()).findViewById(R.id.navigation_bar);
+        navigationBar = requireActivity().findViewById(R.id.navigation_bar);
         return inflater.inflate(R.layout.album_layout,container, false).getRootView();
     }
 
@@ -78,9 +75,7 @@ public class AlbumFragment extends Fragment{
         adapter.setNavController(navController);
         navigationBar.setVisibility(View.VISIBLE);
 
-        if(getActivity() == null)
-            return;
-        getActivity().addMenuProvider(new MenuProvider() {
+        requireActivity().addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {}
 
