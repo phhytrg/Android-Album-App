@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,43 +15,66 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 import com.example.album.ui.SplitToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
 public class AlbumFragment extends Fragment{
+    public final static int CHANGED_MODE = 1;
+    public final static int UNCHANGED_MODE = 0;
+    private int currentState = UNCHANGED_MODE;
 
     SplitToolbar navigationBar;
     NavController navController;
     boolean isLinearLayout = false;
     AlbumAdapter adapter;
     RecyclerView recyclerView;
+    ActionBar appbar;
+    ConstraintLayout deleteBar;
+    CheckBox selectAllCheckBox;
+    List<Integer>selectedItems;
+    private TextView countItemTextView;
+    private ImageButton backButton;
+    private ImageButton deleteButton;
 
     List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
+            "Picnic", "Friends", "Selfie", "Memes","Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes"));
     List<Integer> albumImages = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
+            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
+            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
+            R.drawable.photo9, R.drawable.photo1, R.drawable.photo2,
             R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
             R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
             R.drawable.photo9));
@@ -75,7 +99,7 @@ public class AlbumFragment extends Fragment{
         navController = navHostFragment != null
                 ? navHostFragment.getNavController()
                 : null;
-
+        appbar = ((MainActivity)requireActivity()).getSupportActionBar();
         navigationBar = requireActivity().findViewById(R.id.navigation_bar);
         return inflater.inflate(R.layout.album_layout,container, false).getRootView();
     }
@@ -92,7 +116,6 @@ public class AlbumFragment extends Fragment{
 //        recyclerView.setAdapter(adapter);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         chooseLayout();
-        adapter.setNavController(navController);
         navigationBar.setVisibility(View.VISIBLE);
 
         requireActivity().addMenuProvider(new MenuProvider() {
@@ -117,6 +140,89 @@ public class AlbumFragment extends Fragment{
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
+        deleteBar = view.findViewById(R.id.delete_bar);
+        selectAllCheckBox = view.findViewById(R.id.select_all_option);
+        countItemTextView = view.findViewById(R.id.count_item);
+        backButton = view.findViewById(R.id.go_back_option);
+        deleteButton = view.findViewById(R.id.delete_option);
+
+        selectAllCheckBox.setOnClickListener(new View.OnClickListener() {
+            void allSelected() {
+                selectedItems.clear();
+                for (int i = adapter.getItemCount() - 1; i >= 0; --i) {
+                    selectedItems.add(i);
+//                    adapter.notifyItemChanged(i);
+                }
+                countItemTextView.setText(Integer.toString(selectedItems.size()));
+                adapter.selectAll();
+                adapter.setAllSelectedFlags(true);
+            }
+
+            void allUnselected() {
+                selectedItems.clear();
+                adapter.setAllSelectedFlags(false);
+                adapter.unSelectAll();
+                countItemTextView.setText(Integer.toString(selectedItems.size()));
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (selectAllCheckBox.isChecked()) {
+                    allSelected();
+                } else {
+                    allUnselected();
+                }
+            }
+        });
+
+        backButton.setOnClickListener(v -> {
+            deleteBar.setVisibility(View.GONE);
+            currentState = UNCHANGED_MODE;
+            adapter.setCurrentState(UNCHANGED_MODE);
+            adapter.setCheckBoxesInvisible();
+            for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
+                navigationBar.getMenu().getItem(i).setEnabled(true);
+            }
+            appbar.show();
+            navigationBar.setVisibility(View.VISIBLE);
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            MaterialAlertDialogBuilder builder
+                    = new MaterialAlertDialogBuilder(getActivity()
+                    , R.style.AlertDialog_AppCompat_Submit);
+
+            View dialogView = getLayoutInflater().inflate(R.layout.submit_dialog,null);
+            TextView notification = (TextView)dialogView.findViewById(R.id.notification);
+            String albumSyntax;
+            if(selectedItems.size() >= 1){
+                albumSyntax = "albums";
+            }else{
+                albumSyntax = "album";
+            }
+            notification.setText(getString(
+                    R.string.delete_notification,
+                    selectedItems.size(),
+                    albumSyntax)
+            );
+            builder.setView(dialogView);
+            builder.setPositiveButton(R.string.label_ok, (dialog1, id) -> {
+                selectedItems.sort(Collections.reverseOrder());
+                while (!selectedItems.isEmpty()) {
+                    int selectedIndex = selectedItems.get(0);
+                    selectedItems.remove(0);
+                    albumImages.remove(selectedIndex);
+                    albumNames.remove(selectedIndex);
+                    adapter.notifyItemRemoved(selectedIndex);
+                }
+            });
+            builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
+
+            });
+            AlertDialog submitDialog = builder.create();
+            submitDialog.show();
+        });
     }
 
     private void setIcon(MenuItem menuItem){
@@ -133,9 +239,70 @@ public class AlbumFragment extends Fragment{
     }
 
     private void chooseLayout(){
+        AlbumAdapter.OnClickListener listener = new AlbumAdapter.OnClickListener() {
+            @Override
+            public void onItemClick(AlbumAdapter.AlbumViewHolder holder) {
+                if(currentState == UNCHANGED_MODE){
+                    String albumName = holder.albumName.getText().toString();
+                    NavDirections action = AlbumFragmentDirections
+                            .actionAlbumFragmentToDetailAlbumFragment(albumName);
+                    navController.navigate(action);
+                }
+                else if(currentState == CHANGED_MODE){
+                    holder.checkbox.setChecked(!holder.checkbox.isChecked());
+                    //Blur item here
+                    if(holder.checkbox.isChecked()){
+                        selectedItems.add(holder.getAdapterPosition());
+                        //totalItemsSelected.setValue();
+                        //Blur item here
+                    }
+                    else{
+                        selectedItems.remove((Object)holder.getAdapterPosition());
+                        holder.isCheckedFlag = true;
+                        //Back
+                    }
+                    countItemTextView.setText(Integer.toString(selectedItems.size()));
+                }
+            }
+
+            @Override
+            public void onCheckBoxClick(AlbumAdapter.AlbumViewHolder holder) {
+                if(holder.checkbox.isChecked()){
+                    selectedItems.add((int)holder.getAdapterPosition());
+                    //Blur item here
+                }
+                else{
+                    Log.d("AAA",Integer.toString(holder.getAdapterPosition()));
+                    selectedItems.remove((Object)holder.getAdapterPosition());
+                    //Back
+                }
+                countItemTextView.setText(Integer.toString(selectedItems.size()));
+            }
+
+            @Override
+            public void onItemLongClick(AlbumAdapter.AlbumViewHolder holder){
+                selectedItems = new ArrayList<>();
+                if(currentState == CHANGED_MODE)
+                {
+                    return;
+                }
+                currentState = CHANGED_MODE;
+                adapter.setCurrentState(currentState);
+                navigationBar.setVisibility(View.GONE);
+                appbar.hide();
+                showDialog();
+            }
+
+            void showDialog(){
+                ConstraintLayout bar = getView().findViewById(R.id.delete_bar);
+                bar.setVisibility(View.VISIBLE);
+            }
+
+        };
+
         if(isLinearLayout){
-            adapter = new AlbumAdapter(albumNames, albumImages,requireContext(),
-                    this, navController, AlbumAdapter.LINEAR_LAYOUT);
+            adapter = new AlbumAdapter(albumNames, albumImages,
+                    listener, AlbumAdapter.LINEAR_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.LINEAR_LAYOUT);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -149,8 +316,9 @@ public class AlbumFragment extends Fragment{
         }
         else{
 
-            adapter = new AlbumAdapter(albumNames, albumImages, requireContext(),
-                    this, navController, AlbumAdapter.GRID_LAYOUT);
+            adapter = new AlbumAdapter(albumNames, albumImages,
+                    listener
+                    , AlbumAdapter.GRID_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.GRID_LAYOUT);
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
