@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>{
 
     public final static int LINEAR_LAYOUT = 0;
     public final static int GRID_LAYOUT = 1;
@@ -43,6 +43,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     int countItems = 0;
     private MutableLiveData<Integer> totalItemsSelected;
     private TextView countItemTextView;
+    private SplitToolbar navigationBar;
+    private ActionBar appbar;
 
     public MutableLiveData<Integer> getTotalItemsSelected(){
         if(totalItemsSelected == null){
@@ -71,6 +73,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         selectedItems = new ArrayList<>();
         this.albumImages = albumImages;
         this.albumNames = albumNames;
+
+        navigationBar =
+                fragment.requireActivity().findViewById(R.id.navigation_bar);
+        appbar = ((MainActivity)fragment.requireActivity()).getSupportActionBar();
     }
 
     NavController navController;
@@ -189,10 +195,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
             itemView.setOnClickListener(v -> onItemClick(this));
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                public final SplitToolbar navigationBar =
-                        fragment.requireActivity().findViewById(R.id.navigation_bar);
-                final ActionBar appbar = ((MainActivity)fragment.requireActivity()).getSupportActionBar();
-
                 @Override
                 public boolean onLongClick(View v) {
                     if(currentMode == CHANGED_MODE)
@@ -210,7 +212,109 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     return true;
                 }
 
-                private void showDialog() {
+
+            });
+
+        }
+        private void showDialog() {
+
+            View fragmentView = fragment.getView();
+            ConstraintLayout bar  = fragment.getView().findViewById(R.id.front_album_nav);
+            bar.setVisibility(View.VISIBLE);
+
+            final ImageButton backButton
+                    = fragmentView.findViewById(R.id.go_back_option);
+            final ImageButton deleteButton
+                    = fragmentView.findViewById(R.id.delete_option);
+            final CheckBox selectAll
+                    = fragmentView.findViewById(R.id.select_all_option);
+            countItemTextView
+                    = fragmentView.findViewById(R.id.count_item);
+
+            backButton.setOnClickListener(v -> {
+                bar.setVisibility(View.GONE);
+                currentMode = UNCHANGED_MODE;
+                checkbox.setVisibility(View.GONE);
+                for (int i = 0; i < getItemCount(); i++) {
+                    notifyItemChanged(i);
+                }
+                for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
+                    navigationBar.getMenu().getItem(i).setEnabled(true);
+                }
+                appbar.show();
+                navigationBar.setVisibility(View.VISIBLE);
+            });
+
+            deleteButton.setOnClickListener(v -> {
+                MaterialAlertDialogBuilder builder
+                        = new MaterialAlertDialogBuilder(fragment.getActivity()
+                        , R.style.AlertDialog_AppCompat_Submit);
+
+                View view = fragment.getLayoutInflater().inflate(R.layout.submit_dialog,null);
+                TextView notification = (TextView)view.findViewById(R.id.notification);
+                String albumSyntax;
+                if(selectedItems.size() >= 1){
+                    albumSyntax = "albums";
+                }else{
+                    albumSyntax = "album";
+                }
+                notification.setText(context.getString(
+                        R.string.delete_notification,
+                        selectedItems.size(),
+                        albumSyntax)
+                );
+                builder.setView(view);
+                builder.setPositiveButton(R.string.label_ok, (dialog1, id) -> {
+                    selectedItems.sort(Collections.reverseOrder());
+                    while (!selectedItems.isEmpty()) {
+                        int selectedIndex = selectedItems.get(0);
+                        selectedItems.remove(0);
+                        albumImages.remove(selectedIndex);
+                        albumNames.remove(selectedIndex);
+                        notifyItemRemoved(selectedIndex);
+                    }
+                });
+                builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
+
+                });
+                AlertDialog submitDialog = builder.create();
+                submitDialog.show();
+
+
+            });
+
+            selectAll.setOnClickListener(v -> {
+                if (selectAll.isChecked()) {
+                    allSelected();
+                } else {
+                    allUnselected();
+                }
+            });
+        }
+
+        private void allSelected() {
+            selectedItems.clear();
+            for (int i = getItemCount() - 1; i >= 0; --i) {
+                selectedItems.add(i);
+                notifyItemChanged(i);
+            }
+            countItems = getItemCount();
+            countItemTextView.setText(Integer.toString(countItems));
+
+        }
+
+        private void allUnselected() {
+            selectedItems.clear();
+            for (int i = getItemCount() - 1; i >= 0; --i) {
+                notifyItemChanged(i);
+            }
+            countItems = 0;
+            countItemTextView.setText(Integer.toString(countItems));
+        }
+    }
+}
+
+
 //                    final Dialog dialog = new Dialog(context, R.style.Theme_Album);
 //                    dialog.setContentView(R.layout.selected_option);
 //                    WindowManager.LayoutParams params = new WindowManager.LayoutParams();
@@ -221,103 +325,3 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 //                    params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
 //                    dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 //                    dialog.getWindow().setAttributes(params);
-
-
-
-                    View fragmentView = fragment.getView();
-                    ConstraintLayout bar  = fragment.getView().findViewById(R.id.front_album_nav);
-                    bar.setVisibility(View.VISIBLE);
-
-                    final ImageButton backButton
-                            = fragmentView.findViewById(R.id.go_back_option);
-                    final ImageButton deleteButton
-                            = fragmentView.findViewById(R.id.delete_option);
-                    final CheckBox selectAll
-                            = fragmentView.findViewById(R.id.select_all_option);
-                    countItemTextView
-                            = fragmentView.findViewById(R.id.count_item);
-
-                    backButton.setOnClickListener(v -> {
-                        bar.setVisibility(View.GONE);
-                        currentMode = UNCHANGED_MODE;
-                        checkbox.setVisibility(View.GONE);
-                        for (int i = 0; i < getItemCount(); i++) {
-                            notifyItemChanged(i);
-                        }
-                        for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
-                            navigationBar.getMenu().getItem(i).setEnabled(true);
-                        }
-                        appbar.show();
-                        navigationBar.setVisibility(View.VISIBLE);
-                    });
-
-                    deleteButton.setOnClickListener(v -> {
-                        MaterialAlertDialogBuilder builder
-                                = new MaterialAlertDialogBuilder(fragment.getActivity()
-                                , R.style.AlertDialog_AppCompat_Submit);
-
-                        View view = fragment.getLayoutInflater().inflate(R.layout.submit_dialog,null);
-                        TextView notification = (TextView)view.findViewById(R.id.notification);
-                        String albumSyntax;
-                        if(selectedItems.size() >= 1){
-                            albumSyntax = "albums";
-                        }else{
-                            albumSyntax = "album";
-                        }
-                        notification.setText(context.getString(
-                                R.string.delete_notification,
-                                selectedItems.size(),
-                                albumSyntax)
-                        );
-                        builder.setView(view);
-                        builder.setPositiveButton(R.string.label_ok, (dialog1, id) -> {
-                            selectedItems.sort(Collections.reverseOrder());
-                            while (!selectedItems.isEmpty()) {
-                                int selectedIndex = selectedItems.get(0);
-                                selectedItems.remove(0);
-                                albumImages.remove(selectedIndex);
-                                albumNames.remove(selectedIndex);
-                                notifyItemRemoved(selectedIndex);
-                            }
-                        });
-                        builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
-
-                        });
-                        AlertDialog submitDialog = builder.create();
-                        submitDialog.show();
-
-
-                    });
-
-                    selectAll.setOnClickListener(v -> {
-                        if (selectAll.isChecked()) {
-                            allSelected();
-                        } else {
-                            allUnselected();
-                        }
-                    });
-                }
-
-                private void allSelected() {
-                    selectedItems.clear();
-                    for (int i = getItemCount() - 1; i >= 0; --i) {
-                        selectedItems.add(i);
-                        notifyItemChanged(i);
-                    }
-                    countItems = getItemCount();
-                    countItemTextView.setText(Integer.toString(countItems));
-
-                }
-
-                private void allUnselected() {
-                    selectedItems.clear();
-                    for (int i = getItemCount() - 1; i >= 0; --i) {
-                        notifyItemChanged(i);
-                    }
-                    countItems = 0;
-                    countItemTextView.setText(Integer.toString(countItems));
-                }
-            });
-        }
-    }
-}
