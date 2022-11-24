@@ -67,6 +67,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         this.listener = listener;
     }
 
+
     //data field
     private final List<CheckBox> checkBoxes = new ArrayList<>();
 
