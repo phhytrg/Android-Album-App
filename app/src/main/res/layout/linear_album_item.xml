@@ -15,7 +15,7 @@
         android:buttonTint="@color/bluePrimaryDark"
         android:scaleX="1.1"
         android:scaleY="1.1"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginStart="-4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

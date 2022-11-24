@@ -23,7 +23,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -51,22 +50,28 @@ import java.util.List;
 
 
 public class AlbumFragment extends Fragment{
+
+
     public final static int CHANGED_MODE = 1;
     public final static int UNCHANGED_MODE = 0;
-    private int currentState = UNCHANGED_MODE;
 
+    //Navigate Component
     SplitToolbar navigationBar;
     NavController navController;
-    boolean isLinearLayout = false;
+    //Appbar
+    ActionBar appbar;
+
+    //RecyclerView
     AlbumAdapter adapter;
     RecyclerView recyclerView;
-    ActionBar appbar;
+    boolean isLinearLayout = false;
+
+    //Delete bar
     ConstraintLayout deleteBar;
-    CheckBox selectAllCheckBox;
+    private CheckBox selectAllCheckBox;
     List<Integer>selectedItems;
     private TextView countItemTextView;
-    private ImageButton backButton;
-    private ImageButton deleteButton;
+    private int currentState = UNCHANGED_MODE;
 
     List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes","Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
@@ -144,17 +149,22 @@ public class AlbumFragment extends Fragment{
         deleteBar = view.findViewById(R.id.delete_bar);
         selectAllCheckBox = view.findViewById(R.id.select_all_option);
         countItemTextView = view.findViewById(R.id.count_item);
-        backButton = view.findViewById(R.id.go_back_option);
-        deleteButton = view.findViewById(R.id.delete_option);
+        ImageButton backButton = view.findViewById(R.id.go_back_option);
+        ImageButton deleteButton = view.findViewById(R.id.delete_option);
 
         selectAllCheckBox.setOnClickListener(new View.OnClickListener() {
             void allSelected() {
                 selectedItems.clear();
                 for (int i = adapter.getItemCount() - 1; i >= 0; --i) {
                     selectedItems.add(i);
-//                    adapter.notifyItemChanged(i);
                 }
-                countItemTextView.setText(Integer.toString(selectedItems.size()));
+                String syntax = (selectedItems.size() == 1)
+                        ? "item"
+                        : "items";
+                String notification = (selectedItems.isEmpty())
+                        ? ""
+                        : getString(R.string.number_selected_items, selectedItems.size(), syntax);
+                countItemTextView.setText(notification);
                 adapter.selectAll();
                 adapter.setAllSelectedFlags(true);
             }
@@ -163,7 +173,7 @@ public class AlbumFragment extends Fragment{
                 selectedItems.clear();
                 adapter.setAllSelectedFlags(false);
                 adapter.unSelectAll();
-                countItemTextView.setText(Integer.toString(selectedItems.size()));
+                countItemTextView.setText("");
             }
 
             @Override
@@ -185,6 +195,8 @@ public class AlbumFragment extends Fragment{
                 navigationBar.getMenu().getItem(i).setEnabled(true);
             }
             appbar.show();
+            adapter.unSelectAll();
+            countItemTextView.setText("");
             navigationBar.setVisibility(View.VISIBLE);
         });
 
@@ -216,12 +228,16 @@ public class AlbumFragment extends Fragment{
                     albumNames.remove(selectedIndex);
                     adapter.notifyItemRemoved(selectedIndex);
                 }
+                if(selectAllCheckBox.isChecked()){
+                    selectAllCheckBox.setChecked(false);
+                }
+                countItemTextView.setText("");
             });
             builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
-
             });
-            AlertDialog submitDialog = builder.create();
-            submitDialog.show();
+            builder.show();
+//            AlertDialog submitDialog = builder.create();
+//            submitDialog.show();
         });
     }
 
@@ -251,9 +267,11 @@ public class AlbumFragment extends Fragment{
                 else if(currentState == CHANGED_MODE){
                     holder.checkbox.setChecked(!holder.checkbox.isChecked());
                     //Blur item here
+                    if(selectAllCheckBox.isChecked()){
+                        selectAllCheckBox.setChecked(false);
+                    }
                     if(holder.checkbox.isChecked()){
                         selectedItems.add(holder.getAdapterPosition());
-                        //totalItemsSelected.setValue();
                         //Blur item here
                     }
                     else{
@@ -261,7 +279,13 @@ public class AlbumFragment extends Fragment{
                         holder.isCheckedFlag = true;
                         //Back
                     }
-                    countItemTextView.setText(Integer.toString(selectedItems.size()));
+                    String syntax = (selectedItems.size() == 1)
+                            ? "item"
+                            : "items";
+                    String notification = (selectedItems.isEmpty())
+                            ? ""
+                            : getString(R.string.number_selected_items, selectedItems.size(), syntax);
+                    countItemTextView.setText(notification);
                 }
             }
 
@@ -276,7 +300,13 @@ public class AlbumFragment extends Fragment{
                     selectedItems.remove((Object)holder.getAdapterPosition());
                     //Back
                 }
-                countItemTextView.setText(Integer.toString(selectedItems.size()));
+                String syntax = (selectedItems.size() == 1)
+                        ? "item"
+                        : "items";
+                String notification = (selectedItems.isEmpty())
+                        ? ""
+                        : getString(R.string.number_selected_items, selectedItems.size(), syntax);
+                countItemTextView.setText(notification);
             }
 
             @Override

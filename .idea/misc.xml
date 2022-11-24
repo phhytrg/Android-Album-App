@@ -50,6 +50,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/ic_share.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/ic_share_appbar.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/icon_selector.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/image_border.xml" value="0.1455" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/lock_screen.xml" value="0.13" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/my_edittext.xml" value="0.1455" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/mybutton.xml" value="0.1455" />
@@ -57,6 +58,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/round_fill_color_button.xml" value="0.1215" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/set_wallpaper_dialog.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/set_wallpaper_dialog_bg.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/font/roboto.xml" value="0.26944444444444443" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/action_layout_favorite.xml" value="0.6" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/activity_main.xml" value="0.1334853090172239" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/activity_main1.xml" value="0.27447916666666666" />
@@ -73,6 +75,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/crop_activity.xml" value="0.20878623188405798" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/crop_fragment.xml" value="0.1265625" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/custom_dialog_set.xml" value="0.27447916666666666" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/date_header.xml" value="0.176" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/delete_album_dialog_layout.xml" value="0.2368659420289855" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/detail_image_fragment.xml" value="0.2105978260869565" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/empty_layout.xml" value="0.20878623188405798" />

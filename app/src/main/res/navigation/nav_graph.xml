@@ -2,66 +2,57 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/albumFragment">
+    app:startDestination="@id/AlbumFragment">
 
     <fragment
-        android:id="@+id/albumFragment"
+        android:id="@+id/AlbumFragment"
         android:name="com.example.album.album.AlbumFragment"
         android:label="Albums">
         <action
-            android:id="@+id/action_albumFragment_to_detailAlbumFragment"
-            app:destination="@id/detailAlbumFragment">
+            android:id="@+id/action_AlbumFragment_to_DetailAlbumFragment"
+            app:destination="@id/DetailAlbumFragment">
             <argument
                 android:name="label"
                 app:argType="string"/>
         </action>
         <action
-            android:id="@+id/action_albumFragment_to_galleryFragment"
-            app:destination="@id/galleryFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            android:id="@+id/action_AlbumFragment_to_PhotosFragment"
+            app:destination="@id/PhotosFragment" />
     </fragment>
     <fragment
-        android:id="@+id/detailAlbumFragment"
+        android:id="@+id/DetailAlbumFragment"
         android:name="com.example.album.detail_album.DetailAlbumFragment" >
         <action
             android:id="@+id/action_detailAlbumFragment_to_detailFragment"
-            app:destination="@id/detailFragment" >
+            app:destination="@id/DetailImage" >
             <argument
                 android:name="image"
                 app:argType="android.net.Uri"/>
         </action>
     </fragment>
     <fragment
-        android:id="@+id/detailFragment"
+        android:id="@+id/DetailImage"
         android:name="com.example.album.detail_image.DetailImageFragment" >
 
 
     </fragment>
     <fragment
-        android:id="@+id/galleryFragment"
-        android:name="com.example.album.gallery.GalleryFragment"
-        android:label="PHOTOS" >
+        android:id="@+id/SettingsFragment"
+        android:name="com.example.album.SettingsFragment"
+        android:label="Settings" />
+
+    <fragment
+        android:id="@+id/PhotosFragment"
+        android:name="com.example.album.gallery.PhotosFragment">
         <action
-            android:id="@+id/action_galleryFragment_to_detailFragment"
-            app:destination="@id/detailFragment">
-            <argument android:name="image"
+            android:id="@+id/action_PhotosFragment_to_DetailFragment"
+            app:destination="@id/DetailImage" >
+            <argument
+                android:name="image"
                 app:argType="android.net.Uri"/>
         </action>
         <action
-            android:id="@+id/action_galleryFragment_to_albumFragment"
-            app:destination="@id/albumFragment"
-            app:popUpTo="@+id/nav_graph"
-
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            android:id="@+id/action_PhotosFragment_to_AlbumFragment"
+            app:destination="@id/AlbumFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.example.album.SettingsFragment"
-        android:label="SettingsFragment" />
 </navigation>

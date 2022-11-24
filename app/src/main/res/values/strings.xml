@@ -64,4 +64,6 @@
     <string name="DELETE">DELETE</string>
     
     <string name="delete_notification">Delete %d %s?</string>
+
+    <string name="number_selected_items">%d selected %s</string>
 </resources>

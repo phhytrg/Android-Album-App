@@ -23,6 +23,10 @@
         <item name="ucrop_actionbar_color">?attr/colorPrimary</item>
     </style>
 
+    <style name="Theme.Album.Font">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
     <style name="full_screen_dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>

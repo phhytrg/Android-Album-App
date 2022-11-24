@@ -7,10 +7,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +32,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.album.album.AlbumFragmentDirections;
-import com.example.album.gallery.GalleryFragmentDirections;
+import com.example.album.gallery.PhotosFragmentDirections;
 import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ToggleButtonGroupTableLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity{
                     execChooseTheme();
                 }
                 if(id == R.id.menu_settings){
-                    navController.navigate(R.id.settingsFragment);
+                    navController.navigate(R.id.SettingsFragment);
                     navigationBar.setVisibility(View.GONE);
                 }
                 if(id == R.id.camera){
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void setUpNavigationActionBar(){
         AppBarConfiguration appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.galleryFragment,R.id.albumFragment).build();
+                new AppBarConfiguration.Builder(R.id.PhotosFragment,R.id.AlbumFragment).build();
         if(navController!= null) {
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         }
@@ -141,10 +139,10 @@ public class MainActivity extends AppCompatActivity{
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 for(int i =0; i < navigationMenu.size(); i++){
                     MenuItem currentItem = navigationMenu.getItem(i);
-                    if (currentItem.getItemId() == R.id.galleryFragment) {
+                    if (currentItem.getItemId() == R.id.PhotosFragment) {
                         currentItem.setTitle(
                                 getSpannableStringFromMenuItem(currentItem, R.attr.iconColor));
-                    } else if (currentItem.getItemId() == R.id.albumFragment) {
+                    } else if (currentItem.getItemId() == R.id.AlbumFragment) {
                         currentItem.setTitle(
                                 getSpannableStringFromMenuItem(currentItem, R.attr.iconColor));
                     } else if (currentItem.getItemId() == R.id.privacyFragment) {
@@ -162,17 +160,17 @@ public class MainActivity extends AppCompatActivity{
                 if(navController == null) {
                     return false;
                 }
-                if(currentId == R.id.albumFragment){
-                    if(destinationId == R.id.galleryFragment) {
+                if(currentId == R.id.AlbumFragment){
+                    if(destinationId == R.id.PhotosFragment) {
                         NavDirections action = AlbumFragmentDirections
-                                .actionAlbumFragmentToGalleryFragment();
+                                .actionAlbumFragmentToPhotosFragment();
                         navController.navigate(action, setUpSpecificNavOpts(0));
                     }
                 }
-                else if(currentId == R.id.galleryFragment){
-                    if(destinationId == R.id.albumFragment){
-                        NavDirections action = GalleryFragmentDirections
-                                .actionGalleryFragmentToAlbumFragment();
+                else if(currentId == R.id.PhotosFragment){
+                    if(destinationId == R.id.AlbumFragment){
+                        NavDirections action = PhotosFragmentDirections
+                                .actionPhotosFragmentToAlbumFragment();
                         navController.navigate(action, setUpSpecificNavOpts(1));
                     }
                 }
@@ -187,7 +185,7 @@ public class MainActivity extends AppCompatActivity{
             currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.attr.highlightTextColor));
         }
         else if(currentFragmentName.equals("DetailFragment")
-                || currentFragmentName.equals("GalleryFragment")) {
+                || currentFragmentName.equals("PhotosFragment")) {
             MenuItem currentItem = navigationMenu.getItem(0);
             currentItem.setTitle(getSpannableStringFromMenuItem(currentItem, R.attr.highlightTextColor));
         }
@@ -347,7 +345,7 @@ public class MainActivity extends AppCompatActivity{
                     }
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("image",bmp);
-                    navController.navigate(R.id.detailFragment, bundle);
+                    navController.navigate(R.id.DetailImage, bundle);
                 }
             });
 
