@@ -1,9 +1,5 @@
 package com.example.album.detail_album;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,104 +7,64 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.album.ImageUri;
 import com.example.album.R;
-import com.example.album.gallery.GalleryFragment;
-import com.example.album.gallery.GalleryFragmentDirections;
+
+import java.util.List;
 
 public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.GalleryViewHolder> {
 
-    View view;
-    Context context;
-    boolean isLinearLayout;
-
-    public DetailAlbumAdapter(Context context) {
-        this.context = context;
+    public interface OnClickListener{
+        void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder);
     }
+//    View view;
+//    Context context;
 
+    private OnClickListener listener;
+
+    private boolean isLinearLayout;
     public void setLinearLayout(boolean linearLayout) {
         isLinearLayout = linearLayout;
     }
 
-    int[] images = {R.drawable.photo1,R.drawable.photo2,R.drawable.photo2,
-            R.drawable.photo3,R.drawable.photo4,R.drawable.photo5,
-            R.drawable.photo6,R.drawable.photo7,R.drawable.photo8,
-            R.drawable.image,R.drawable.image2,R.drawable.image2,
-            R.drawable.image2,R.drawable.image2,R.drawable.image2,
-            R.drawable.image2,R.drawable.image2,R.drawable.image2};
+    List<Integer> images;
+
+    public DetailAlbumAdapter(OnClickListener listener, List<Integer> images) {
+        this.listener = listener;
+        this.images = images;
+    }
 
     @NonNull
     @Override
     public GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        view = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.image_item,parent,false);
         return new GalleryViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GalleryViewHolder holder, int position) {
-        holder.imageView.setImageResource(images[position]);
-        ConstraintLayout.LayoutParams a = (ConstraintLayout.LayoutParams)holder.imageView.getLayoutParams();
+        holder.imageView.setImageResource(images.get(position));
+        ConstraintLayout.LayoutParams itemView = (ConstraintLayout.LayoutParams)holder.imageView.getLayoutParams();
         if(isLinearLayout){
             int h = holder.imageView.getDrawable().getIntrinsicHeight();
             int w = holder.imageView.getDrawable().getIntrinsicWidth();
-            a.dimensionRatio = "H,"+ w +":"+ h;
+            itemView.dimensionRatio = "H,"+ w +":"+ h;
         }else{
-            a.dimensionRatio = "H,1:1";
-            a.width=0;
-            a.height=0;
+            itemView.dimensionRatio = "H,1:1";
+            itemView.width=0;
+            itemView.height=0;
         }
-        holder.imageView.setOnClickListener(v -> {
-            NavHostFragment hostFragment = (NavHostFragment) ((FragmentActivity)context)
-                    .getSupportFragmentManager()
-                    .findFragmentById(R.id.nav_host_fragment);
-            if(hostFragment == null)
-                return;
-
-            //Get current fragment
-            Fragment fragment = hostFragment
-                    .getChildFragmentManager()
-                    .getFragments().get(0);
-
-            //Get current fragment's name
-            String currentFragment = fragment.getClass().getSimpleName();
-
-            //There are 2 different path for navigation.
-            //The first comes from DetailAlbumFragment -> DetailFragment
-            //The second comes from GalleryFragment -> Detail Fragment
-            Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), images[position]);
-            Uri imageUri = ImageUri.getImageUri(context, largeIcon);
-//            ByteArrayOutputStream bs = new ByteArrayOutputStream();
-//            largeIcon.compress(Bitmap.CompressFormat.JPEG,100, bs);
-
-            if(currentFragment.equals(DetailAlbumFragment.class.getSimpleName())){
-                NavDirections action = DetailAlbumFragmentDirections
-                        .actionDetailAlbumFragmentToDetailFragment(imageUri);
-                Navigation.findNavController(v)
-                        .navigate(action);
-            }
-            if(currentFragment.equals(GalleryFragment.class.getSimpleName())){
-                NavDirections action = GalleryFragmentDirections
-                        .actionGalleryFragmentToDetailFragment(imageUri);
-                Navigation.findNavController(v)
-                        .navigate(action);
-            }
-        });
+        holder.imageView.setOnClickListener(v -> {listener.OnItemClick(holder);});
     }
 
     @Override
     public int getItemCount() {
-        return images.length;
+        return images.size();
     }
 
-    public static class GalleryViewHolder extends RecyclerView.ViewHolder{
+    public class GalleryViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
         public GalleryViewHolder(@NonNull View itemView) {
             super(itemView);

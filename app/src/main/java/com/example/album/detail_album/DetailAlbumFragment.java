@@ -1,5 +1,8 @@
 package com.example.album.detail_album;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,15 +21,22 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.ImageUri;
 import com.example.album.R;
+import com.example.album.gallery.PhotosFragmentDirections;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 import com.example.album.ui.SplitToolbar;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DetailAlbumFragment extends Fragment {
 
@@ -34,8 +44,17 @@ public class DetailAlbumFragment extends Fragment {
     RecyclerView recyclerView;
     DetailAlbumAdapter adapter;
     String albumName;
+    NavController navController;
 
     boolean isLinearLayout = false;
+
+    List<Integer> images = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
+            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
+            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
+            R.drawable.photo9, R.drawable.photo1, R.drawable.photo2,
+            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
+            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
+            R.drawable.photo9));
 
     @Nullable
     @Override
@@ -47,52 +66,6 @@ public class DetailAlbumFragment extends Fragment {
                 actionBar.setTitle(albumName);
             }
         }
-
-//        MenuHost menuHost = getActivity();
-//        MenuProvider menuProvider = new MenuProvider() {
-//            @Override
-//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-////                menuInflater.inflate(R.menu.switch_layout_menu, menu);
-//                MenuItem layoutMenu = menu.findItem(R.id.action_switch_layout);
-//                setIcon(layoutMenu);
-//            }
-//
-//            @Override
-//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//                if(menuItem.getItemId() == R.id.action_switch_layout) {
-//                    isLinearLayout = !isLinearLayout;
-////                    adapter.setLinearLayout(isLinearLayout);
-////                    chooseLayout();
-//                    setIcon(menuItem);
-//                    if(isLinearLayout){
-//                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
-////                            GalleryAdapter.GalleryViewHolder viewHolder =
-////                                    (GalleryAdapter.GalleryViewHolder) recyclerView
-////                                            .findViewHolderForAdapterPosition(i);
-//                            adapter.setLinearLayout(isLinearLayout);
-//                            adapter.notifyItemChanged(i);
-//                        }
-//                    }
-//                    else{
-//                        for (int childCount = adapter.getItemCount(), i = 0; i < childCount; ++i) {
-////                            GalleryAdapter.GalleryViewHolder viewHolder =
-////                                    (GalleryAdapter.GalleryViewHolder) recyclerView
-////                                            .findViewHolderForAdapterPosition(i);
-//
-//                            adapter.setLinearLayout(isLinearLayout);
-//                            adapter.notifyItemChanged(i);
-//                        }
-//                    }
-//                    chooseLayout();
-//                }
-//
-//                return true;
-//            }
-//
-//        };
-//        if(menuHost != null) {
-//            menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
-//        }
 
         SplitToolbar toolbar = getActivity().findViewById(R.id.navigation_bar);
         toolbar.setVisibility(View.GONE);
@@ -106,7 +79,7 @@ public class DetailAlbumFragment extends Fragment {
         NavHostFragment navHostFragment = (NavHostFragment) getActivity()
                 .getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment != null
+        navController = navHostFragment != null
                 ? navHostFragment.getNavController()
                 : null;
 
@@ -129,7 +102,25 @@ public class DetailAlbumFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.gallery_recyclerview);
-        adapter = new DetailAlbumAdapter(requireContext());
+        DetailAlbumAdapter.OnClickListener listener = new DetailAlbumAdapter.OnClickListener() {
+            @Override
+            public void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder) {
+
+                //There are 2 different path for navigation.
+                //The first comes from DetailAlbumFragment -> DetailFragment
+                //The second comes from PhotosFragment -> Detail Fragment
+                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+                        images.get(holder.getAdapterPosition()));
+                Uri imageUri = ImageUri.getImageUri(requireContext(), largeIcon);
+//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+//                largeIcon.compress(Bitmap.CompressFormat.JPEG,100, bs);
+
+                NavDirections action = DetailAlbumFragmentDirections
+                        .actionDetailAlbumFragmentToDetailFragment(imageUri);
+                navController.navigate(action);
+            }
+        };
+        adapter = new DetailAlbumAdapter(listener,images);
         recyclerView.setAdapter(adapter);
         chooseLayout();
         if(getActivity() == null){

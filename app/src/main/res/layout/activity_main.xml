@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/app_bar"
-            style="@style/Widget.Album.Toolbar"
-            />
+            style="@style/Widget.Album.Toolbar" />
 <!--app:layout_scrollFlags="scroll|enterAlways|snap"-->
         <com.example.album.ui.SplitToolbar
             android:id="@+id/navigation_bar"

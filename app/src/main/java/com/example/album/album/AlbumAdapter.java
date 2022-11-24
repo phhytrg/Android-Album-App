@@ -92,7 +92,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         holder.shapeableImageView.setImageResource(albumImages.get(position));
         holder.albumName.setText(albumNames.get(position));
         if(currentState == AlbumFragment.UNCHANGED_MODE){
-            holder.checkbox.setVisibility(View.INVISIBLE);
+            holder.checkbox.setVisibility(View.GONE);
         }
         else{
             holder.checkbox.setVisibility(View.VISIBLE);

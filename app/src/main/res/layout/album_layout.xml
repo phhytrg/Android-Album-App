@@ -31,14 +31,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/go_back_option"
-            android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="14sp"
             android:textStyle="bold"
             tools:text="1 Selected item"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:fontFamily="@font/roboto"/>
 
 
 
@@ -67,7 +68,8 @@
                 android:text="@string/all"
                 android:textAlignment="center"
                 android:textSize="14sp"
-                android:textColor="?android:attr/textColorPrimary"/>
+                android:textColor="?android:attr/textColorPrimary"
+                android:fontFamily="@font/roboto" />
 
         </LinearLayout>
 
