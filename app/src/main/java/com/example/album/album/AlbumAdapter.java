@@ -14,7 +14,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -99,17 +98,17 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         holder.shapeableImageView.setImageResource(albumImages.get(position));
         holder.albumName.setText(albumNames.get(position));
         if(currentMode == CHANGED_MODE){
-            holder.checked.setVisibility(View.VISIBLE);
+            holder.checkbox.setVisibility(View.VISIBLE);
         }
         else{
-            holder.checked.setVisibility(View.GONE);
+            holder.checkbox.setVisibility(View.GONE);
         }
         if(currentMode == CHANGED_MODE){
             if(selectedItems.contains(position)){
-                holder.checked.setChecked(true);
+                holder.checkbox.setChecked(true);
             }
             else{
-                holder.checked.setChecked(false);
+                holder.checkbox.setChecked(false);
             }
         }
     }
@@ -125,9 +124,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             Navigation.findNavController(holder.itemView).navigate(action);
         }
         else{
-            holder.checked.setChecked(!holder.checked.isChecked());
+            holder.checkbox.setChecked(!holder.checkbox.isChecked());
             //Blur item here
-            if(holder.checked.isChecked()){
+            if(holder.checkbox.isChecked()){
                 selectedItems.add(holder.getAdapterPosition());
 //                totalItemsSelected.setValue();
                 countItems++;
@@ -153,7 +152,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         TextView albumName;
         TextView numImages;
         ConstraintLayout item;
-        CheckBox checked;
+        CheckBox checkbox;
 
         boolean isCheckedFlag = false;
 
@@ -162,24 +161,30 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             shapeableImageView = itemView.findViewById(R.id.album_image);
             albumName = itemView.findViewById(R.id.album_name);
             item = itemView.findViewById(R.id.album_item);
-            checked = itemView.findViewById(R.id.selected_item);
+            checkbox = itemView.findViewById(R.id.selected_item);
 
-            checked.setOnClickListener(v -> {
+            checkbox.setOnClickListener(v -> {
                 //Blur item here
-                if(checked.isChecked()){
+                if(checkbox.isChecked()){
                     selectedItems.add((int)getAdapterPosition());
+                    countItems++;
                     //Blur item here
                 }
                 else{
                     Log.d("AAA",Integer.toString(getAdapterPosition()));
-                    selectedItems.remove((int)getAdapterPosition());
+                    selectedItems.remove((Object)getAdapterPosition());
                     isCheckedFlag = true;
+                    countItems--;
                     //Back
                 }
+//                checkbox.setChecked(!checkbox.isChecked());
+                countItemTextView.setText(Integer.toString(countItems));
             });
+
             if (layoutType == LINEAR_LAYOUT) {
                 numImages = itemView.findViewById(R.id.number_of_images);
                 numImages.setText(Integer.toString(100));
+
             }
 
             itemView.setOnClickListener(v -> onItemClick(this));
@@ -235,7 +240,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     backButton.setOnClickListener(v -> {
                         bar.setVisibility(View.GONE);
                         currentMode = UNCHANGED_MODE;
-                        checked.setVisibility(View.GONE);
+                        checkbox.setVisibility(View.GONE);
                         for (int i = 0; i < getItemCount(); i++) {
                             notifyItemChanged(i);
                         }
@@ -299,6 +304,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                         selectedItems.add(i);
                         notifyItemChanged(i);
                     }
+                    countItems = getItemCount();
+                    countItemTextView.setText(Integer.toString(countItems));
+
                 }
 
                 private void allUnselected() {
@@ -306,6 +314,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     for (int i = getItemCount() - 1; i >= 0; --i) {
                         notifyItemChanged(i);
                     }
+                    countItems = 0;
+                    countItemTextView.setText(Integer.toString(countItems));
                 }
             });
         }
