@@ -24,10 +24,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -44,6 +49,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.album.MainActivity;
 import com.example.album.R;
+import com.example.album.ui.ImageFilter;
 import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ZoomableImageView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -63,13 +69,14 @@ import java.util.Random;
 import java.util.UUID;
 
 
-public class DetailImageFragment extends Fragment {
+public class DetailImageFragment extends Fragment{
     BottomNavigationView navigationView;
     PopupMenu popup;
     ImageButton navigateUpButton;
     ImageButton overflowButton;
     ImageButton doneButton;
     ImageButton favoriteButton;
+    ImageButton autoFilterButton;
     ActionBar app_bar;
     SplitToolbar navigationBar;
     ZoomableImageView imageView;
@@ -78,13 +85,16 @@ public class DetailImageFragment extends Fragment {
     String[] details;
 //    Bitmap image_bm_mod, image_bm_orig;
     Bitmap bitmap, bitmap_mod;
+    //filter
+    ViewGroup filter_gallery;
 
     CurrentState currentState = CurrentState.DETAIL;
 
     enum CurrentState{
         DETAIL,
         EDIT,
-        PAINT
+        PAINT,
+        FILTER
     }
 
 
@@ -130,11 +140,13 @@ public class DetailImageFragment extends Fragment {
         overflowButton = view.findViewById(R.id.overflow_button);
         doneButton = view.findViewById(R.id.done);
         favoriteButton = view.findViewById(R.id.favorite);
+        autoFilterButton =view.findViewById(R.id.auto_filter);
         imageView = view.findViewById(R.id.photo_view);
         imageView.setImageBitmap(bitmap);
 //        imageView.setImageResource(resourceId);
         navigationView = view.findViewById(R.id.bottom_nav);
-
+        //filter
+        filter_gallery = (ViewGroup) view.findViewById(R.id.filter_gallery);
         Bitmap image_bm0 = BitmapFactory.decodeResource(this.getResources(),
                 resourceId);
 //        String pathSaved = saveToInternalStorage(image_bm0);
@@ -148,6 +160,7 @@ public class DetailImageFragment extends Fragment {
         overflowButton.setOnClickListener(this::showPopup);
         favoriteButton.setOnClickListener(v -> handleFavorite());
         doneButton.setOnClickListener(this::handleDone);
+        autoFilterButton.setOnClickListener(this::handleDone);
 
         // details chứa name, date, location, size, description
         // theo thứ tự index 0 -> 4
@@ -172,6 +185,8 @@ public class DetailImageFragment extends Fragment {
                 .addCallback(getViewLifecycleOwner(), callback);
 
     }
+
+
     public void showPopup(View v) {
         popup = new PopupMenu(requireContext(), v);
 
@@ -189,18 +204,15 @@ public class DetailImageFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.details:
                 handleDetails();
-//                Toast.makeText(requireContext(), "details", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add:
                 Toast.makeText(requireContext(), "add", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.set:
                 handleSet();
-//                Toast.makeText(requireContext(), "set", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.rename:
                 handleRename();
-                Toast.makeText(requireContext(), "rename", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 return false;
@@ -267,11 +279,15 @@ public class DetailImageFragment extends Fragment {
         else if(id == R.id.color){
             handleColor();
         }
+        else if(id == R.id.filter){
+            handleFilter();
+        }
         else {
             return false;
         }
         return true;
     }
+
 
 
     private String saveToInternalStorage(Bitmap bitmapImage){
@@ -439,6 +455,15 @@ public class DetailImageFragment extends Fragment {
                 //dang o paint
                 handleEdit();
                 break;
+            case FILTER:
+                //dang o paint
+                navigationView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+//                navigationView.requestLayout();
+                filter_gallery.getLayoutParams().height =0;
+                filter_gallery.requestLayout();
+
+                handleEdit();
+                break;
         }
     }
 
@@ -468,6 +493,18 @@ public class DetailImageFragment extends Fragment {
                 saveToInternalStorage(bitmap_mod);
 
                 currentState = CurrentState.EDIT;
+                break;
+            case FILTER:
+                bitmap = bitmap_mod;
+                imageView.setImageBitmap(bitmap_mod);
+                saveToInternalStorage(bitmap_mod);
+
+                navigationView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                filter_gallery.getLayoutParams().height =0;
+                filter_gallery.requestLayout();
+                currentState = CurrentState.EDIT;
+                handleEdit();
+
                 break;
         }
     }
@@ -525,6 +562,7 @@ public class DetailImageFragment extends Fragment {
 
     public void handleEdit(){
         navigationView.getMenu().clear();
+
         navigationView.inflateMenu(R.menu.edit_nav);
         doneButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         doneButton.requestLayout();
@@ -532,11 +570,50 @@ public class DetailImageFragment extends Fragment {
         favoriteButton.requestLayout();
         overflowButton.getLayoutParams().height = 0;
         overflowButton.requestLayout();
+        autoFilterButton.getLayoutParams().height = 0;
+        autoFilterButton.requestLayout();
         navigationView.setVisibility(View.VISIBLE);
         navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         currentState = CurrentState.EDIT;
     }
+    //filter
+    private void handleAutoFilter() {
+    }
 
+    private void handleFilter() {
+        currentState = CurrentState.FILTER;
+        navigationView.getMenu().clear();
+        navigationView.getLayoutParams().height = 0;
+        filter_gallery.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        autoFilterButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        autoFilterButton.requestLayout();
+
+        int length = ImageFilter.filter_values.length;
+        Bitmap bmscaled = Bitmap.createScaledBitmap(bitmap_mod, 80, 80, false);
+
+        for(int i=0;i< length;++i){
+
+            final View v = getLayoutInflater().inflate(R.layout.filter_item,null);
+            v.setId(i);
+            TextView tv = (TextView) v.findViewById(R.id.text_filter);
+            tv.setText(ImageFilter.filter_values[i]);
+            ImageView img = (ImageView) v.findViewById(R.id.img_filter);
+            img.setImageBitmap(ImageFilter.applyFilter(bmscaled,ImageFilter.filter_values[i]));
+
+            filter_gallery.addView(v);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(v.getId()==0){
+                        bitmap_mod=bitmap;
+                    }
+                    bitmap_mod =ImageFilter.applyFilter(bitmap_mod,ImageFilter.filter_values[v.getId()]);
+                    imageView.setImageBitmap(bitmap_mod);
+                }});
+        }
+    }
+
+    //
     public void handleBrush(){
         navigationView.getMenu().clear();
         navigationView.inflateMenu(R.menu.paint_nav);
