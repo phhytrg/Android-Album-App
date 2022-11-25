@@ -16,7 +16,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/cat1"/>
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,6 +79,14 @@
             android:background="@color/trans"
             android:src="@drawable/ic_auto_filter"
             android:layout_toStartOf="@id/overflow_button"
+            android:layout_marginEnd="8dp"/>
+        <ImageButton
+            android:id="@+id/setting_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/trans"
+            android:src="@drawable/ic_edit_filter"
+            android:layout_toStartOf="@id/auto_filter"
             android:layout_marginEnd="8dp"/>
     </RelativeLayout>
 

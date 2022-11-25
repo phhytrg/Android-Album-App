@@ -1,7 +1,6 @@
 package com.example.album.ui;
 
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -11,12 +10,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.widget.Toast;
+
 
 import java.util.Random;
 
 public class ImageFilter {
-    public static String[] filter_values= {"NONE","GRAY","INVERT","CONTRAST","BRIGHTNESS","SNOW","OLD","CORNER","TINT"};
+    public static String[] filter_values= {"NONE","GRAY","INVERT","CONTRAST","TINT","RELIEF","SNOW","OLD","CORNER","BRIGHTNESS"};
+    public static String[] auto_filter_values= {"SNOW","CONTRAST","TINT","TINT","RELIEF","OLD","CORNER","TINT","BRIGHTNESS","TINT"};
 
     public static Bitmap applyFilter(Bitmap bitmap, String filter, Object... options) {
         switch (filter){
@@ -31,14 +31,14 @@ public class ImageFilter {
                 return changeToContrast(bitmap, (Integer)options[0]);
             case "BRIGHTNESS":
                 if (options.length < 1) {
-                    return changeToBrightness(bitmap, 80);
+                    return changeToBrightness(bitmap, 70);
                 }
                 return changeToBrightness(bitmap, (Integer)options[0]);
             case "CORNER":
                 if (options.length < 1) {
-                    return roundCorner(bitmap, 50);
+                    return roundCorner(bitmap, 200);
                 }
-                return roundCorner(bitmap, (Integer)options[0]);
+                return roundCorner(bitmap, (Integer)options[0]+350);
             case "TINT":
                 if (options.length < 1) {
                     return tintImage(bitmap, 40);
@@ -50,8 +50,11 @@ public class ImageFilter {
                 return chageToInvert(bitmap);
             case "OLD":
                 return changeToOld(bitmap);
-//            case "SHARPEN":
-//                return changeToSharpen(bitmap);
+            case "RELIEF":
+                if (options.length < 1) {
+                    return tintImage(bitmap, -1234567);
+                }
+                return tintImage(bitmap, (Integer)options[0] - 100000);
 
         }
         return bitmap;
@@ -269,7 +272,7 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
     // return final image
     return bmOut;
     }
-    private static Bitmap changeToRelief(Bitmap bitmap) {
+    private static Bitmap changeToRelief(Bitmap bitmap, int value) {
 
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -284,7 +287,7 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
                 // get current index in 2D-matrix
                 index = y * width + x;
                 // AND
-                pixels[index] &= -16776961;
+                pixels[index] &= (value);
             }
         }
         // output bitmap

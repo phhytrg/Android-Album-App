@@ -1,5 +1,7 @@
 package com.example.album.detail_image;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.WallpaperManager;
@@ -9,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -77,6 +80,8 @@ public class DetailImageFragment extends Fragment{
     ImageButton doneButton;
     ImageButton favoriteButton;
     ImageButton autoFilterButton;
+    ImageButton settingFilterButton;
+
     ActionBar app_bar;
     SplitToolbar navigationBar;
     ZoomableImageView imageView;
@@ -141,6 +146,7 @@ public class DetailImageFragment extends Fragment{
         doneButton = view.findViewById(R.id.done);
         favoriteButton = view.findViewById(R.id.favorite);
         autoFilterButton =view.findViewById(R.id.auto_filter);
+        settingFilterButton=view.findViewById(R.id.setting_filter);
         imageView = view.findViewById(R.id.photo_view);
         imageView.setImageBitmap(bitmap);
 //        imageView.setImageResource(resourceId);
@@ -160,8 +166,8 @@ public class DetailImageFragment extends Fragment{
         overflowButton.setOnClickListener(this::showPopup);
         favoriteButton.setOnClickListener(v -> handleFavorite());
         doneButton.setOnClickListener(this::handleDone);
-        autoFilterButton.setOnClickListener(this::handleDone);
-
+        autoFilterButton.setOnClickListener(this::handleAutoFilter);
+        settingFilterButton.setOnClickListener(this::handleSettingFilter);
         // details chứa name, date, location, size, description
         // theo thứ tự index 0 -> 4
         // name, date, location, size, description phải được lấy từ database
@@ -185,6 +191,7 @@ public class DetailImageFragment extends Fragment{
                 .addCallback(getViewLifecycleOwner(), callback);
 
     }
+
 
 
     public void showPopup(View v) {
@@ -572,12 +579,35 @@ public class DetailImageFragment extends Fragment{
         overflowButton.requestLayout();
         autoFilterButton.getLayoutParams().height = 0;
         autoFilterButton.requestLayout();
+        settingFilterButton.getLayoutParams().height = 0;
+        settingFilterButton.requestLayout();
         navigationView.setVisibility(View.VISIBLE);
         navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         currentState = CurrentState.EDIT;
     }
     //filter
-    private void handleAutoFilter() {
+
+    private void handleSettingFilter(View view) {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.setting_filter_dialog);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogPopupStyle;
+        dialog.show();
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+//        dialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(layoutParams);
+        dialog.getWindow().setDimAmount(0f);
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.custom_setting_filter_dialog);
+    }
+    private void handleAutoFilter(View v) {
+        int id = randomNum(0,ImageFilter.auto_filter_values.length-1);
+        bitmap_mod =ImageFilter.applyFilter(bitmap,ImageFilter.auto_filter_values[id],randomNum(-100,100));
+        imageView.setImageBitmap(bitmap_mod);
+    }
+    private int randomNum(int min,int max){
+        return (int)Math.floor(Math.random()*(max-min+1)+min);
     }
 
     private void handleFilter() {
@@ -587,6 +617,8 @@ public class DetailImageFragment extends Fragment{
         filter_gallery.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         autoFilterButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
         autoFilterButton.requestLayout();
+        settingFilterButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        settingFilterButton.requestLayout();
 
         int length = ImageFilter.filter_values.length;
         Bitmap bmscaled = Bitmap.createScaledBitmap(bitmap_mod, 80, 80, false);
@@ -604,10 +636,7 @@ public class DetailImageFragment extends Fragment{
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(v.getId()==0){
-                        bitmap_mod=bitmap;
-                    }
-                    bitmap_mod =ImageFilter.applyFilter(bitmap_mod,ImageFilter.filter_values[v.getId()]);
+                    bitmap_mod =ImageFilter.applyFilter(bitmap,ImageFilter.filter_values[v.getId()]);
                     imageView.setImageBitmap(bitmap_mod);
                 }});
         }
