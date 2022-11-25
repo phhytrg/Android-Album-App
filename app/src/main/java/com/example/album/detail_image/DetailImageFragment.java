@@ -94,24 +94,24 @@ public class DetailImageFragment extends Fragment {
         if(getArguments() != null){
             Uri imageUri = getArguments().getParcelable("image");
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
                 bitmap_mod = bitmap;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        app_bar = ((MainActivity)getActivity()).getSupportActionBar();
+        app_bar = ((MainActivity)requireActivity()).getSupportActionBar();
         if (app_bar != null) {
             app_bar.hide();
         }
-        Window window = getActivity().getWindow();
+        Window window = requireActivity().getWindow();
         if(window != null) {
             window.setStatusBarColor(getResources()
-                    .getColor(R.color.dark_grey, getActivity().getTheme()));
+                    .getColor(R.color.dark_grey, requireActivity().getTheme()));
             window.getDecorView().setSystemUiVisibility(0);
         }
 
-        navigationBar = getActivity().findViewById(R.id.navigation_bar);
+        navigationBar = requireActivity().findViewById(R.id.navigation_bar);
         navigationBar.setVisibility(View.GONE);
 
         return inflater.inflate(R.layout.fragment_image_detail,container,false).getRootView();
