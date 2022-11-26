@@ -65,4 +65,6 @@ public class ImageUri {
         result.setPixels(pixels, 0, result.getWidth(), 0, 0, result.getWidth(), result.getHeight());
         return result;
     }
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.album.gallery;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.album.R;
 
 import java.util.Collections;
@@ -19,8 +22,9 @@ import java.util.List;
 public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public interface AdapterCallback{
-        void OnItemClick(EventItem item);
-        void LinearItemDecoration(ImageView imageView);
+        void onItemClick(ImageItem item);
+        void linearItemDecoration(ImageView imageView);
+        Bitmap setThumbnail(ImageItem imageItem);
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder{
@@ -41,13 +45,14 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
-//            itemView.setOnClickListener(v -> listener.OnItemClick((EventItem) items.get(getAdapterPosition())));
+//            itemView.setOnClickListener(v -> listener.OnItemClick((ImageItem) items.get(getAdapterPosition())));
         }
     }
 
     private List<ListItem> items = Collections.emptyList();
     private PhotosAdapter.AdapterCallback listener;
     private boolean isLinearLayout = false;
+    private Context context;
     ConstraintSet set;
 
     public void setLinearLayout(boolean linearLayout) {
@@ -64,7 +69,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         switch (viewType){
             case ListItem.TYPE_HEADER:{
                 //TODO
@@ -92,25 +98,31 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 break;
             }
             case ListItem.TYPE_EVENT:{
-                EventItem eventItem = (EventItem) items.get(position);
+                ImageItem imageItem = (ImageItem) items.get(position);
                 ImageViewHolder viewHolder = (ImageViewHolder) holder;
-                ConstraintLayout.LayoutParams itemView = (ConstraintLayout.LayoutParams)viewHolder
-                        .imageView.getLayoutParams();
-                viewHolder.imageView.setImageResource(eventItem.getEvent().getImageId());
+
+                //item decoration
                 if(isLinearLayout){
-                    int h = viewHolder.imageView.getDrawable().getIntrinsicHeight();
-                    int w = viewHolder.imageView.getDrawable().getIntrinsicWidth();
+                    int w = imageItem.getImage().getWidth();
+                    int h = imageItem.getImage().getHeight();
                     set.clone((ConstraintLayout) holder.itemView);
                     set.setDimensionRatio(viewHolder.imageView.getId(), w+":"+h);
                     set.applyTo((ConstraintLayout) holder.itemView);
-                    listener.LinearItemDecoration(viewHolder.imageView);
+                    listener.linearItemDecoration(viewHolder.imageView);
                 }else{
                     viewHolder.imageView.setBackground(null);
                     set.clone((ConstraintLayout) holder.itemView);
                     set.setDimensionRatio(viewHolder.imageView.getId(), "1:1");
                     set.applyTo((ConstraintLayout) holder.itemView);
                 }
-                viewHolder.imageView.setOnClickListener(v -> listener.OnItemClick(eventItem));
+
+                Glide.with(context)
+                        .load(imageItem.getImage().getImageUri())
+                        .fitCenter()
+                        .placeholder(R.drawable.image_border)
+                        .into(viewHolder.imageView);
+                viewHolder.imageView.setImageURI(imageItem.getImage().getThumbnailUri());
+                viewHolder.imageView.setOnClickListener(v -> listener.onItemClick(imageItem));
                 break;
             }
             default:

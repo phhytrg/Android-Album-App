@@ -1,16 +1,16 @@
 package com.example.album.gallery;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class HeaderItem extends ListItem {
 
-    private Date date;
+    private LocalDate date;
 
     // here getters and setters
     // for title and so on, built
     // using date
 
-    public HeaderItem(Date date) {
+    public HeaderItem(LocalDate date) {
         this.date = date;
     }
 
@@ -19,11 +19,11 @@ public class HeaderItem extends ListItem {
         return TYPE_HEADER;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 }
