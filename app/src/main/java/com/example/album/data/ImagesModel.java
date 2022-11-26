@@ -1,11 +1,15 @@
 package com.example.album.data;
 
+import android.app.Application;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.io.File;
 import java.time.Instant;
@@ -15,28 +19,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImagesModel
-        extends ViewModel {
+        extends AndroidViewModel {
 
     private static final String TAG = "IMAGES_MODE";
+    private static final Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     private MutableLiveData<Cursor> cursor;
-    private MutableLiveData<List<Image>> images = new MutableLiveData<>();
+//    private MutableLiveData<List<Image>> images = new MutableLiveData<>();
     private MutableLiveData<List<Album>> albums = new MutableLiveData<>();
+    ImagesLiveData images;
 
+    public ImagesModel(@NonNull Application application) {
+        super(application);
+        Context context = application.getApplicationContext();
+        images = new ImagesLiveData(context, uri);
+    }
 
     public MutableLiveData<Cursor> getCursor() {
         return cursor;
     }
 
-    public void setCursor(MutableLiveData<Cursor> cursor) {
-        this.cursor = cursor;
-        images = createImagesList();
+//    public void setCursor(MutableLiveData<Cursor> cursor) {
+//        this.cursor = cursor;
+//        images = createImagesList();
+//    }
+
+    public ImagesLiveData getImages(){
+        return images;
     }
 
-    public List<Image> getImages(){
-        return images.getValue();
-    }
 
-
+    @Nullable
     private MutableLiveData<List<Image>> createImagesList(){
         if(cursor.getValue() == null){
             return null;

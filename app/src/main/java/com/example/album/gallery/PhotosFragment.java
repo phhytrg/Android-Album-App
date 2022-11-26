@@ -42,7 +42,7 @@ public class PhotosFragment extends Fragment {
     RecyclerView recyclerView;
     ImagesModel imagesModel;
 
-    private boolean isLinearLayout = true;
+    private boolean isLinearLayout = false;
 
     @Nullable
     @Override
@@ -60,9 +60,14 @@ public class PhotosFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        imagesModel.getImages().observe(
+                getViewLifecycleOwner(),
+                images -> {
+                    adapter.notifyDataSetChanged();
+                }
+        );
         listItems = new ArrayList<>();
-        TreeMap<LocalDateTime, List<Image>> images = toMap(imagesModel.getImages());
+        TreeMap<LocalDateTime, List<Image>> images = toMap(imagesModel.getImages().getValue());
 
         for (LocalDateTime date : images.descendingKeySet()) {
             HeaderItem header = new HeaderItem(date);
@@ -76,7 +81,7 @@ public class PhotosFragment extends Fragment {
         recyclerView = view.findViewById(R.id.gallery_recyclerview);
         PhotosAdapter.AdapterCallback listener = new PhotosAdapter.AdapterCallback() {
             @Override
-            public void onItemClick(ImageItem item) {
+            public void onItemClick(@NonNull ImageItem item) {
                 Uri imageUri = item.getImage().getImageUri();
                 NavDirections action = PhotosFragmentDirections
                         .actionPhotosFragmentToDetailFragment(imageUri);
@@ -84,7 +89,7 @@ public class PhotosFragment extends Fragment {
             }
 
             @Override
-            public void linearItemDecoration(ImageView imageView) {
+            public void linearItemDecoration(@NonNull ImageView imageView) {
                 imageView.setBackground(ResourcesCompat.getDrawable(
                         getResources(),
                         R.drawable.image_border,
@@ -124,7 +129,8 @@ public class PhotosFragment extends Fragment {
 //    }
 
 
-    private TreeMap<LocalDateTime, List<Image>> toMap(List<Image> images){
+    @NonNull
+    private TreeMap<LocalDateTime, List<Image>> toMap(@NonNull List<Image> images){
         TreeMap<LocalDateTime, List<Image>> map = new TreeMap<>();
         for(Image image: images){
             List<Image> value = map.get(image.getDate().truncatedTo(ChronoUnit.DAYS));
