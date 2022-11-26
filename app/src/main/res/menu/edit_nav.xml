@@ -2,15 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/crop"
         android:icon="@drawable/ic_crop"
-        android:title="Crop"/>
+        android:title="@string/crop"/>
     <item android:id="@+id/flip"
         android:icon="@drawable/ic_flip"
-        android:title="Flip"/>
+        android:title="@string/flip"/>
     <item android:id="@+id/rotate"
         android:icon="@drawable/ic_rotate"
-        android:title="Rotate"/>
+        android:title="@string/rotate"/>
+    <item android:id="@+id/filter"
+        android:icon="@drawable/ic_photo_filter"
+        android:title="@string/filter_item"/>
     <item android:id="@+id/paint"
         android:icon="@drawable/ic_brush"
-        android:title="Paint"/>
+        android:title="@string/paint"/>
 
 </menu>

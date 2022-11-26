@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name">Album</string>
+    <string name="new_album">Tạo album mới</string>
+    <string name="setting">Cài đặt</string>
+    <string name="photos">ẢNH</string>
+    <string name="albums">ALBUMS</string>
+    <string name="privacy">RIÊNG TƯ</string>
+    <string name="gallery">Bộ sưu tập</string>
+    <string name="switch_layout_item">switch_layout_item</string>
+    <string name="filter_item">Bộ lọc</string>
+    <string name="camera_item">camera_item</string>
+
+    <!-- Preference Titles -->
+    <string name="choose_photo_header">Chọn ảnh</string>
+    <string name="examine_header">Kiểm Tra</string>
+    <string name="send_header">Gửi Ảnh</string>
+
+
+    <!-- Choose photo Preferences -->
+    <string name="choose_photo_title">Chọn một bức ảnh đẹp nhất</string>
+    <string name="choose_photo_describe">Hệ thống sẽ phân tích những bức ảnh tương tự với nhau và
+        đánh dấu những bức ảnh đẹp nhất cho bạn. Tắt tính năng này để xóa dấu khỏi các bức ảnh</string>
+
+    <!-- Examine Preferences -->
+    <string name="view_title">Xem Các Album Ẩn</string>
+    <string name="view_describe">Xem và quản lý các album ẩn</string>
+    <string name="showtime_title">Trình Chiếu</string>
+    <string name="repeat">Lặp lại trang trình bày nhiều lần</string>
+
+    <!-- Send Preferences -->
+    <string name="share_title">Chia Sẻ An Toàn</string>
+    <string name="change_title">Chuyển đổi HEIF thành JPEG</string>
+    <string name="change_describe">Chuyển đổi ảnh HEIF thành JPEG để đảm bảo tính tương thích</string>
+
+
+    /////////////////////////////////////////
+
+    <string name="label_sample">mẫu</string>
+    <string name="label_aspect_ratio">Tỷ lệ khung hình</string>
+    <string name="label_dynamic">Động</string>
+    <string name="label_image_source">Nguồn ảnh</string>
+    <string name="label_square">Vuông</string>
+    <string name="label_max_cropped_image_size">Kích thước ảnh cắt lớn nhất</string>
+    <string name="label_compression_settings">Cài đặt nén</string>
+    <string name="label_ui">UI</string>
+    <string name="label_width">Chiều rộng</string>
+    <string name="label_height">Chiều cao</string>
+    <string name="label_resize_image_to_max_size">Thay đổi ảnh đến kích thước tối đa</string>
+    <string name="label_hide_bottom_ui_controls">Ẩn giao diện điều khiển dưới</string>
+    <string name="label_freestyle_crop">Cắt tự do</string>
+    <string name="label_select_picture">Chọn Ảnh</string>
+    <string name="label_cancel">Hủy</string>
+    <string name="label_ok">OK</string>
+
+    <string name="crop">Cắt</string>
+    <string name="edit">Sửa</string>
+    <string name="delete">Xóa</string>
+    <string name="share">Chia Sẻ</string>
+    <string name="flip">Lật</string>
+    <string name="rotate">Quay</string>
+    <string name="paint">Vẽ</string>
+    <string name="home_screen">Màn hình nền</string>
+    <string name="lock_screen">Màn hình khóa</string>
+    <string name="home_and_lock_screen">Màn hình nền và màn hình khóa</string>
+    <string name="set_as_wallpaper">Đặt làm hình nền</string>
+    <string name="all">Tất cả</string>
+    <string name="DELETE">XÓA</string>
+
+    <string name="delete_notification">Xóa %d %s?</string>
+
+    <string name="language_cat">Ngôn Ngữ Của Ứng Dụng</string>
+    <string name="language_pref">Ngôn ngữ</string>
+    <string name="english">Tiếng Anh</string>
+    <string name="vietnamese">Tiếng Việt</string>
+
+    <string name="rename">Đổi tên</string>
+    <string name="save">Lưu</string>
+    <string name="details">Chi tiết</string>
+    <string name="hint_description">Nhập vào mô tả của ảnh</string>
+    <string name="select">Chọn</string>
+    <string name="colorpicker_title">Bộ chọn màu</string>
+    <string name="choose_color">Chọn màu của ứng dụng</string>
+    <string name="secs_3">3 giây</string>
+    <string name="secs_5">5 giây</string>
+    <string name="secs_10">10 giây</string>
+    <string name="light">Sáng</string>
+    <string name="dark">Tối</string>
+    <string name="custom">Tùy chỉnh</string>
+    <string name="confirm_delete">Bạn có chắc chắn muốn xóa những album này?
+    Những hình ảnh trong album sẽ không bị xóa theo album</string>
+    <string name="add_to_album">Thêm vào album</string>
+    <string name="undo">Hoàn tác</string>
+    <string name="redo">Làm lại</string>
+    <string name="eraser">Xóa</string>
+    <string name="color">Màu</string>
+    <string name="size">Kích thước</string>
+//filter
+    <string name="filter_brightness">Độ sáng</string>
+    <string name="filter_tint">Nhuộm</string>
+    <string name="filter_corner">Góc</string>
+
+    <string name="number_selected_items">Đã chọn %d %s</string>
+
+</resources>

@@ -1,18 +1,18 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <PreferenceCategory app:title="@string/choose_photo_header">-->
-<!--        <SwitchPreferenceCompat-->
-<!--            app:key="choose"-->
-<!--            app:title="@string/choose_photo_title"-->
-<!--            app:summary="@string/choose_photo_describe"/>-->
+    <!--    <PreferenceCategory app:title="@string/choose_photo_header">-->
+    <!--        <SwitchPreferenceCompat-->
+    <!--            app:key="choose"-->
+    <!--            app:title="@string/choose_photo_title"-->
+    <!--            app:summary="@string/choose_photo_describe"/>-->
 
-<!--    </PreferenceCategory>-->
+    <!--    </PreferenceCategory>-->
 
-<!--    Account
-        Hidden album
-        Theme choosing
-        Bin
-        About app -> Privacy & App's information -->
+    <!--    Account
+            Hidden album
+            Theme choosing
+            Bin
+            About app -> Privacy & App's information -->
 
     <PreferenceCategory app:title="@string/examine_header">
 
@@ -22,12 +22,12 @@
             app:summary="@string/view_describe"/>
 
         <ListPreference
-        app:defaultValue="showtime"
-        app:entries="@array/showtime_entries"
-        app:entryValues="@array/showtime_values"
-        app:key="reply"
-        app:title="@string/showtime_title"
-        app:useSimpleSummaryProvider="true" />
+            app:defaultValue="showtime"
+            app:entries="@array/showtime_entries"
+            app:entryValues="@array/showtime_values"
+            app:key="reply"
+            app:title="@string/showtime_title"
+            app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
             app:key="repeat"
@@ -45,6 +45,17 @@
             app:key="change"
             app:title="@string/change_title"
             app:summary="@string/change_describe"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/language_cat">
+
+        <ListPreference
+            app:entries="@array/lang_entries"
+            app:entryValues="@array/lang_codes"
+            app:key="language"
+            app:title="@string/language_pref"
+            app:defaultValue="en"
+            app:summary="%s"/>
 
     </PreferenceCategory>
 </PreferenceScreen>

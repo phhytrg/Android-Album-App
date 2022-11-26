@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -39,6 +40,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 import com.example.album.album.AlbumFragmentDirections;
 import com.example.album.data.ImagesModel;
@@ -54,7 +56,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     private static final String TAG = "MainActivity";
     private Menu navigationMenu;
@@ -65,6 +67,10 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences shared_prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String langCode = shared_prefs.getString("language", "en");
+        setLocal(MainActivity.this, langCode);
+        resources = getResources();
         ArrayList<Integer> extra = (ArrayList<Integer>) getIntent().getSerializableExtra("theme");
         if (extra != null) {
             int nightModeFlag = getResources().getConfiguration().uiMode
@@ -89,6 +95,39 @@ public class MainActivity extends AppCompatActivity{
 //                (NavHostFragment) getSupportFragmentManager()
 //                        .findFragmentById(R.id.nav_host_fragment);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences shared_prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        shared_prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        SharedPreferences shared_prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        shared_prefs.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("language")) {
+            String langCode = sharedPreferences.getString(key, "en");
+            setLocal(MainActivity.this, langCode);
+            finish();
+            startActivity(getIntent());
+        }
+    }
+
+    public void setLocal(Activity activity, String langCode) {
+        Locale locale = new Locale(langCode);
+        locale.setDefault(locale);
+        Resources resources = activity.getResources();
+        Configuration config = resources.getConfiguration();
+        config.setLocale(locale);
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
     }
 
     private void setUpNavController(){
@@ -254,9 +293,9 @@ public class MainActivity extends AppCompatActivity{
         builder.setView(view);
         ToggleButtonGroupTableLayout radioGroup;
         radioGroup = view.findViewById(R.id.radioGroup);
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        builder.setNegativeButton(resources.getString(R.string.label_cancel), (dialog, which) -> {
         });
-        builder.setPositiveButton("Select", (dialog, which) -> {
+        builder.setPositiveButton(resources.getString(R.string.select), (dialog, which) -> {
             int radioButtonId = radioGroup.getCheckedRadioButtonId();
 //            int themeId;
             ArrayList<Integer> themeId = new ArrayList<>();

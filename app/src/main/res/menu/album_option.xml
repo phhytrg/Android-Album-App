@@ -7,7 +7,7 @@
 
 
     <item
-        android:title="Choose Color"
+        android:title="@string/choose_color"
         android:id="@+id/menu_choose_color"/>
 
     <item android:id="@+id/filter"
