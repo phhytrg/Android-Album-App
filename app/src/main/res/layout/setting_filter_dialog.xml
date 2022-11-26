@@ -8,12 +8,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="5dp">
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Brightness"
+            android:text="@string/filter_brightness"
             android:textSize="20dp"
             />
 
@@ -23,42 +23,40 @@
             android:layout_height="match_parent"
             android:thumbTint="@color/redPrimary"
             android:progressTint="@color/redPrimary"
-
             />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="5dp">
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Contrast"
-            android:textSize="20dp"/>
+            android:text="@string/filter_corner"
+            android:textSize="18dp"/>
         <SeekBar
-            android:id="@+id/filter_contrast"
+            android:id="@+id/filter_corner"
             android:layout_width="fill_parent"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:thumbTint="@color/redPrimary"
             android:progressTint="@color/redPrimary"
-
             />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="5dp">
         <TextView
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Tint"
+            android:text="@string/filter_tint"
             android:textSize="20dp"/>
         <SeekBar
             android:id="@+id/filter_tint"
             android:layout_width="fill_parent"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:thumbTint="@color/redPrimary"
             android:progressTint="@color/redPrimary"
             />

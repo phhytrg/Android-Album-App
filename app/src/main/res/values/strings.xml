@@ -94,6 +94,10 @@
     <string name="eraser">Eraser</string>
     <string name="color">Color</string>
     <string name="size">Size</string>
+    //filter
+    <string name="filter_brightness">Brightness</string>
+    <string name="filter_tint">Tint</string>
+    <string name="filter_corner">Corner</string>
 
     <string name="number_selected_items">%d selected %s</string>
 

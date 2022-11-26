@@ -1,5 +1,7 @@
 package com.example.album.detail_image;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.WallpaperManager;
@@ -9,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -24,11 +27,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,24 +110,24 @@ public class DetailImageFragment extends Fragment{
         if(getArguments() != null){
             Uri imageUri = getArguments().getParcelable("image");
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
                 bitmap_mod = bitmap;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        app_bar = ((MainActivity)requireActivity()).getSupportActionBar();
+        app_bar = ((MainActivity)getActivity()).getSupportActionBar();
         if (app_bar != null) {
             app_bar.hide();
         }
-        Window window = requireActivity().getWindow();
+        Window window = getActivity().getWindow();
         if(window != null) {
             window.setStatusBarColor(getResources()
-                    .getColor(R.color.dark_grey, requireActivity().getTheme()));
+                    .getColor(R.color.dark_grey, getActivity().getTheme()));
             window.getDecorView().setSystemUiVisibility(0);
         }
 
-        navigationBar = requireActivity().findViewById(R.id.navigation_bar);
+        navigationBar = getActivity().findViewById(R.id.navigation_bar);
         navigationBar.setVisibility(View.GONE);
 
         return inflater.inflate(R.layout.fragment_image_detail,container,false).getRootView();
@@ -457,11 +464,13 @@ public class DetailImageFragment extends Fragment{
                 handleEdit();
                 break;
             case FILTER:
-                //dang o paint
+                //dang o filter
                 navigationView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
 //                navigationView.requestLayout();
                 filter_gallery.getLayoutParams().height =0;
                 filter_gallery.requestLayout();
+                bitmap_mod=bitmap;
+                imageView.setImageBitmap(bitmap);
 
                 handleEdit();
                 break;
@@ -580,20 +589,111 @@ public class DetailImageFragment extends Fragment{
         currentState = CurrentState.EDIT;
     }
     //filter
-
+    private Bitmap bitmapResize(Bitmap bm){
+        int maxHeight = 400;
+        int maxWidth = 400;
+        float scale = Math.min(((float)maxHeight / bm.getWidth()), ((float)maxWidth / bm.getHeight()));
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        return Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+    }
     private void handleSettingFilter(View view) {
         final Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.setting_filter_dialog);
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogPopupStyle;
         dialog.show();
         dialog.getWindow().setGravity(Gravity.BOTTOM);
-//        dialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
+
+        final Bitmap[] bmscaled = {bitmapResize(bitmap_mod)};
+
+        final SeekBar sk_filter_bright=(SeekBar) dialog.findViewById(R.id.filter_bright);
+        final SeekBar sk_filter_corner=(SeekBar) dialog.findViewById(R.id.filter_corner);
+        final SeekBar sk_filter_tint=(SeekBar) dialog.findViewById(R.id.filter_tint);
+
+        int stopB,stopC,stopT;
+        sk_filter_bright.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            Bitmap bmlocal;int stop;
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(stop !=0 ){
+                    bitmap_mod =ImageFilter.applyFilter(bitmap_mod,"BRIGHTNESS",stop);
+
+                }
+                bmscaled[0] = bitmapResize(bitmap_mod);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                bmlocal =ImageFilter.applyFilter(bmscaled[0],"BRIGHTNESS",progress);
+                imageView.setImageBitmap(bmlocal);
+                stop=progress;
+
+            }
+        });
+
+        sk_filter_corner.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            Bitmap bmlocal;int stop;
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                bitmap_mod =ImageFilter.applyFilter(bitmap_mod,"CORNER",stop);
+                bmscaled[0] = bitmapResize(bitmap_mod);
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+//                imageView.setImageBitmap(bmlocal);
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                bmlocal =ImageFilter.applyFilter(bmscaled[0],"CORNER",progress*2);
+                imageView.setImageBitmap(bmlocal);
+                stop=progress*2;
+
+            }
+        });
+        sk_filter_tint.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            Bitmap bmlocal;int stop;
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(stop!=0){
+                    bitmap_mod =ImageFilter.applyFilter(bitmap_mod,"TINT",stop);
+                }
+
+                bmscaled[0] = bitmapResize(bitmap_mod);
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                bmlocal =ImageFilter.applyFilter(bmscaled[0],"TINT",progress);
+                imageView.setImageBitmap(bmlocal);
+                stop=progress;
+
+            }
+        });
+
+
+
+
+
+        //
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.copyFrom(dialog.getWindow().getAttributes());
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         dialog.getWindow().setAttributes(layoutParams);
         dialog.getWindow().setDimAmount(0f);
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.custom_setting_filter_dialog);
+
     }
     private void handleAutoFilter(View v) {
         int id = randomNum(0,ImageFilter.auto_filter_values.length-1);

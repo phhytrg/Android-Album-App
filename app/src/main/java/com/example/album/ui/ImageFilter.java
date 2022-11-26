@@ -15,7 +15,7 @@ import android.graphics.RectF;
 import java.util.Random;
 
 public class ImageFilter {
-    public static String[] filter_values= {"NONE","GRAY","INVERT","CONTRAST","TINT","RELIEF","SNOW","OLD","CORNER","BRIGHTNESS"};
+    public static String[] filter_values= {"NONE","GRAY","INVERT","CONTRAST","TINT","RELIEF","SNOW","OLD","SHADING","CORNER","BRIGHTNESS"};
     public static String[] auto_filter_values= {"SNOW","CONTRAST","TINT","TINT","RELIEF","OLD","CORNER","TINT","BRIGHTNESS","TINT"};
 
     public static Bitmap applyFilter(Bitmap bitmap, String filter, Object... options) {
@@ -38,7 +38,7 @@ public class ImageFilter {
                 if (options.length < 1) {
                     return roundCorner(bitmap, 200);
                 }
-                return roundCorner(bitmap, (Integer)options[0]+350);
+                return roundCorner(bitmap, (Integer)options[0]);
             case "TINT":
                 if (options.length < 1) {
                     return tintImage(bitmap, 40);
@@ -52,9 +52,14 @@ public class ImageFilter {
                 return changeToOld(bitmap);
             case "RELIEF":
                 if (options.length < 1) {
-                    return tintImage(bitmap, -1234567);
+                    return changeToRelief(bitmap, -1234567);
                 }
-                return tintImage(bitmap, (Integer)options[0] - 100000);
+                return changeToRelief(bitmap, (Integer)options[0] - 100000);
+            case "SHADING":
+                if (options.length < 1) {
+                    return changeToShading(bitmap, 10);
+                }
+                return changeToShading(bitmap, (Integer)options[0]);
 
         }
         return bitmap;
@@ -356,5 +361,28 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
         canvas.drawBitmap(bitmap, 0, 0, paint);
 
         return grayBitmap;
+    }
+    public static Bitmap changeToShading(Bitmap source, int shadingColor) {
+        // get image size
+        int width = source.getWidth();
+        int height = source.getHeight();
+        int[] pixels = new int[width * height];
+        // get pixel array from source
+        source.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        int index = 0;
+        // iteration through pixels
+        for(int y = 0; y < height; ++y) {
+            for(int x = 0; x < width; ++x) {
+                // get current index in 2D-matrix
+                index = y * width + x;
+                // AND
+                pixels[index] &= shadingColor;
+            }
+        }
+        // output bitmap
+        Bitmap bmOut = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bmOut.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmOut;
     }
 }

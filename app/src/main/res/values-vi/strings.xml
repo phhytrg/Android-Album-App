@@ -94,6 +94,10 @@
     <string name="eraser">Xóa</string>
     <string name="color">Màu</string>
     <string name="size">Kích thước</string>
+//filter
+    <string name="filter_brightness">Độ sáng</string>
+    <string name="filter_tint">Nhuộm</string>
+    <string name="filter_corner">Góc</string>
 
     <string name="number_selected_items">Đã chọn %d %s</string>
 
