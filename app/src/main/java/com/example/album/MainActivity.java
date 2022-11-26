@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.content.CursorLoader;
 import androidx.navigation.NavController;
@@ -43,6 +45,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
 import com.example.album.album.AlbumFragmentDirections;
+import com.example.album.data.Image;
 import com.example.album.data.ImagesModel;
 import com.example.album.gallery.PhotosFragmentDirections;
 import com.example.album.ui.SplitToolbar;
@@ -55,6 +58,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -63,10 +68,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     NavController navController;
     SplitToolbar navigationBar;
     Toolbar app_bar;
+    Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        imagesModel = new ViewModelProvider(this).get(ImagesModel.class);
+        imagesModel.getImages().observe(this, new Observer<List<Image>>() {
+            @Override
+            public void onChanged(List<Image> images) {}
+        });
         SharedPreferences shared_prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String langCode = shared_prefs.getString("language", "en");
         setLocal(MainActivity.this, langCode);
@@ -387,6 +398,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("image", imageUri);
                             navController.navigate(R.id.DetailImage, bundle);
+//                            getApplicationContext().getContentResolver().notifyChange(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,null);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -411,8 +423,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onStart() {
         super.onStart();
-        imagesModel = new ViewModelProvider(this).get(ImagesModel.class);
-        imagesModel.setCursor(getCursor());
+        //        imagesModel.setCursor(getCursor());
 //        imagesModel.getCursor().observe((LifecycleOwner) getLifecycle(), new Observer<Cursor>() {
 //            @Override
 //            public void onChanged(Cursor cursor) {
