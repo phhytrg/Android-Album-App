@@ -1,6 +1,5 @@
 package com.example.album.gallery;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,7 +29,8 @@ import com.example.album.R;
 import com.example.album.data.Image;
 import com.example.album.data.ImagesModel;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -62,12 +62,12 @@ public class PhotosFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         listItems = new ArrayList<>();
-        TreeMap<LocalDate, List<Image>> images = toMap(imagesModel.getImages());
+        TreeMap<LocalDateTime, List<Image>> images = toMap(imagesModel.getImages());
 
-        for (LocalDate date : images.keySet()) {
+        for (LocalDateTime date : images.descendingKeySet()) {
             HeaderItem header = new HeaderItem(date);
             listItems.add(header);
-            for (com.example.album.data.Image image : images.get(date)) {
+            for (Image image : images.get(date)) {
                 ImageItem item = new ImageItem(image);
                 listItems.add(item);
             }
@@ -77,8 +77,6 @@ public class PhotosFragment extends Fragment {
         PhotosAdapter.AdapterCallback listener = new PhotosAdapter.AdapterCallback() {
             @Override
             public void onItemClick(ImageItem item) {
-//                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), item.getEvent().getUri());
-//                Uri imageUri = ImageUri.getImageUri(requireContext(), largeIcon);
                 Uri imageUri = item.getImage().getImageUri();
                 NavDirections action = PhotosFragmentDirections
                         .actionPhotosFragmentToDetailFragment(imageUri);
@@ -92,16 +90,6 @@ public class PhotosFragment extends Fragment {
                         R.drawable.image_border,
                         requireActivity().getTheme())
                 );
-            }
-
-            @Override
-            public Bitmap setThumbnail(ImageItem imageItem) {
-//                try {
-//                    return imageItem.getImage().getThumbnail(requireContext().getContentResolver());
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                return null;
             }
         };
 
@@ -135,13 +123,14 @@ public class PhotosFragment extends Fragment {
 //        return DateUtils.buildDate(random.nextInt(31) + 1);
 //    }
 
-    private TreeMap<LocalDate, List<com.example.album.data.Image>> toMap(List<com.example.album.data.Image> images){
-        TreeMap<LocalDate, List<Image>> map = new TreeMap<>();
-        for(com.example.album.data.Image image: images){
-            List<com.example.album.data.Image> value = map.get(image.getDate());
+
+    private TreeMap<LocalDateTime, List<Image>> toMap(List<Image> images){
+        TreeMap<LocalDateTime, List<Image>> map = new TreeMap<>();
+        for(Image image: images){
+            List<Image> value = map.get(image.getDate().truncatedTo(ChronoUnit.DAYS));
             if(value == null){
                 value = new ArrayList<>();
-                map.put(image.getDate(), value);
+                map.put(image.getDate().truncatedTo(ChronoUnit.DAYS), value);
             }
             value.add(image);
         }

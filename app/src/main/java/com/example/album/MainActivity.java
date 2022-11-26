@@ -350,12 +350,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             ContentValues contentValues = new ContentValues();
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName + ".jpg");
             contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
-            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + getString(R.string.app_name) + "/Camera");
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/" +getString(R.string.app_name) + "/Camera");
             imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
             fos = resolver.openOutputStream(imageUri);
         }else{
             String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-            File image = new File(imagesDir + getString(R.string.app_name) + "/Camera", imageFileName + ".jpg");
+            File image = new File(imagesDir + "/" +getString(R.string.app_name) + "/Camera", imageFileName + ".jpg");
             fos = new FileOutputStream(image);
             imageUri = Uri.fromFile(image);
         }
@@ -413,7 +413,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onStart();
         imagesModel = new ViewModelProvider(this).get(ImagesModel.class);
         imagesModel.setCursor(getCursor());
-        imagesModel.setA(10);
 //        imagesModel.getCursor().observe((LifecycleOwner) getLifecycle(), new Observer<Cursor>() {
 //            @Override
 //            public void onChanged(Cursor cursor) {
@@ -425,17 +424,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @SuppressLint("Range")
     private MutableLiveData<Cursor> getCursor(){
-
         String[]projection = new String[]{
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.ORIENTATION,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.BUCKET_ID,
-                MediaStore.Images.Media.MIME_TYPE ,
-                MediaStore.Images.Media.DATE_MODIFIED,
-                MediaStore.Images.Media.WIDTH,
-                MediaStore.Images.Media.HEIGHT
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.ORIENTATION,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.BUCKET_ID,
+                MediaStore.Images.ImageColumns.MIME_TYPE ,
+                MediaStore.Images.ImageColumns.DATE_MODIFIED,
+                MediaStore.Images.ImageColumns.WIDTH,
+                MediaStore.Images.ImageColumns.HEIGHT,
+                MediaStore.Images.ImageColumns.DESCRIPTION
         };
 
         final CursorLoader cursorLoader = new CursorLoader(this,
@@ -443,12 +442,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 ,projection,
                 null,
                 null,
-                null
+                "date_modified DESC"
         );
+//
+//        final CursorLoader cursorLoader2 = new CursorLoader(this,
+//                MediaStore.Images.Media.INTERNAL_CONTENT_URI
+//                ,null,
+//                null,
+//                null,
+//                "date_modified DESC"
+//        );
+//
+//        Cursor c2 = cursorLoader2.loadInBackground();
+//        int b = c2.getCount();
 
         MutableLiveData<Cursor> cursor = new MutableLiveData<>();
         cursor.setValue(cursorLoader.loadInBackground());
-        int a = cursor.getValue().getCount();
+//        int a = cursor.getValue().getCount();
         return cursor;
     }
 

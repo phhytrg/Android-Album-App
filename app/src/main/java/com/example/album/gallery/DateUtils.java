@@ -4,7 +4,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Calendar;
@@ -39,7 +39,7 @@ public class DateUtils {
         return calendar.getTime();
     }
 
-    public static String formatDate(@NonNull LocalDate date) {
+    public static String formatDate(@NonNull LocalDateTime date) {
         SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
