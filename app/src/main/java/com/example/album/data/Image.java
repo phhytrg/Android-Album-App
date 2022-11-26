@@ -2,21 +2,21 @@ package com.example.album.data;
 
 import android.net.Uri;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Image {
     private Uri imageUri;
     private long imageId;
-    private LocalDate date;
+    private LocalDateTime date;
     int width,height;
-    int buckedId;
+    String bucketName;
 
-    public int getBuckedId() {
-        return buckedId;
+    public String getBucketName() {
+        return bucketName;
     }
 
-    public void setBuckedId(int buckedId) {
-        this.buckedId = buckedId;
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
     }
 
     public int getWidth() {
@@ -57,11 +57,11 @@ public class Image {
         this.imageUri = imageUri;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

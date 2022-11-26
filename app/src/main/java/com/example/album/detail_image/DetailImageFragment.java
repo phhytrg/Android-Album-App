@@ -137,6 +137,7 @@ public class DetailImageFragment extends Fragment{
     public void onDestroy() {
         super.onDestroy();
         app_bar.show();
+        navigationBar.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.example.album.gallery;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface AdapterCallback{
         void onItemClick(ImageItem item);
         void linearItemDecoration(ImageView imageView);
-        Bitmap setThumbnail(ImageItem imageItem);
     }
 
     private static class HeaderViewHolder extends RecyclerView.ViewHolder{
