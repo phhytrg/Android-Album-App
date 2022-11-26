@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/undo"
         android:icon="@drawable/ic_undo"
-        android:title="Undo"/>
+        android:title="@string/undo"/>
     <item android:id="@+id/redo"
         android:icon="@drawable/ic_redo"
-        android:title="Redo"/>
+        android:title="@string/redo"/>
     <item android:id="@+id/eraser"
         android:icon="@drawable/ic_eraser"
-        android:title="Eraser"/>
+        android:title="@string/eraser"/>
     <item android:id="@+id/color"
         android:icon="@drawable/ic_circle"
-        android:title="Color"/>
+        android:title="@string/color"/>
     <item android:id="@+id/pen"
         android:icon="@drawable/ic_pen"
-        android:title="Size"/>
+        android:title="@string/size"/>
 </menu>

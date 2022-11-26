@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-   <item android:id="@+id/details"
-       android:title="Details" />
+    <item android:id="@+id/details"
+        android:title="@string/details" />
     <item android:id="@+id/add"
-        android:title="Add to album"/>
+        android:title="@string/add_to_album"/>
     <item android:id="@+id/set"
-        android:title="Set as"/>
+        android:title="@string/set_as_wallpaper"/>
     <item android:id="@+id/rename"
-        android:title="Rename"/>
+        android:title="@string/rename"/>
 </menu>
