@@ -12,7 +12,6 @@
         android:layout_height="0dp"
         tools:src="@drawable/image2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="H,1:1"
         android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

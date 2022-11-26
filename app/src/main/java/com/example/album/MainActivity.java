@@ -1,12 +1,18 @@
 package com.example.album;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
@@ -24,6 +30,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.loader.content.CursorLoader;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
@@ -32,32 +41,31 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.album.album.AlbumFragmentDirections;
+import com.example.album.data.ImagesModel;
 import com.example.album.gallery.PhotosFragmentDirections;
 import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ToggleButtonGroupTableLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity{
 
+    private static final String TAG = "MainActivity";
     private Menu navigationMenu;
     NavController navController;
     SplitToolbar navigationBar;
     Toolbar app_bar;
-    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ArrayList<Integer> extra = (ArrayList<Integer>) getIntent().getSerializableExtra("theme");
-//        int style = getIntent().getIntExtra("theme",0);
-
         if (extra != null) {
             int nightModeFlag = getResources().getConfiguration().uiMode
                     & Configuration.UI_MODE_NIGHT_MASK;
@@ -292,22 +300,33 @@ public class MainActivity extends AppCompatActivity{
         dialog.show();
     }
 
-    String currentPhotoPath;
-
-    private File createImageFile() throws IOException {
+    private Uri saveImage(Bitmap bitmap) throws FileNotFoundException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        Uri imageUri;
+        String timeStamp = Long.toString(System.currentTimeMillis());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+        OutputStream fos;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            ContentResolver resolver = getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName + ".jpg");
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + getString(R.string.app_name) + "/Camera");
+            imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            fos = resolver.openOutputStream(imageUri);
+        }else{
+            String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+            File image = new File(imagesDir + getString(R.string.app_name) + "/Camera", imageFileName + ".jpg");
+            fos = new FileOutputStream(image);
+            imageUri = Uri.fromFile(image);
+        }
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos);
+        try {
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imageUri;
     }
 
     private void startCamera(){
@@ -320,32 +339,23 @@ public class MainActivity extends AppCompatActivity{
             = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    Bitmap bmp = (Bitmap) result.getData().getExtras().get("data");
-                    // Create imageDir
-                    File mypath = null;
-                    try {
-                        mypath = createImageFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Bitmap bmp;
+                    if (result.getData() != null) {
+                        bmp = (Bitmap) result.getData().getExtras().get("data");
 
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(mypath);
-                        // Use the compress method on the BitMap object to write image to the OutputStream
-                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
                         try {
-                            fos.close();
-                        } catch (IOException e) {
+                            Uri imageUri = saveImage(bmp);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("image", imageUri);
+                            navController.navigate(R.id.DetailImage, bundle);
+                        } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
+
                     }
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("image",bmp);
-                    navController.navigate(R.id.DetailImage, bundle);
+                    else{
+                        throw new IllegalStateException("Can not get image returned by camera :)");
+                    }
                 }
             });
 
@@ -358,6 +368,49 @@ public class MainActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
     }
+    ImagesModel imagesModel;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        imagesModel = new ViewModelProvider(this).get(ImagesModel.class);
+        imagesModel.setCursor(getCursor());
+        imagesModel.setA(10);
+//        imagesModel.getCursor().observe((LifecycleOwner) getLifecycle(), new Observer<Cursor>() {
+//            @Override
+//            public void onChanged(Cursor cursor) {
+//
+//            }
+//        });
+//        imagesModel.getCursor().getValue().setNotificationUri();
+    }
 
+    @SuppressLint("Range")
+    private MutableLiveData<Cursor> getCursor(){
+
+        String[]projection = new String[]{
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media.ORIENTATION,
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.Media.BUCKET_ID,
+                MediaStore.Images.Media.MIME_TYPE ,
+                MediaStore.Images.Media.DATE_MODIFIED,
+                MediaStore.Images.Media.WIDTH,
+                MediaStore.Images.Media.HEIGHT
+        };
+
+        final CursorLoader cursorLoader = new CursorLoader(this,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                ,projection,
+                null,
+                null,
+                null
+        );
+
+        MutableLiveData<Cursor> cursor = new MutableLiveData<>();
+        cursor.setValue(cursorLoader.loadInBackground());
+        int a = cursor.getValue().getCount();
+        return cursor;
+    }
 
 }
