@@ -14,10 +14,24 @@
         android:layout_height="0dp"
         android:layout_alignBottom="@id/bottom_nav"
         android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
         android:scaleType="fitCenter"
-        tools:src="@drawable/cat1" />
+        android:src="@drawable/cat1"/>
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_alignParentBottom="true"
+        >
+        <LinearLayout
+            android:id="@+id/filter_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            />
+    </HorizontalScrollView>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,6 +71,22 @@
             android:background="@color/trans"
             android:src="@drawable/ic_favorite"
             android:layout_toStartOf="@id/overflow_button"
+            android:layout_marginEnd="8dp"/>
+        <ImageButton
+            android:id="@+id/auto_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/trans"
+            android:src="@drawable/ic_auto_filter"
+            android:layout_toStartOf="@id/overflow_button"
+            android:layout_marginEnd="8dp"/>
+        <ImageButton
+            android:id="@+id/setting_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/trans"
+            android:src="@drawable/ic_edit_filter"
+            android:layout_toStartOf="@id/auto_filter"
             android:layout_marginEnd="8dp"/>
     </RelativeLayout>
 
