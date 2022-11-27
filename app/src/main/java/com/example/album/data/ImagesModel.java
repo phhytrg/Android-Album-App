@@ -21,7 +21,6 @@ import java.util.List;
 public class ImagesModel
         extends AndroidViewModel {
 
-    private static final String TAG = "IMAGES_MODE";
     private static final Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     private MutableLiveData<Cursor> cursor;
 //    private MutableLiveData<List<Image>> images = new MutableLiveData<>();
