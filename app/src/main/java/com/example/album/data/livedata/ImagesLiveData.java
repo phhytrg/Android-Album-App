@@ -1,4 +1,4 @@
-package com.example.album.data;
+package com.example.album.data.livedata;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,6 +7,8 @@ import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 
+import com.example.album.data.Image;
+
 import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -14,16 +16,16 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagesLiveData extends ContentProviderLiveData<List<Image>>{
-    private Context context;
+public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
+    private final Context context;
     private final Uri uri;
-    List<Image> images;
 
     public ImagesLiveData(Context context, Uri uri) {
         super(context, uri);
         this.context = context;
         this.uri = uri;
-        images = getContentProviderValue();
+        setValue(getContentProviderValue());
+//        List<Image> images = getContentProviderValue();
     }
 
     @Nullable
@@ -58,7 +60,6 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>>{
         while (cursor.moveToNext()){
             Image newImage = new Image();
             String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-            long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
             long date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))*1000L;
             int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH));
             int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT));
@@ -66,7 +67,6 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>>{
 
             LocalDateTime localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDateTime();
             newImage.setDate(localDate);
-            newImage.setImageId(id);
             newImage.setBucketName(bucketName);
             newImage.setImageUri(Uri.fromFile(new File(path)));
             newImage.setWidth(width);
@@ -74,6 +74,7 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>>{
             imagesList.add(newImage);
         }
 
+        cursor.close();
         postValue(imagesList);
         return imagesList;
     }

@@ -107,6 +107,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.2368659420289855" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/selected_option.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/set_wallpaper_sign.xml" value="0.27447916666666666" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/setting_filter_dialog.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/settings_activity.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/submit_dialog.xml" value="0.18115942028985507" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/album_navigation_bar.xml" value="0.2734375" />
@@ -127,6 +128,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/set_as_wallpaper_menu.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/switch_layout_menu.xml" value="0.2734375" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/xml/provider_path.xml" value="0.13489583333333333" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/xml/root_preferences.xml" value="0.27447916666666666" />
       </map>
     </option>
   </component>

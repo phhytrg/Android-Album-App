@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
@@ -38,6 +39,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.MainActivity;
 import com.example.album.R;
+import com.example.album.data.Image;
+import com.example.album.data.ImagesViewModel;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 import com.example.album.ui.SplitToolbar;
@@ -47,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 
 public class AlbumFragment extends Fragment{
@@ -73,6 +77,9 @@ public class AlbumFragment extends Fragment{
     private TextView countItemTextView;
     private int currentState = UNCHANGED_MODE;
 
+    ImagesViewModel imagesViewModel;
+    TreeMap<String,List<Image>> map;
+
     List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes","Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes"));
@@ -87,6 +94,7 @@ public class AlbumFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
     }
 
     @Nullable
@@ -113,6 +121,8 @@ public class AlbumFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        map = imagesViewModel.getAlbums();
 
         //Set Adapter for RecyclerView
         recyclerView = view.findViewById(R.id.album_list);
@@ -236,8 +246,6 @@ public class AlbumFragment extends Fragment{
             builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
             });
             builder.show();
-//            AlertDialog submitDialog = builder.create();
-//            submitDialog.show();
         });
     }
 
@@ -257,9 +265,11 @@ public class AlbumFragment extends Fragment{
     private void chooseLayout(){
         AlbumAdapter.OnClickListener listener = new AlbumAdapter.OnClickListener() {
             @Override
-            public void onItemClick(AlbumAdapter.AlbumViewHolder holder) {
+            public void onItemClick(AlbumAdapter.AlbumViewHolder holder, List<Image> images) {
                 if(currentState == UNCHANGED_MODE){
                     String albumName = holder.albumName.getText().toString();
+                    Image[] arrayImages = new Image[images.size()];
+                    images.toArray(arrayImages);
                     NavDirections action = AlbumFragmentDirections
                             .actionAlbumFragmentToDetailAlbumFragment(albumName);
                     navController.navigate(action);
@@ -331,7 +341,7 @@ public class AlbumFragment extends Fragment{
         };
 
         if(isLinearLayout){
-            adapter = new AlbumAdapter(albumNames, albumImages,
+            adapter = new AlbumAdapter(map,
                     listener, AlbumAdapter.LINEAR_LAYOUT);
             recyclerView.setAdapter(adapter);
             adapter.setLayoutType(AlbumAdapter.LINEAR_LAYOUT);
@@ -346,7 +356,7 @@ public class AlbumFragment extends Fragment{
         }
         else{
 
-            adapter = new AlbumAdapter(albumNames, albumImages,
+            adapter = new AlbumAdapter(map,
                     listener
                     , AlbumAdapter.GRID_LAYOUT);
             recyclerView.setAdapter(adapter);

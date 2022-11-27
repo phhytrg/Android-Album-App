@@ -1,63 +1,73 @@
 package com.example.album.gallery;
 
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 
 public class DateUtils {
 
-    public static Date buildDate(@IntRange(from = 1, to = 31) int dayOfMonth) {
-        return buildDate(dayOfMonth, getCurrentMonth());
-    }
-
-    private static Date buildDate(
-            @IntRange(from = 1, to = 31) int dayOfMonth,
-            @IntRange(from = 0, to = 11) int month) {
-        return buildDate(dayOfMonth, month, getCurrentYear());
-    }
-
-    private static Date buildDate(
-            @IntRange(from = 1, to = 31) int dayOfMonth,
-            @IntRange(from = 0, to = 11) int month,
-            @IntRange(from = 0) int year) {
-        Calendar calendar = new GregorianCalendar();
-        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
-    }
-
     public static String formatDate(@NonNull LocalDateTime date) {
-        SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        long millis = date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        if(isToday(millis)){
+            return "Today";
+        }
+        if(isYesterday(millis)){
+            return "Yesterday";
+        }
+        if(isSameWeek(date)){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE");
+            return date.format(formatter);
+        }
+        if(isSameYear(date)){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLL dd");
+            return date.format(formatter);
+        }
         return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
 
-    @IntRange(from = 0, to = 11)
-    private static int getCurrentMonth() {
-        Date now = new Date(System.currentTimeMillis());
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(now);
-        return calendar.get(Calendar.MONTH);
+    private static boolean isToday(long millis) {
+        LocalDateTime today = LocalDateTime.now();
+        long todayMillis = today.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return isSameDate(todayMillis, millis);
     }
 
-    @IntRange(from = 0)
-    private static int getCurrentYear() {
-        Date now = new Date(System.currentTimeMillis());
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(now);
-        return calendar.get(Calendar.YEAR);
+    private static boolean isYesterday(long millis){
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+
+        long yesterdayMillis = yesterday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return isSameDate(millis,yesterdayMillis);
     }
 
+    private static boolean isSameWeek(@NonNull LocalDateTime dateTime){
+        LocalDateTime now = LocalDateTime.now();
+        int d1 = now.getDayOfWeek().getValue();
+        int d2 = now.getDayOfMonth();
+        int start = d2 - d1 + 1;
+        return dateTime.getDayOfMonth() >= start && dateTime.getDayOfMonth() <= start + 7 - 1
+                && dateTime.getMonthValue() == now.getMonthValue()
+                && dateTime.getYear() == now.getYear();
+    }
+
+    private static boolean isSameYear(@NonNull LocalDateTime dateTime){
+        return dateTime.getYear() == Year.now().getValue();
+    }
+
+    private static boolean isSameDate(long oneMillis, long twoMillis) {
+        ZoneId zoneId = ZoneId.systemDefault();
+
+        Instant oneInstant = Instant.ofEpochMilli(oneMillis);
+        LocalDateTime oneLocalDateTime = LocalDateTime.ofInstant(oneInstant, zoneId);
+
+        Instant twoInstant = Instant.ofEpochMilli(twoMillis);
+        LocalDateTime twoLocalDateTime = LocalDateTime.ofInstant(twoInstant, zoneId);
+
+        return (oneLocalDateTime.getYear() == twoLocalDateTime.getYear())
+                && (oneLocalDateTime.getMonthValue() == twoLocalDateTime.getMonthValue())
+                && (oneLocalDateTime.getDayOfMonth() == twoLocalDateTime.getDayOfMonth());
+    }
 }

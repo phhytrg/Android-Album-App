@@ -1,6 +1,5 @@
 package com.example.album.gallery;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.R;
 import com.example.album.data.Image;
-import com.example.album.data.ImagesModel;
+import com.example.album.data.ImagesViewModel;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -40,7 +39,7 @@ public class PhotosFragment extends Fragment {
     NavController navController;
     PhotosAdapter adapter;
     RecyclerView recyclerView;
-    ImagesModel imagesModel;
+    ImagesViewModel imagesViewModel;
 
     private boolean isLinearLayout = false;
 
@@ -53,21 +52,21 @@ public class PhotosFragment extends Fragment {
                 .findFragmentById(R.id.nav_host_fragment);
 
         navController = navHostFragment == null ? null : navHostFragment.getNavController();
-        imagesModel = new ViewModelProvider(requireActivity()).get(ImagesModel.class);
+        imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
         return inflater.inflate(R.layout.gallery_fragment, container, false).getRootView();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        imagesModel.getImages().observe(
+        imagesViewModel.getImages().observe(
                 getViewLifecycleOwner(),
                 images -> {
                     adapter.notifyDataSetChanged();
                 }
         );
         listItems = new ArrayList<>();
-        TreeMap<LocalDateTime, List<Image>> images = toMap(imagesModel.getImages().getValue());
+        TreeMap<LocalDateTime, List<Image>> images = toMap(imagesViewModel.getImages().getValue());
 
         for (LocalDateTime date : images.descendingKeySet()) {
             HeaderItem header = new HeaderItem(date);
@@ -82,9 +81,8 @@ public class PhotosFragment extends Fragment {
         PhotosAdapter.AdapterCallback listener = new PhotosAdapter.AdapterCallback() {
             @Override
             public void onItemClick(@NonNull ImageItem item) {
-                Uri imageUri = item.getImage().getImageUri();
                 NavDirections action = PhotosFragmentDirections
-                        .actionPhotosFragmentToDetailFragment(imageUri);
+                        .actionPhotosFragmentToDetailFragment(item.getImage());
                 navController.navigate(action);
             }
 

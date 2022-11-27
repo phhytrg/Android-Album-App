@@ -1,5 +1,7 @@
 package com.example.album.album;
 
+import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,17 +10,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.album.R;
+import com.example.album.data.Image;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>{
 
+    private final TreeMap<String, List<Image>> map;
     private int currentState;
 
     public void setAllSelectedFlags(boolean allSelectedFlags) {
@@ -31,7 +36,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     }
 
     public interface OnClickListener {
-        void onItemClick(AlbumAdapter.AlbumViewHolder holder);
+        void onItemClick(AlbumAdapter.AlbumViewHolder holder, List<Image>images);
         void onCheckBoxClick(AlbumAdapter.AlbumViewHolder holder);
         void onItemLongClick(AlbumAdapter.AlbumViewHolder holder);
     }
@@ -40,31 +45,31 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     public final static int LINEAR_LAYOUT = 0;
     public final static int GRID_LAYOUT = 1;
-    private List<Integer> albumImages;
+
+    private List<Image> albumImages;
     private List<String> albumNames;
     private int layoutType;
+    Context context;
 
 //    public final static int CHANGED_MODE = 1;
 //    public final static int UNCHANGED_MODE = 0;
-    private MutableLiveData<Integer> totalItemsSelected;
-
-    public MutableLiveData<Integer> getTotalItemsSelected(){
-        if(totalItemsSelected == null){
-            totalItemsSelected = new MutableLiveData<>();
-        }
-        return totalItemsSelected;
-    }
 
     public void setLayoutType(int layoutType) {
         this.layoutType = layoutType;
     }
 
-    public AlbumAdapter(List<String> albumNames, List<Integer>albumImages,
+    public AlbumAdapter(TreeMap<String, List<Image>> map,
                         OnClickListener listener, int layoutType) {
         this.layoutType = layoutType;
-        this.albumImages = albumImages;
-        this.albumNames = albumNames;
+        this.map = map;
         this.listener = listener;
+        exec();
+    }
+
+    private void exec(){
+        this.albumNames = new ArrayList<>();
+        this.albumNames.addAll(map.keySet());
+        this.albumImages = map.get(map.firstKey());
     }
 
 
@@ -79,17 +84,33 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.grid_album_item, parent, false)
                     .getRootView();
+            context = parent.getContext();
             return new AlbumViewHolder(view);
         }
         view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.linear_album_item, parent, false)
                 .getRootView();
+        context = parent.getContext();
         return new AlbumViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
-        holder.shapeableImageView.setImageResource(albumImages.get(position));
+//        Uri imageUri = Objects.requireNonNull(map.get(albumNames.get(position))).get(0).getImageUri();
+        albumImages = map.get(albumNames.get(position));
+        if(albumImages != null){
+            Uri imageUri = albumImages.get(0).getImageUri();
+            Glide.with(context)
+                    .load(imageUri)
+                    .into(holder.shapeableImageView);
+            if(holder.numImages != null){
+                holder.numImages.setText(Integer.toString(albumImages.size()));
+            }
+        }
+        else{
+            holder.shapeableImageView.setImageResource(R.drawable.default_image_thumbnail);
+            holder.numImages.setText("0");
+        }
         holder.albumName.setText(albumNames.get(position));
         if(currentState == AlbumFragment.UNCHANGED_MODE){
             holder.checkbox.setVisibility(View.GONE);
@@ -111,7 +132,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         return albumNames.size();
     }
 
-    class AlbumViewHolder extends RecyclerView.ViewHolder {
+    public class AlbumViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView shapeableImageView;
         TextView albumName;
         TextView numImages;
@@ -128,14 +149,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             checkbox = itemView.findViewById(R.id.selected_item);
 
             checkbox.setOnClickListener(v -> listener.onCheckBoxClick(this));
-
             if (layoutType == LINEAR_LAYOUT) {
                 numImages = itemView.findViewById(R.id.number_of_images);
-                numImages.setText(Integer.toString(100));
-
             }
 
-            itemView.setOnClickListener(v -> listener.onItemClick(this));
+            itemView.setOnClickListener(v -> listener.onItemClick(this, albumImages));
             itemView.setOnLongClickListener(v -> {
                 listener.onItemLongClick(this);
                 setCheckBoxesVisible();
