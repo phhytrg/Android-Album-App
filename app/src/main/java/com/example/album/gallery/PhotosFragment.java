@@ -182,4 +182,3 @@ public class PhotosFragment extends Fragment {
         }
     }
 }
-
