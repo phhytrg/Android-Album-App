@@ -64,5 +64,4 @@ public class Image {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
-
 }
