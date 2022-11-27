@@ -1,4 +1,4 @@
-package com.example.album.data;
+package com.example.album.data.livedata;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,6 +7,8 @@ import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 
+import com.example.album.data.Image;
+
 import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -14,16 +16,16 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImagesLiveData extends ContentProviderLiveData<List<Image>>{
-    private Context context;
+public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
+    private final Context context;
     private final Uri uri;
-    List<Image> images;
 
     public ImagesLiveData(Context context, Uri uri) {
         super(context, uri);
         this.context = context;
         this.uri = uri;
-        images = getContentProviderValue();
+        setValue(getContentProviderValue());
+//        List<Image> images = getContentProviderValue();
     }
 
     @Nullable
@@ -74,6 +76,7 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>>{
             imagesList.add(newImage);
         }
 
+        cursor.close();
         postValue(imagesList);
         return imagesList;
     }

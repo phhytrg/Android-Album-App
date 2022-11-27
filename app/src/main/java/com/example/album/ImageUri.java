@@ -1,9 +1,13 @@
 package com.example.album;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -13,6 +17,11 @@ import android.renderscript.ScriptIntrinsicBlur;
 import androidx.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class ImageUri {
     public static Uri getImageUri(@NonNull Context inContext, @NonNull Bitmap inImage){
@@ -66,5 +75,49 @@ public class ImageUri {
         return result;
     }
 
-
+    public static Uri saveImage(Context context, Bitmap bitmap, String directory)
+            throws FileNotFoundException {
+        // Create an image file name
+        Uri imageUri;
+        String timeStamp = Long.toString(System.currentTimeMillis());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        OutputStream fos;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            ContentResolver resolver = context.getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, imageFileName + ".jpg");
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
+            contentValues.put(
+                    MediaStore.MediaColumns.RELATIVE_PATH,
+                    Environment.DIRECTORY_PICTURES
+                            + "/"
+                            + context.getString(R.string.app_name)
+                            + "/"
+                            + directory
+            );
+            imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            fos = resolver.openOutputStream(imageUri);
+        }else{
+            String imagesDir = Environment
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    .toString();
+            File image = new File(
+                    imagesDir
+                            + "/"
+                            +context.getString(R.string.app_name)
+                            + "/"
+                            + directory,
+                    imageFileName + ".jpg"
+            );
+            fos = new FileOutputStream(image);
+            imageUri = Uri.fromFile(image);
+        }
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos);
+        try {
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imageUri;
+    }
 }

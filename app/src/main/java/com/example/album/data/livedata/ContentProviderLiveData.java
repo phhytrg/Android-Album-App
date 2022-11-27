@@ -1,4 +1,4 @@
-package com.example.album.data;
+package com.example.album.data.livedata;
 
 import android.content.Context;
 import android.database.ContentObserver;

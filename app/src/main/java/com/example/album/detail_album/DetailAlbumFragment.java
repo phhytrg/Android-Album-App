@@ -1,8 +1,6 @@
 package com.example.album.detail_album;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +18,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
@@ -27,15 +27,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.album.ImageUri;
 import com.example.album.R;
-import com.example.album.gallery.PhotosFragmentDirections;
+import com.example.album.data.Image;
+import com.example.album.data.ImagesViewModel;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 import com.example.album.ui.SplitToolbar;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DetailAlbumFragment extends Fragment {
@@ -45,16 +43,11 @@ public class DetailAlbumFragment extends Fragment {
     DetailAlbumAdapter adapter;
     String albumName;
     NavController navController;
+    ImagesViewModel imagesViewModel;
+    List<Image> images;
 
     boolean isLinearLayout = false;
 
-    List<Integer> images = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
-            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
-            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
-            R.drawable.photo9, R.drawable.photo1, R.drawable.photo2,
-            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
-            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
-            R.drawable.photo9));
 
     @Nullable
     @Override
@@ -76,6 +69,13 @@ public class DetailAlbumFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(getArguments() != null){
+            albumName = getArguments().getString("label");
+        }
+
+        imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
+        images = imagesViewModel.getAlbums().get(albumName);
+
         NavHostFragment navHostFragment = (NavHostFragment) getActivity()
                 .getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
@@ -93,30 +93,29 @@ public class DetailAlbumFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher()
                 .addCallback(this, callback);
 
-        if(getArguments() != null){
-            albumName = getArguments().getString("label");
-        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        imagesViewModel.getImages().observe(
+                getViewLifecycleOwner(),
+                new Observer<List<Image>>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onChanged(List<Image> is) {
+                        images = imagesViewModel.getAlbums().get(albumName);
+                        adapter.setImages(images);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+        );
         recyclerView = view.findViewById(R.id.gallery_recyclerview);
         DetailAlbumAdapter.OnClickListener listener = new DetailAlbumAdapter.OnClickListener() {
             @Override
-            public void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder) {
-
-                //There are 2 different path for navigation.
-                //The first comes from DetailAlbumFragment -> DetailFragment
-                //The second comes from PhotosFragment -> Detail Fragment
-                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
-                        images.get(holder.getAdapterPosition()));
-                Uri imageUri = ImageUri.getImageUri(requireContext(), largeIcon);
-//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-//                largeIcon.compress(Bitmap.CompressFormat.JPEG,100, bs);
-
+            public void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder, int position) {
                 NavDirections action = DetailAlbumFragmentDirections
-                        .actionDetailAlbumFragmentToDetailFragment(imageUri);
+                        .actionDetailAlbumFragmentToDetailFragment(images.get(position).getImageUri());
                 navController.navigate(action);
             }
         };
@@ -167,7 +166,7 @@ public class DetailAlbumFragment extends Fragment {
                 recyclerView.removeItemDecorationAt(0);
             }
             recyclerView.addItemDecoration(
-                    new LinearSpacingItemDecoration(8,false)
+                    new LinearSpacingItemDecoration(1,false)
             );
         }
         else{

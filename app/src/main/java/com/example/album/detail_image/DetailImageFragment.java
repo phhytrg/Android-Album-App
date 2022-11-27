@@ -1,17 +1,13 @@
 package com.example.album.detail_image;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -27,15 +23,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +44,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.album.ImageUri;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.ui.ImageFilter;
@@ -63,13 +57,11 @@ import com.skydoves.colorpickerview.ColorPickerDialog;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.yalantis.ucrop.UCrop;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 
@@ -93,6 +85,7 @@ public class DetailImageFragment extends Fragment{
     Bitmap bitmap, bitmap_mod;
     //filter
     ViewGroup filter_gallery;
+    Uri imageUri;
 
     CurrentState currentState = CurrentState.DETAIL;
 
@@ -108,26 +101,26 @@ public class DetailImageFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(getArguments() != null){
-            Uri imageUri = getArguments().getParcelable("image");
+            imageUri = getArguments().getParcelable("image");
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
                 bitmap_mod = bitmap;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        app_bar = ((MainActivity)getActivity()).getSupportActionBar();
+        app_bar = ((MainActivity)requireActivity()).getSupportActionBar();
         if (app_bar != null) {
             app_bar.hide();
         }
-        Window window = getActivity().getWindow();
+        Window window = requireActivity().getWindow();
         if(window != null) {
             window.setStatusBarColor(getResources()
-                    .getColor(R.color.dark_grey, getActivity().getTheme()));
+                    .getColor(R.color.dark_grey, requireActivity().getTheme()));
             window.getDecorView().setSystemUiVisibility(0);
         }
 
-        navigationBar = getActivity().findViewById(R.id.navigation_bar);
+        navigationBar = requireActivity().findViewById(R.id.navigation_bar);
         navigationBar.setVisibility(View.GONE);
 
         return inflater.inflate(R.layout.fragment_image_detail,container,false).getRootView();
@@ -262,7 +255,6 @@ public class DetailImageFragment extends Fragment{
         }
         else if(id == R.id.share){
             handleShare();
-//            Toast.makeText(requireContext(), "share", Toast.LENGTH_SHORT).show();
         }
         else if(id == R.id.crop){
             handleCrop();
@@ -296,48 +288,6 @@ public class DetailImageFragment extends Fragment{
         }
         return true;
     }
-
-
-
-    private String saveToInternalStorage(Bitmap bitmapImage){
-        ContextWrapper cw = new ContextWrapper(requireContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        // Create imageDir
-        File mypath = new File(directory,"img.png");
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(mypath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return directory.getAbsolutePath();
-    }
-
-//    private void loadImageFromStorage(String path)
-//    {
-//        try {
-//            File f = new File(path, "img.png");
-//            image_bm_orig = BitmapFactory.decodeStream(new FileInputStream(f));
-//            image_bm_mod = image_bm_orig;
-////            img = (com.github.chrisbanes.photoview.PhotoView)getView().findViewById(R.id.photo_view);
-//            imageView.setImageBitmap(bitmap);
-//        }
-//        catch (FileNotFoundException e)
-//        {
-//            e.printStackTrace();
-//        }
-//
-//    }
 
     public void handleRename() {
         final AlertDialog.Builder renameDialog = new AlertDialog.Builder(requireContext());
@@ -496,20 +446,33 @@ public class DetailImageFragment extends Fragment{
                 // Lưu ảnh đã chỉnh sửa vào Internal Storage
                 bitmap = bitmap_mod;
                 imageView.setImageBitmap(bitmap_mod);
-                saveToInternalStorage(bitmap_mod);
+//                saveToInternalStorage(bitmap_mod);
+                try {
+                    ImageUri.saveImage(requireContext(), bitmap_mod, "Edit");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             case PAINT:
                 bitmap = bitmap_mod;
                 imageView.setImageBitmap(bitmap_mod);
-                saveToInternalStorage(bitmap_mod);
-
+//                saveToInternalStorage(bitmap_mod);
+                try {
+                    ImageUri.saveImage(requireContext(), bitmap_mod, "Paint");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 currentState = CurrentState.EDIT;
                 break;
             case FILTER:
                 bitmap = bitmap_mod;
                 imageView.setImageBitmap(bitmap_mod);
-                saveToInternalStorage(bitmap_mod);
-
+//                saveToInternalStorage(bitmap_mod);
+                try {
+                    ImageUri.saveImage(requireContext(), bitmap_mod, "Filter");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 navigationView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
                 filter_gallery.getLayoutParams().height =0;
                 filter_gallery.requestLayout();
@@ -607,11 +570,10 @@ public class DetailImageFragment extends Fragment{
 
         final Bitmap[] bmscaled = {bitmapResize(bitmap_mod)};
 
-        final SeekBar sk_filter_bright=(SeekBar) dialog.findViewById(R.id.filter_bright);
-        final SeekBar sk_filter_corner=(SeekBar) dialog.findViewById(R.id.filter_corner);
-        final SeekBar sk_filter_tint=(SeekBar) dialog.findViewById(R.id.filter_tint);
+        final SeekBar sk_filter_bright = dialog.findViewById(R.id.filter_bright);
+        final SeekBar sk_filter_corner = dialog.findViewById(R.id.filter_corner);
+        final SeekBar sk_filter_tint = dialog.findViewById(R.id.filter_tint);
 
-        int stopB,stopC,stopT;
         sk_filter_bright.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             Bitmap bmlocal;int stop;
             @Override
@@ -683,11 +645,6 @@ public class DetailImageFragment extends Fragment{
             }
         });
 
-
-
-
-
-        //
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.copyFrom(dialog.getWindow().getAttributes());
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -716,7 +673,7 @@ public class DetailImageFragment extends Fragment{
         settingFilterButton.requestLayout();
 
         int length = ImageFilter.filter_values.length;
-        Bitmap bmscaled = Bitmap.createScaledBitmap(bitmap_mod, 80, 80, false);
+        Bitmap bmScaled = Bitmap.createScaledBitmap(bitmap_mod, 80, 80, false);
 
         for(int i=0;i< length;++i){
 
@@ -725,7 +682,7 @@ public class DetailImageFragment extends Fragment{
             TextView tv = (TextView) v.findViewById(R.id.text_filter);
             tv.setText(ImageFilter.filter_values[i]);
             ImageView img = (ImageView) v.findViewById(R.id.img_filter);
-            img.setImageBitmap(ImageFilter.applyFilter(bmscaled,ImageFilter.filter_values[i]));
+            img.setImageBitmap(ImageFilter.applyFilter(bmScaled,ImageFilter.filter_values[i]));
 
             filter_gallery.addView(v);
             v.setOnClickListener(new View.OnClickListener() {
@@ -782,7 +739,6 @@ public class DetailImageFragment extends Fragment{
         Bitmap image_bm_rotated = Bitmap.createBitmap(bitmap_mod, 0, 0,bitmap_mod.getWidth(),bitmap_mod.getHeight(), mat, true);
         bitmap_mod = image_bm_rotated;
         imageView.setImageBitmap(bitmap_mod);
-//        saveToInternalStorage(image_bm_mod);
     }
 
     public void handleFlip() {
@@ -791,22 +747,12 @@ public class DetailImageFragment extends Fragment{
         Bitmap image_bm_flipped = Bitmap.createBitmap(bitmap_mod, 0, 0, bitmap_mod.getWidth(), bitmap_mod.getHeight(), mat, true);
         bitmap_mod = image_bm_flipped;
         imageView.setImageBitmap(bitmap_mod);
-//        saveToInternalStorage(image_bm_mod);
     }
 
     public void handleCrop() {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap_mod.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(
-                requireContext().getContentResolver(),
-                bitmap_mod,
-                Integer.toString(new Random().nextInt()), null
-        );
-
-        Uri imageUri =  Uri.parse(path);
 
         String desFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
-        File newFile = new File(getActivity().getCacheDir(),desFileName);
+        File newFile = new File(requireActivity().getCacheDir(),desFileName);
         Uri desUri=Uri.fromFile(newFile);
 
         ArrayList<Uri> listUri = new ArrayList<>();
@@ -814,10 +760,9 @@ public class DetailImageFragment extends Fragment{
         listUri.add(desUri);
         cropImage.launch(listUri);
 
-
     }
 
-    private ActivityResultContract<List<Uri>, Uri> uCropConstract = new ActivityResultContract<List<Uri>, Uri>() {
+    private final ActivityResultContract<List<Uri>, Uri> uCropContract = new ActivityResultContract<List<Uri>, Uri>() {
         @NonNull
         @Override
         public Intent createIntent(@NonNull Context context, List<Uri> uri) {
@@ -825,22 +770,22 @@ public class DetailImageFragment extends Fragment{
 
             Uri imageUri = uri.get(0);
             Uri desUri = uri.get(1);
-            options.setToolbarColor(getActivity()
+            options.setToolbarColor(requireActivity()
                     .getTheme()
                     .obtainStyledAttributes(new int[]{R.attr.ucrop_actionbar_color})
                     .getInt(0,0)
             );
-            options.setStatusBarColor(getActivity()
+            options.setStatusBarColor(requireActivity()
                     .getTheme()
                     .obtainStyledAttributes(new int[]{android.R.attr.colorPrimaryDark})
                     .getInt(0,0)
             );
-            options.setToolbarWidgetColor(getActivity()
+            options.setToolbarWidgetColor(requireActivity()
                     .getTheme()
                     .obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary})
                     .getInt(0,0)
             );
-            options.setActiveControlsWidgetColor(getActivity()
+            options.setActiveControlsWidgetColor(requireActivity()
                     .getTheme()
                     .obtainStyledAttributes(new int[]{R.attr.highlightTextColor})
                     .getInt(0,0));
@@ -866,12 +811,12 @@ public class DetailImageFragment extends Fragment{
     };
 
     private ActivityResultLauncher<List<Uri>> cropImage
-            = registerForActivityResult(uCropConstract,
+            = registerForActivityResult(uCropContract,
             result -> {
 //                imageView.setImageURI(result);
                 try {
                     if(result != null){
-                        bitmap_mod = MediaStore.Images.Media.getBitmap(getActivity()
+                        bitmap_mod = MediaStore.Images.Media.getBitmap(requireActivity()
                                 .getContentResolver(), result);
                     }
                 } catch (IOException e) {

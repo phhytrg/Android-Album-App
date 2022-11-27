@@ -1,6 +1,5 @@
 package com.example.album;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -32,10 +30,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.loader.content.CursorLoader;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
@@ -46,7 +42,7 @@ import androidx.preference.PreferenceManager;
 
 import com.example.album.album.AlbumFragmentDirections;
 import com.example.album.data.Image;
-import com.example.album.data.ImagesModel;
+import com.example.album.data.ImagesViewModel;
 import com.example.album.gallery.PhotosFragmentDirections;
 import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ToggleButtonGroupTableLayout;
@@ -69,12 +65,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     SplitToolbar navigationBar;
     Toolbar app_bar;
     Resources resources;
+    ImagesViewModel imagesViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imagesModel = new ViewModelProvider(this).get(ImagesModel.class);
-        imagesModel.getImages().observe(this, new Observer<List<Image>>() {
+        imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
+        imagesViewModel.getImages().observe(this, new Observer<List<Image>>() {
             @Override
             public void onChanged(List<Image> images) {}
         });
@@ -394,11 +391,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         bmp = (Bitmap) result.getData().getExtras().get("data");
 
                         try {
-                            Uri imageUri = saveImage(bmp);
+                            Uri imageUri = ImageUri.saveImage(this, bmp, "Camera");
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("image", imageUri);
                             navController.navigate(R.id.DetailImage, bundle);
-//                            getApplicationContext().getContentResolver().notifyChange(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,null);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -409,68 +405,5 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     }
                 }
             });
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-    ImagesModel imagesModel;
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //        imagesModel.setCursor(getCursor());
-//        imagesModel.getCursor().observe((LifecycleOwner) getLifecycle(), new Observer<Cursor>() {
-//            @Override
-//            public void onChanged(Cursor cursor) {
-//
-//            }
-//        });
-//        imagesModel.getCursor().getValue().setNotificationUri();
-    }
-
-    @SuppressLint("Range")
-    private MutableLiveData<Cursor> getCursor(){
-        String[]projection = new String[]{
-                MediaStore.Images.ImageColumns._ID,
-                MediaStore.Images.ImageColumns.DATA,
-                MediaStore.Images.ImageColumns.ORIENTATION,
-                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.ImageColumns.BUCKET_ID,
-                MediaStore.Images.ImageColumns.MIME_TYPE ,
-                MediaStore.Images.ImageColumns.DATE_MODIFIED,
-                MediaStore.Images.ImageColumns.WIDTH,
-                MediaStore.Images.ImageColumns.HEIGHT,
-                MediaStore.Images.ImageColumns.DESCRIPTION
-        };
-
-        final CursorLoader cursorLoader = new CursorLoader(this,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                ,projection,
-                null,
-                null,
-                "date_modified DESC"
-        );
-//
-//        final CursorLoader cursorLoader2 = new CursorLoader(this,
-//                MediaStore.Images.Media.INTERNAL_CONTENT_URI
-//                ,null,
-//                null,
-//                null,
-//                "date_modified DESC"
-//        );
-//
-//        Cursor c2 = cursorLoader2.loadInBackground();
-//        int b = c2.getCount();
-
-        MutableLiveData<Cursor> cursor = new MutableLiveData<>();
-        cursor.setValue(cursorLoader.loadInBackground());
-//        int a = cursor.getValue().getCount();
-        return cursor;
-    }
 
 }
