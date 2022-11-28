@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -96,6 +98,14 @@ public class DetailImageFragment extends Fragment{
         FILTER
     }
 
+    ViewGroup scrollStickerView;
+    Integer[] thumbnail_stickers = {R.drawable.sticker_star, R.drawable.sticker_avocado,
+            R.drawable.sticker_bulb, R.drawable.sticker_banana, R.drawable.sticker_duck,
+            R.drawable.sticker_gift, R.drawable.sticker_hpbd, R.drawable.sticker_icecream,
+            R.drawable.sticker_lips, R.drawable.sticker_planet, R.drawable.sticker_sun};
+    ImageView sticker;
+    float xDown = 0, yDown = 0;
+    private RelativeLayout wrapLayout;
 
     @Nullable
     @Override
@@ -148,6 +158,11 @@ public class DetailImageFragment extends Fragment{
         navigationView = view.findViewById(R.id.bottom_nav);
         //filter
         filter_gallery = (ViewGroup) view.findViewById(R.id.filter_gallery);
+
+        scrollStickerView = (ViewGroup) view.findViewById(R.id.viewgroup);
+        sticker = (ImageView) view.findViewById(R.id.sticker_view);
+        wrapLayout = (RelativeLayout) view.findViewById(R.id.wrap_photo) ;
+
         Bitmap image_bm0 = BitmapFactory.decodeResource(this.getResources(),
                 resourceId);
 //        String pathSaved = saveToInternalStorage(image_bm0);
@@ -271,13 +286,18 @@ public class DetailImageFragment extends Fragment{
         else if(id == R.id.undo){
 
         }
-        else if(id == R.id.redo){
-
+        else if(id == R.id.stickers){
+            scrollStickerView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;;
+            scrollStickerView.requestLayout();
+            handleAddStickers();
         }
         else if(id == R.id.eraser){
-
+            scrollStickerView.getLayoutParams().height = 0;
+            scrollStickerView.requestLayout();
         }
         else if(id == R.id.color){
+            scrollStickerView.getLayoutParams().height = 0;
+            scrollStickerView.requestLayout();
             handleColor();
         }
         else if(id == R.id.filter){
@@ -412,6 +432,7 @@ public class DetailImageFragment extends Fragment{
                 break;
             case PAINT:
                 //dang o paint
+                sticker.setVisibility(View.GONE);
                 handleEdit();
                 break;
             case FILTER:
@@ -457,11 +478,20 @@ public class DetailImageFragment extends Fragment{
                 bitmap = bitmap_mod;
                 imageView.setImageBitmap(bitmap_mod);
 //                saveToInternalStorage(bitmap_mod);
+                sticker.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return false;
+                    }});
+                bitmap_mod = saveImageWithSticker();
                 try {
                     ImageUri.saveImage(requireContext(), bitmap_mod, "Paint");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+                navigationView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                scrollStickerView.getLayoutParams().height =0;
+                scrollStickerView.requestLayout();
                 currentState = CurrentState.EDIT;
                 break;
             case FILTER:
@@ -481,6 +511,95 @@ public class DetailImageFragment extends Fragment{
 
                 break;
         }
+    }
+
+    private Bitmap saveImageWithSticker()
+    {
+//        try {
+//            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/saved.png");
+//            if (!file.exists()) {
+//                // Create a physical File;
+//                file.createNewFile();
+//            }
+//            // Initialize a FileOutputStream to write to the File;
+//            FileOutputStream fos = new FileOutputStream(file);
+//            // Top edge Y coordinate of the top most child View;
+//            int boundTop = layoutTop.getMeasuredHeight();
+//            // Left edge X coordinate of the left most child View;
+//            int boundLeft = layoutTop.getMeasuredWidth();
+//            // Bottom edge Y coordinate of the bottom most child View;
+//            int boundBottom = 0;
+//            // Right edge X coordinate of the right most child View;
+//            int boundRight = 0;
+//            // Get the total number of child Views present in the Layout;
+//            int totalChildren = layoutTop.getChildCount();
+//            // Value to add as padding to the final image;
+//            int padding = 20;
+//            // Iterate through all the child Views;
+//            for(int i = 0; i < totalChildren; i++) {
+//                // Get the current child View;
+//                View vw = layoutTop.getChildAt(i);
+//                // Check if it is higher than the current top edge;
+//                if(vw.getTop() < boundTop) {
+//                    // Update the top edge value;
+//                    boundTop = vw.getTop();
+//                }
+//                // Check if it is more leftwards than the current left edge;
+//                if(vw.getLeft() < boundLeft) {
+//                    // Update the left edge value;
+//                    boundLeft = vw.getLeft();
+//                }
+//                // Check if it is lower than the current bottom edge;
+//                if(vw.getBottom() > boundBottom) {
+//                    // Update the bottom edge value;
+//                    boundBottom = vw.getBottom();
+//                }
+//                // Check if it is more rightwards than the current right edge;
+//                if(vw.getRight() > boundRight) {
+//                    // Update the right edge value;
+//                    boundRight = vw.getRight();
+//                }
+//            }
+////  Toast.makeText(this, boundTop + ", " + boundLeft + ", " + boundBottom + ", " + boundRight, Toast.LENGTH_LONG)
+////      .show();
+//            // Calculate the final Bitmap width;
+//            int bWidth = padding + boundRight - boundLeft;
+//            // Calculate the final Bitmap height;
+//            int bHeight = padding + boundBottom - boundTop;
+//            // Create a Bitmap Object with the specified width and height;
+//            Bitmap bitmap = Bitmap.createBitmap(bWidth,
+//                    bHeight, Bitmap.Config.ARGB_8888);
+//            // Initialize a Canvas to draw to the Bitmap;
+//            Canvas canvas = new Canvas(bitmap);
+//            // Fill the Bitmap with transparency;
+//            canvas.drawColor(Color.TRANSPARENT);
+//            /*
+//             * Translate the Canvas towards top left direction to compensate for
+//             * the blank space between the extreme Views and the edges of the
+//             * Layout and also the extra padding.
+//             */
+//            canvas.translate(- boundLeft + padding/2, - boundTop + padding/2);
+//            // Make the Layout draw its child Views on the Canvas;
+//            layoutTop.draw(canvas);
+//            // Save the Bitmap to the File instance;
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 81, fos);
+//            // Flush(Clear) the FileOutputStream;
+//            fos.flush();
+//            // Close the FileOutputStream;
+//            fos.close();
+//            // Flag the Bitmap for garbage collection;
+//            bitmap.recycle();
+//        }catch (Exception e) {
+////            Toast.makeText(this, "ERROR WHILE SAVING", Toast.LENGTH_LONG)
+////                    .show();
+//            e.printStackTrace();
+//        }
+        Bitmap bitmap = Bitmap.createBitmap(wrapLayout.getWidth(), wrapLayout.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        wrapLayout.draw(canvas);
+        imageView.setImageBitmap(bitmap);
+        return bitmap;
     }
 
 
@@ -548,6 +667,8 @@ public class DetailImageFragment extends Fragment{
         autoFilterButton.requestLayout();
         settingFilterButton.getLayoutParams().height = 0;
         settingFilterButton.requestLayout();
+        scrollStickerView.getLayoutParams().height =0;
+        scrollStickerView.requestLayout();
         navigationView.setVisibility(View.VISIBLE);
         navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         currentState = CurrentState.EDIT;
@@ -702,6 +823,8 @@ public class DetailImageFragment extends Fragment{
         doneButton.requestLayout();
         overflowButton.getLayoutParams().height = 0;
         overflowButton.requestLayout();
+        scrollStickerView.getLayoutParams().height = 0;
+        scrollStickerView.requestLayout();
         navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         currentState = CurrentState.PAINT;
     }
@@ -760,6 +883,54 @@ public class DetailImageFragment extends Fragment{
         listUri.add(desUri);
         cropImage.launch(listUri);
 
+    }
+
+    public void handleAddStickers(){
+        for (int i = 0; i < thumbnail_stickers.length; i++) {
+            final View singleFrame = getLayoutInflater().inflate(R.layout.sticker_items, null);
+            singleFrame.setId(i);
+            ImageView sticker_thum = (ImageView) singleFrame.findViewById(R.id.icon);
+            sticker_thum.setImageResource(thumbnail_stickers[i]);
+            scrollStickerView.addView(singleFrame);
+            singleFrame.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Toast.makeText(requireContext(), "sticker clicked", Toast.LENGTH_SHORT).show();
+                    AddSticker(singleFrame.getId());
+                }});
+            sticker.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getActionMasked()){
+                        case MotionEvent.ACTION_DOWN:
+                            xDown = event.getX();
+                            yDown = event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            float movedX, movedY;
+                            movedX = event.getX();
+                            movedY = event.getY();
+
+                            float distanceX = movedX - xDown;
+                            float distanceY = movedY - yDown;
+
+                            sticker.setX(sticker.getX() + distanceX);
+                            sticker.setY(sticker.getY() + distanceY);
+
+//                            xDown = movedX;
+//                            yDown = movedY;
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+    protected void AddSticker(int frameId) {
+//        Drawable selectedLargeSticker = getResources().getDrawable(thumbnail_stickers[frameId], getTheme()); //API-21 or newer
+//        imageSelected.setBackground(selectedLargeImage);
+        sticker.setImageResource(thumbnail_stickers[frameId]);
+        sticker.setVisibility(View.VISIBLE);
     }
 
     private final ActivityResultContract<List<Uri>, Uri> uCropContract = new ActivityResultContract<List<Uri>, Uri>() {
