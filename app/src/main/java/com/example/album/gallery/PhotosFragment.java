@@ -1,6 +1,5 @@
 package com.example.album.gallery;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,9 +81,8 @@ public class PhotosFragment extends Fragment {
         PhotosAdapter.AdapterCallback listener = new PhotosAdapter.AdapterCallback() {
             @Override
             public void onItemClick(@NonNull ImageItem item) {
-                Uri imageUri = item.getImage().getImageUri();
                 NavDirections action = PhotosFragmentDirections
-                        .actionPhotosFragmentToDetailFragment(imageUri);
+                        .actionPhotosFragmentToDetailFragment(item.getImage());
                 navController.navigate(action);
             }
 

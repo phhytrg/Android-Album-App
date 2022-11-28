@@ -27,7 +27,7 @@
             app:destination="@id/DetailImage" >
             <argument
                 android:name="image"
-                app:argType="android.net.Uri"/>
+                app:argType="com.example.album.data.Image"/>
         </action>
     </fragment>
     <fragment
@@ -49,7 +49,7 @@
             app:destination="@id/DetailImage" >
             <argument
                 android:name="image"
-                app:argType="android.net.Uri"/>
+                app:argType="com.example.album.data.Image"/>
         </action>
         <action
             android:id="@+id/action_PhotosFragment_to_AlbumFragment"

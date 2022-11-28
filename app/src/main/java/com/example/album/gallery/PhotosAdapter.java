@@ -119,7 +119,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .fitCenter()
                         .placeholder(R.drawable.image_border)
                         .into(viewHolder.imageView);
-                viewHolder.imageView.setImageURI(imageItem.getImage().getThumbnailUri());
                 viewHolder.imageView.setOnClickListener(v -> listener.onItemClick(imageItem));
                 break;
             }

@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import com.example.album.data.Image;
+
 
 //Source: https://stackoverflow.com/a/17649895
 public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageView
@@ -147,6 +149,12 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
             }
 
         });
+    }
+
+    public void setImage(Image image){
+        super.setImageURI(image.getImageUri());
+        bmWidth = image.getWidth();
+        bmHeight = image.getHeight();
     }
 
     @Override

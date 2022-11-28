@@ -60,7 +60,6 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
         while (cursor.moveToNext()){
             Image newImage = new Image();
             String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-            long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
             long date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))*1000L;
             int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH));
             int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT));
@@ -68,7 +67,6 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
 
             LocalDateTime localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDateTime();
             newImage.setDate(localDate);
-            newImage.setImageId(id);
             newImage.setBucketName(bucketName);
             newImage.setImageUri(Uri.fromFile(new File(path)));
             newImage.setWidth(width);
