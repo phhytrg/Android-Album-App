@@ -3,9 +3,6 @@
     <item android:id="@+id/undo"
         android:icon="@drawable/ic_undo"
         android:title="@string/undo"/>
-    <item android:id="@+id/redo"
-        android:icon="@drawable/ic_redo"
-        android:title="@string/redo"/>
     <item android:id="@+id/eraser"
         android:icon="@drawable/ic_eraser"
         android:title="@string/eraser"/>
