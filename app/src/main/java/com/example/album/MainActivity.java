@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,15 +67,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     Toolbar app_bar;
     Resources resources;
     ImagesViewModel imagesViewModel;
+    Observer<List<Image>> observer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imagesViewModel = new ViewModelProvider(this).get(ImagesViewModel.class);
-        imagesViewModel.getImages().observe(this, new Observer<List<Image>>() {
+        observer = new Observer<List<Image>>() {
             @Override
-            public void onChanged(List<Image> images) {}
-        });
+            public void onChanged(List<Image> images) {
+                Log.d(TAG, "onChanged: called");
+            }
+        };
+        imagesViewModel.getImages().observeForever(observer);
         SharedPreferences shared_prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String langCode = shared_prefs.getString("language", "en");
         setLocal(MainActivity.this, langCode);
@@ -391,9 +396,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         bmp = (Bitmap) result.getData().getExtras().get("data");
 
                         try {
-                            Uri imageUri = ImageUri.saveImage(this, bmp, "Camera");
+                            ImageUri.saveImage(this, bmp, "Camera");
+                            Image image = imagesViewModel.getImages().getValue().get(0);
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable("image", imageUri);
+                            bundle.putParcelable("image", image);
                             navController.navigate(R.id.DetailImage, bundle);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -406,4 +412,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
             });
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        imagesViewModel.getImages().removeObserver(observer);
+    }
 }

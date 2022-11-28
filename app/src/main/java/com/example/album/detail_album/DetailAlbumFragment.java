@@ -37,7 +37,6 @@ import com.example.album.ui.SplitToolbar;
 import java.util.List;
 
 public class DetailAlbumFragment extends Fragment {
-
     View view;
     RecyclerView recyclerView;
     DetailAlbumAdapter adapter;
