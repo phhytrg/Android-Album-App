@@ -64,7 +64,6 @@ public class Image implements Parcelable {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
-
     @Override
     public int describeContents() {
         return 0;
