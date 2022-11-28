@@ -34,7 +34,6 @@
         android:id="@+id/DetailImage"
         android:name="com.example.album.detail_image.DetailImageFragment" >
 
-
     </fragment>
     <fragment
         android:id="@+id/SettingsFragment"

@@ -401,15 +401,28 @@ public class AlbumFragment extends Fragment{
         });
 
         cancelButton.setOnClickListener(view -> dialog.dismiss());
+        okButton.setOnClickListener(new View.OnClickListener() {
 
-        okButton.setOnClickListener(view -> {
-            String name = nameEt.getText().toString();
-            albumNames.add(name);
-            albumImages.add(R.drawable.image2);
-            adapter.notifyItemChanged(albumImages.size() - 1);
-            dialog.dismiss();
+//            private void addNewAlbumIntoExternal(){
+//                File newDir = new File(Environment.getExternalStoragePublicDirectory(
+//                        Environment.DIRECTORY_PICTURES
+//                ), "/" + getString(R.string.app_name));
+//                requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, )
+//            }
+
+            @Override
+            public void onClick(View v) {
+                String name = nameEt.getText().toString();
+//            albumNames.add(name);
+//            albumImages.add(R.drawable.image2);
+//            adapter.notifyItemChanged(albumImages.size() - 1);
+
+
+
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
         });
-
         dialog.show();
     }
 }

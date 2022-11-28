@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.album.R;
 import com.example.album.data.Image;
 import com.example.album.data.ImagesViewModel;
+import com.example.album.ui.SplitToolbar;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -53,18 +54,14 @@ public class PhotosFragment extends Fragment {
 
         navController = navHostFragment == null ? null : navHostFragment.getNavController();
         imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
+        SplitToolbar navigationBar = requireActivity().findViewById(R.id.navigation_bar);
+        navigationBar.setVisibility(View.VISIBLE);
         return inflater.inflate(R.layout.gallery_fragment, container, false).getRootView();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        imagesViewModel.getImages().observe(
-                getViewLifecycleOwner(),
-                images -> {
-                    adapter.notifyDataSetChanged();
-                }
-        );
         listItems = new ArrayList<>();
         TreeMap<LocalDateTime, List<Image>> images = toMap(imagesViewModel.getImages().getValue());
 

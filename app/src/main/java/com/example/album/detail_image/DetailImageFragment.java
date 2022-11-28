@@ -129,6 +129,7 @@ public class DetailImageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         imageView = view.findViewById(R.id.photo_view);
         imageView.setImage(image);
         navigateUpButton = view.findViewById(R.id.back_button);
@@ -629,7 +630,6 @@ public class DetailImageFragment extends Fragment {
 
         private void onDonePressed(){
             imageView.setImageBitmap(bitmap);
-//                saveToInternalStorage(bitmap_mod);
             try {
                 ImageUri.saveImage(requireContext(), bitmap, "Filter");
             } catch (FileNotFoundException e) {
