@@ -32,6 +32,8 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable-v24/ic_favorite.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable-v24/ic_favorite_colored.xml" value="0.13" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable-v24/ic_redo.xml" value="0.1" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable-v24/ic_rotate.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/checked.xml" value="0.1" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/color_picker_item.xml" value="0.181" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/drawable/custom_background.xml" value="0.122" />
@@ -129,13 +131,7 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/set_as_wallpaper_menu.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/switch_layout_menu.xml" value="0.2734375" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/xml/provider_path.xml" value="0.13489583333333333" />
-
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/xml/root_preferences.xml" value="0.27447916666666666" />
-
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/fragment_image_detail.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/sticker_items.xml" value="0.17447916666666666" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/menu/paint_nav.xml" value="0.17552083333333332" />
-
       </map>
     </option>
   </component>
