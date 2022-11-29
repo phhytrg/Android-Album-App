@@ -73,6 +73,7 @@ public class DetailAlbumFragment extends Fragment {
         }
 
         imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
+
         images = imagesViewModel.getAlbums().get(albumName);
 
         NavHostFragment navHostFragment = (NavHostFragment) getActivity()
