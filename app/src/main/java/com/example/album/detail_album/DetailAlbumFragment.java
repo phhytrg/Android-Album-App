@@ -73,10 +73,9 @@ public class DetailAlbumFragment extends Fragment {
         }
 
         imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
-
         images = imagesViewModel.getAlbums().get(albumName);
 
-        NavHostFragment navHostFragment = (NavHostFragment) getActivity()
+        NavHostFragment navHostFragment = (NavHostFragment) requireActivity()
                 .getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment != null
@@ -115,7 +114,7 @@ public class DetailAlbumFragment extends Fragment {
             @Override
             public void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder, int position) {
                 NavDirections action = DetailAlbumFragmentDirections
-                        .actionDetailAlbumFragmentToDetailFragment(images.get(position).getImageUri());
+                        .actionDetailAlbumFragmentToDetailFragment(images.get(position));
                 navController.navigate(action);
             }
         };
