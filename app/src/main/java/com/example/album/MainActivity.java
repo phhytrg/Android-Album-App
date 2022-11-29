@@ -88,14 +88,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (extra != null) {
             int nightModeFlag = getResources().getConfiguration().uiMode
                     & Configuration.UI_MODE_NIGHT_MASK;
+            int style;
             if(nightModeFlag == Configuration.UI_MODE_NIGHT_YES){
-                int style = extra.get(1);
-                getTheme().applyStyle(style,true);
+                style = extra.get(1);
             }
             else{
-                int style = extra.get(0);
-                getTheme().applyStyle(style,true);
+                style = extra.get(0);
             }
+            getTheme().applyStyle(style,true);
         }
 
         setContentView(R.layout.activity_main);
@@ -104,11 +104,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setUpNavController();
         setUpMainActionBar();
         setUpNavigationActionBar();
-//        NavHostFragment navHostFragment =
-//                (NavHostFragment) getSupportFragmentManager()
-//                        .findFragmentById(R.id.nav_host_fragment);
-
-
     }
 
     @Override
