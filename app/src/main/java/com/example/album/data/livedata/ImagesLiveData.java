@@ -65,6 +65,7 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
             int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT));
             String bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
 
+            
             LocalDateTime localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDateTime();
             newImage.setDate(localDate);
             newImage.setBucketName(bucketName);
