@@ -13,6 +13,9 @@ public class Image implements Parcelable {
     private LocalDateTime date;
     private int width,height;
     private String bucketName;
+    private String name;
+    private String description;
+    private Long size;
 
     public Image() {}
 
@@ -22,6 +25,8 @@ public class Image implements Parcelable {
         width = in.readInt();
         height = in.readInt();
         bucketName = in.readString();
+        name = in.readString();
+        description = in.readString();
     }
 
 
@@ -64,6 +69,31 @@ public class Image implements Parcelable {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -76,6 +106,8 @@ public class Image implements Parcelable {
         dest.writeInt(width);
         dest.writeLong(height);
         dest.writeString(bucketName);
+        dest.writeString(name);
+        dest.writeString(description);
     }
 
     public static final Parcelable.Creator<Image> CREATOR

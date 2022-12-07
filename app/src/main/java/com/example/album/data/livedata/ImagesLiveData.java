@@ -46,7 +46,9 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
                 MediaStore.Images.ImageColumns.DATE_MODIFIED,
                 MediaStore.Images.ImageColumns.WIDTH,
                 MediaStore.Images.ImageColumns.HEIGHT,
-                MediaStore.Images.ImageColumns.DESCRIPTION
+                MediaStore.Images.ImageColumns.DESCRIPTION,
+                MediaStore.Images.ImageColumns.DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.SIZE
         };
 
         Cursor cursor = context.getContentResolver().query(
@@ -64,14 +66,21 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
             int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH));
             int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT));
             String bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+            String description = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DESCRIPTION));
+            Long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE));
 
-            
+
             LocalDateTime localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDateTime();
             newImage.setDate(localDate);
             newImage.setBucketName(bucketName);
             newImage.setImageUri(Uri.fromFile(new File(path)));
             newImage.setWidth(width);
             newImage.setHeight(height);
+            newImage.setName(name);
+            newImage.setDescription(description);
+            newImage.setSize(size);
+
             imagesList.add(newImage);
         }
 

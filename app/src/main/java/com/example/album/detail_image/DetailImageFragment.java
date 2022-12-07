@@ -55,6 +55,7 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -76,7 +77,6 @@ public class DetailImageFragment extends Fragment {
     private ViewGroup filter_gallery;
     private Image image;
     private Bitmap bitmap;
-
 
     DetailImageFragment.ImageCropping imageCropping;
     DetailImageFragment.ImageEditing imageEditing;
@@ -250,46 +250,145 @@ public class DetailImageFragment extends Fragment {
         return true;
     }
 
+//    private void handleDetails() {
+//        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(requireContext());
+//        detailsDialog.setTitle(getString(R.string.details));
+//
+//        final EditText input = new EditText(requireContext());
+//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT);
+//        lp.setMargins(5, 0, 5, 0);
+//        input.setLayoutParams(lp);
+//
+//        // name, date, size, description
+//        String name = image.getName();
+//        Double size = image.getSize().doubleValue();
+//        String sizeUnit = "B";
+//        int scale;
+//
+//        if (size / 1024 > 1) {
+//            size = size / 1024;
+//            sizeUnit = "KB";
+//
+//            if (size / 1024 > 1) {
+//                size = size / 1024;
+//                sizeUnit = "MB";
+//            }
+//            scale = (int) Math.pow(10, 1);
+//            size = (double) Math.round(size * scale) / scale;
+//        }
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
+//        String date = image.getDate().format(formatter);
+//
+//        String nameTitle = "Image Name";
+//        String nameStr = nameTitle + "\n" + name + "\n";
+//        String dateTitle = "Date Modified";
+//        String dateStr = dateTitle + "\n" + date + "\n";
+//        String sizeTitle = "Size";
+//        String sizeStr = sizeTitle + "\n" + size + " " + sizeUnit + "\n";
+//        SpannableString nameSpanStr = new SpannableString(nameStr);
+//        nameSpanStr.setSpan(new StyleSpan(Typeface.BOLD), 0, nameTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        SpannableString dateSpanStr = new SpannableString(dateStr);
+//        dateSpanStr.setSpan(new StyleSpan(Typeface.BOLD), 0, dateTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//        SpannableString sizeSpanStr = new SpannableString(sizeStr);
+//        sizeSpanStr.setSpan(new StyleSpan(Typeface.BOLD), 0, sizeTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//
+//        detailsDialog.setMessage(TextUtils.concat(nameStr, dateStr, sizeStr));
+//
+//        input.setHint(getString(R.string.hint_description));
+//        input.setText(image.getDescription());
+//        input.setInputType(InputType.TYPE_CLASS_TEXT);
+//        input.setSingleLine(false);
+//
+//        detailsDialog.setView(input);
+//        detailsDialog.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+////                details[4] = input.getText().toString();
+//                image.setDescription(input.getText().toString());
+//            }
+//        });
+//        detailsDialog.setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        detailsDialog.show();
+//    }
+
     private void handleDetails() {
-        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(requireContext());
-        detailsDialog.setTitle("Details");
-        final EditText input = new EditText(requireContext());
-        String info = "details[0] + \n + details[1] + \n + details[2] + \n + details[3]";
-        detailsDialog.setMessage(info);
-        input.setHint("Enter the description of this image");
-        input.setText("details[4]");
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setSingleLine(false);
-        detailsDialog.setView(input);
-        detailsDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        Context context = requireContext();
+        LayoutInflater factory = LayoutInflater.from(context);
+        final View detailsDialogView = factory.inflate(R.layout.details_dialog, null);
+        final AlertDialog detailsDialog = new AlertDialog.Builder(context).create();
+
+        TextView image_name = (TextView) detailsDialogView.findViewById(R.id.image_name);
+        TextView last_modified_date = (TextView) detailsDialogView.findViewById(R.id.last_modified_date);
+        TextView sizeText = (TextView) detailsDialogView.findViewById(R.id.size);
+        EditText description = (EditText) detailsDialogView.findViewById(R.id.description);
+
+        image_name.setText(image.getName());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
+        String date = image.getDate().format(formatter);
+        last_modified_date.setText(date);
+
+        Double size = image.getSize().doubleValue();
+        String sizeUnit = "B";
+        int scale;
+
+        if (size / 1024 > 1) {
+            size = size / 1024;
+            sizeUnit = "KB";
+
+            if (size / 1024 > 1) {
+                size = size / 1024;
+                sizeUnit = "MB";
+            }
+            scale = (int) Math.pow(10, 1);
+            size = (double) Math.round(size * scale) / scale;
+        }
+        sizeText.setText(size + " " + sizeUnit);
+
+        description.setText(image.getDescription());
+        description.setInputType(InputType.TYPE_CLASS_TEXT);
+        description.setSingleLine(false);
+        //detailsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        detailsDialog.setView(detailsDialogView);
+        detailsDialogView.findViewById(R.id.cancel_details).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-//                details[4] = input.getText().toString();
+            public void onClick(View v) {
+                detailsDialog.dismiss();
             }
         });
-        detailsDialog.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+        detailsDialogView.findViewById(R.id.save_details).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onClick(View v) {
+                image.setDescription(description.getText().toString());
+                detailsDialog.dismiss();
             }
         });
+
         detailsDialog.show();
     }
 
     public void handleRename() {
         final AlertDialog.Builder renameDialog = new AlertDialog.Builder(requireContext());
-        renameDialog.setTitle("Rename to:");
+        renameDialog.setTitle(R.string.rename);
         final EditText input = new EditText(requireContext());
         input.setText("details[0]");
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         renameDialog.setView(input);
-        renameDialog.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
+        renameDialog.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 //                details[0] = input.getText().toString();
             }
         });
-        renameDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        renameDialog.setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -408,9 +507,9 @@ public class DetailImageFragment extends Fragment {
         else if(id == R.id.undo){
 
         }
-        else if(id == R.id.redo){
-
-        }
+//        else if(id == R.id.redo){
+//
+//        }
         else if(id == R.id.eraser){
 
         }
@@ -430,7 +529,7 @@ public class DetailImageFragment extends Fragment {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
         share.putExtra(Intent.EXTRA_STREAM, image.getImageUri());
-        startActivity(Intent.createChooser(share, "Select"));
+        startActivity(Intent.createChooser(share, getString(R.string.select)));
     }
 
     class ImageEditing{

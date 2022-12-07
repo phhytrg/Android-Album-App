@@ -52,6 +52,7 @@
     <string name="label_cancel">Cancel</string>
     <string name="label_ok">OK</string>
 
+    <string name="filter">Filter</string>
     <string name="crop">Crop</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
@@ -80,26 +81,32 @@
     <string name="select">Select</string>
     <string name="colorpicker_title">ColorPicker Dialog</string>
     <string name="choose_color">Choose color</string>
+
     <string name="secs_3">3 seconds</string>
     <string name="secs_5">5 seconds</string>
     <string name="secs_10">10 seconds</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="custom">Custom</string>
+
     <string name="confirm_delete">Are you sure you want to delete these albums?
-        The photos will not be delected</string>
+        The photos will not be deleted</string>
     <string name="add_to_album">Add to album</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
     <string name="eraser">Eraser</string>
     <string name="color">Color</string>
     <string name="size">Size</string>
+    <string name="stickers">Stickers</string>
     //filter
     <string name="filter_brightness">Brightness</string>
     <string name="filter_tint">Tint</string>
     <string name="filter_corner">Corner</string>
 
-    <string name="number_selected_items">%d selected %s</string>
+    <string name="image_name">Image name</string>
+    <string name="last_modified">Last modified date</string>
+    <string name="details_uppercase">DETAILS</string>
 
+    <string name="number_selected_items">%d selected %s</string>
 
 </resources>

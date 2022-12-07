@@ -781,9 +781,9 @@ public class DetailImageFragment extends Fragment{
                     if(id == R.id.undo){
 
                     }
-                    else if(id == R.id.redo){
-
-                    }
+//                    else if(id == R.id.redo){
+//
+//                    }
                     else if(id == R.id.eraser){
 
                     }
