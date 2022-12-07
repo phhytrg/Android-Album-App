@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -250,74 +249,6 @@ public class DetailImageFragment extends Fragment {
         return true;
     }
 
-//    private void handleDetails() {
-//        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(requireContext());
-//        detailsDialog.setTitle(getString(R.string.details));
-//
-//        final EditText input = new EditText(requireContext());
-//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-//                LinearLayout.LayoutParams.WRAP_CONTENT);
-//        lp.setMargins(5, 0, 5, 0);
-//        input.setLayoutParams(lp);
-//
-//        // name, date, size, description
-//        String name = image.getName();
-//        Double size = image.getSize().doubleValue();
-//        String sizeUnit = "B";
-//        int scale;
-//
-//        if (size / 1024 > 1) {
-//            size = size / 1024;
-//            sizeUnit = "KB";
-//
-//            if (size / 1024 > 1) {
-//                size = size / 1024;
-//                sizeUnit = "MB";
-//            }
-//            scale = (int) Math.pow(10, 1);
-//            size = (double) Math.round(size * scale) / scale;
-//        }
-//
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
-//        String date = image.getDate().format(formatter);
-//
-//        String nameTitle = "Image Name";
-//        String nameStr = nameTitle + "\n" + name + "\n";
-//        String dateTitle = "Date Modified";
-//        String dateStr = dateTitle + "\n" + date + "\n";
-//        String sizeTitle = "Size";
-//        String sizeStr = sizeTitle + "\n" + size + " " + sizeUnit + "\n";
-//        SpannableString nameSpanStr = new SpannableString(nameStr);
-//        nameSpanStr.setSpan(new StyleSpan(Typeface.BOLD), 0, nameTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-//        SpannableString dateSpanStr = new SpannableString(dateStr);
-//        dateSpanStr.setSpan(new StyleSpan(Typeface.BOLD), 0, dateTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-//        SpannableString sizeSpanStr = new SpannableString(sizeStr);
-//        sizeSpanStr.setSpan(new StyleSpan(Typeface.BOLD), 0, sizeTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-//
-//        detailsDialog.setMessage(TextUtils.concat(nameStr, dateStr, sizeStr));
-//
-//        input.setHint(getString(R.string.hint_description));
-//        input.setText(image.getDescription());
-//        input.setInputType(InputType.TYPE_CLASS_TEXT);
-//        input.setSingleLine(false);
-//
-//        detailsDialog.setView(input);
-//        detailsDialog.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-////                details[4] = input.getText().toString();
-//                image.setDescription(input.getText().toString());
-//            }
-//        });
-//        detailsDialog.setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-//        detailsDialog.show();
-//    }
-
     private void handleDetails() {
         Context context = requireContext();
         LayoutInflater factory = LayoutInflater.from(context);
@@ -352,10 +283,9 @@ public class DetailImageFragment extends Fragment {
         }
         sizeText.setText(size + " " + sizeUnit);
 
-        description.setText(image.getDescription());
         description.setInputType(InputType.TYPE_CLASS_TEXT);
         description.setSingleLine(false);
-        //detailsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        description.setText(image.getDescription());
 
         detailsDialog.setView(detailsDialogView);
         detailsDialogView.findViewById(R.id.cancel_details).setOnClickListener(new View.OnClickListener() {
@@ -376,24 +306,45 @@ public class DetailImageFragment extends Fragment {
     }
 
     public void handleRename() {
-        final AlertDialog.Builder renameDialog = new AlertDialog.Builder(requireContext());
-        renameDialog.setTitle(R.string.rename);
-        final EditText input = new EditText(requireContext());
-        input.setText("details[0]");
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        renameDialog.setView(input);
-        renameDialog.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+        //Context context = requireContext();
+//        final Dialog renameDialog = new Dialog(context);
+//        renameDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        renameDialog.setCancelable(true);
+//        renameDialog.setContentView(R.layout.rename_dialog);
+
+        //renameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Context context = requireContext();
+        LayoutInflater factory = LayoutInflater.from(context);
+        final View renameDialogView = factory.inflate(R.layout.rename_dialog, null);
+        final AlertDialog renameDialog = new AlertDialog.Builder(context).create();
+
+        EditText renameEditText = (EditText) renameDialogView.findViewById(R.id.rename);
+        renameEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        renameEditText.setSingleLine(false);
+        renameEditText.setText(image.getName());
+
+        renameDialog.setView(renameDialogView);
+        renameDialogView.findViewById(R.id.cancel_rename).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-//                details[0] = input.getText().toString();
+            public void onClick(View v) {
+                renameDialog.dismiss();
             }
         });
-        renameDialog.setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
+        renameDialogView.findViewById(R.id.save_rename).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onClick(View v) {
+                String newName = renameEditText.getText().toString();
+                if (newName.equals("")) {
+                    Toast t = Toast.makeText(context, getString(R.string.alert_rename), Toast.LENGTH_SHORT);
+                }
+                else {
+                    image.setName(renameEditText.getText().toString());
+                    renameDialog.dismiss();
+                }
             }
         });
+
         renameDialog.show();
     }
 

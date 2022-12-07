@@ -103,9 +103,14 @@
     <string name="filter_tint">Tông màu</string>
     <string name="filter_corner">Bo góc</string>
 
+    <string name="description">Mô tả</string>
     <string name="image_name">Tên hình ảnh</string>
     <string name="last_modified">Ngày chỉnh sửa gần nhất</string>
     <string name="details_uppercase">CHI TIẾT</string>
+    <string name="rename_uppercase">ĐỔI TÊN</string>
+    <string name="hint_rename">Nhập vào tên ảnh</string>
+    <string name="alert_rename">Không được để trống tên ảnh</string>
+    <string name="file_size">Dung lượng</string>
 
     <string name="number_selected_items">Đã chọn %d %s</string>
 

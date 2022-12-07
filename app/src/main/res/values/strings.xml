@@ -103,9 +103,15 @@
     <string name="filter_tint">Tint</string>
     <string name="filter_corner">Corner</string>
 
+    <string name="description">Description</string>
     <string name="image_name">Image name</string>
     <string name="last_modified">Last modified date</string>
     <string name="details_uppercase">DETAILS</string>
+    <string name="rename_uppercase">RENAME</string>
+    <string name="hint_rename">Enter image name</string>
+    <string name="alert_rename">Image name can not be empty</string>
+    <string name="file_size">Size</string>
+
 
     <string name="number_selected_items">%d selected %s</string>
 
