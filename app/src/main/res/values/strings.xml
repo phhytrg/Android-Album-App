@@ -91,6 +91,7 @@
     <string name="add_to_album">Add to album</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
+    <string name="blur" translatable="false">Blur</string>
     <string name="eraser">Eraser</string>
     <string name="color">Color</string>
     <string name="size">Size</string>

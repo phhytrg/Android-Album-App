@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.renderscript.RenderScript;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -408,9 +409,9 @@ public class DetailImageFragment extends Fragment {
         else if(id == R.id.undo){
 
         }
-        else if(id == R.id.redo){
+        /*else if(id == R.id.redo){
 
-        }
+        }*/
         else if(id == R.id.eraser){
 
         }
@@ -661,6 +662,8 @@ public class DetailImageFragment extends Fragment {
             final SeekBar sk_filter_bright = dialog.findViewById(R.id.filter_bright);
             final SeekBar sk_filter_corner = dialog.findViewById(R.id.filter_corner);
             final SeekBar sk_filter_tint = dialog.findViewById(R.id.filter_tint);
+            final SeekBar sk_filter_blur = dialog.findViewById(R.id.filter_blur);
+
 
             sk_filter_bright.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 Bitmap bmlocal;int stop;
@@ -731,6 +734,28 @@ public class DetailImageFragment extends Fragment {
                     imageView.setImageBitmap(bmlocal);
                     stop=progress;
 
+                }
+            });
+
+            RenderScript renderScript = RenderScript.create(requireContext());
+            sk_filter_blur.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                Bitmap bmlocal, blur; float stop;
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    blur = ImageFilter.blurImage(renderScript, bitmap,  stop);
+                    bmscaled[0] = bitmapResize(blur);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    bmlocal = ImageFilter.blurImage(renderScript, bmscaled[0],  progress);
+                    imageView.setImageBitmap(bmlocal);
+                    stop =  progress;
                 }
             });
 
