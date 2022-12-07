@@ -48,7 +48,8 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
                 MediaStore.Images.ImageColumns.DATE_MODIFIED,
                 MediaStore.Images.ImageColumns.WIDTH,
                 MediaStore.Images.ImageColumns.HEIGHT,
-                MediaStore.Images.ImageColumns.DESCRIPTION
+                MediaStore.Images.ImageColumns.DESCRIPTION,
+                MediaStore.Images.ImageColumns.DISPLAY_NAME
         };
 
         Cursor cursor = context.getContentResolver().query(
