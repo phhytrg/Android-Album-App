@@ -13,6 +13,26 @@ public class Image implements Parcelable {
     private LocalDateTime date;
     private int width,height;
     private String bucketName;
+    private long id;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
 
     public Image() {}
 

@@ -69,7 +69,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     private void exec(){
         this.albumNames = new ArrayList<>();
         this.albumNames.addAll(map.keySet());
-        this.albumImages = map.get(map.firstKey());
+        if(map.firstEntry() != null) {
+            this.albumImages = map.get(map.firstKey());
+        }
     }
 
 
