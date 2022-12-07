@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class Image implements Parcelable {
+public class Image implements Parcelable{
     private Uri imageUri;
     private LocalDateTime date;
     private int width,height;
