@@ -81,14 +81,12 @@
     <string name="select">Chọn</string>
     <string name="colorpicker_title">Bộ chọn màu</string>
     <string name="choose_color">Chọn màu của ứng dụng</string>
-
     <string name="secs_3">3 giây</string>
     <string name="secs_5">5 giây</string>
     <string name="secs_10">10 giây</string>
     <string name="light">Sáng</string>
     <string name="dark">Tối</string>
     <string name="custom">Tùy chỉnh</string>
-
     <string name="confirm_delete">Bạn có chắc chắn muốn xóa những album này?
     Những hình ảnh trong album sẽ không bị xóa theo album</string>
     <string name="add_to_album">Thêm vào album</string>

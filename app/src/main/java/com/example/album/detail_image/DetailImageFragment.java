@@ -729,7 +729,7 @@ public class DetailImageFragment extends Fragment {
 
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
-                    bmlocal =ImageFilter.applyFilter(bmscaled[0],"BRIGHTNESS",progress);
+                    bmlocal = ImageFilter.applyFilter(bmscaled[0],"BRIGHTNESS",progress);
                     imageView.setImageBitmap(bmlocal);
                     stop=progress;
 
@@ -741,7 +741,7 @@ public class DetailImageFragment extends Fragment {
                 int stop;
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    bitmap =ImageFilter.applyFilter(bitmap,"CORNER",stop);
+                    bitmap = ImageFilter.applyFilter(bitmap,"CORNER",stop);
                     bmscaled[0] = bitmapResize(bitmap);
 
                 }

@@ -13,6 +13,7 @@ public class Image implements Parcelable {
     private LocalDateTime date;
     private int width,height;
     private String bucketName;
+    private long id;
     private String name;
     private String description;
     private Long size;
@@ -25,10 +26,15 @@ public class Image implements Parcelable {
         width = in.readInt();
         height = in.readInt();
         bucketName = in.readString();
-        name = in.readString();
-        description = in.readString();
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getBucketName() {
         return bucketName;
@@ -106,8 +112,6 @@ public class Image implements Parcelable {
         dest.writeInt(width);
         dest.writeLong(height);
         dest.writeString(bucketName);
-        dest.writeString(name);
-        dest.writeString(description);
     }
 
     public static final Parcelable.Creator<Image> CREATOR
