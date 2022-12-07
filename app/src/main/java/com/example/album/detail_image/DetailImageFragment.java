@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
@@ -36,6 +37,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -334,6 +336,7 @@ public class DetailImageFragment extends Fragment {
             }
         });
         renameDialogView.findViewById(R.id.save_rename).setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onClick(View v) {
                 String newName = renameEditText.getText().toString();
@@ -346,7 +349,15 @@ public class DetailImageFragment extends Fragment {
                     ContentValues values = new ContentValues();
                     values.put(MediaStore.Images.Media.DISPLAY_NAME, renameEditText.getText().toString());
                     Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image.getId());
-                    int res = context.getContentResolver().update(uri, values, null, null);
+                    int res = context.getContentResolver().update(
+                            uri,
+                            values,
+                            null,
+                            null
+                    );
+                    if(res < 1){
+                        Toast.makeText(requireContext(), "An Error while rename image!",Toast.LENGTH_SHORT).show();
+                    }
                     renameDialog.dismiss();
                 }
             }
