@@ -3,19 +3,26 @@ package com.example.album.detail_image;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.WallpaperManager;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -38,13 +46,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.ImageUri;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.data.Image;
+import com.example.album.ui.DrawableImageView;
 import com.example.album.ui.ImageFilter;
 import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ZoomableImageView;
@@ -58,6 +69,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DetailImageFragment extends Fragment {
     private BottomNavigationView navigationView;
@@ -71,11 +84,13 @@ public class DetailImageFragment extends Fragment {
     private ActionBar app_bar;
     private SplitToolbar navigationBar;
     private ZoomableImageView imageView;
+
     private int isChecked;
     //filter
     private ViewGroup filter_gallery;
     private Image image;
     private Bitmap bitmap;
+    private RelativeLayout relativeLayout;
 
 
     DetailImageFragment.ImageCropping imageCropping;
@@ -129,9 +144,10 @@ public class DetailImageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+//
         imageView = view.findViewById(R.id.photo_view);
         imageView.setImage(image);
+//        imageViewPaint = view.findViewById(R.id.photo_view_paint);
         navigateUpButton = view.findViewById(R.id.back_button);
         overflowButton = view.findViewById(R.id.overflow_button);
         doneButton = view.findViewById(R.id.done);
@@ -141,6 +157,7 @@ public class DetailImageFragment extends Fragment {
         navigationView = view.findViewById(R.id.bottom_nav);
         //filter
         filter_gallery = view.findViewById(R.id.filter_gallery);
+        relativeLayout = view.findViewById(R.id.wrap_photo);
 
         imageCropping = new ImageCropping();
         imageEditing = new ImageEditing();
@@ -200,6 +217,7 @@ public class DetailImageFragment extends Fragment {
                 imageEditing.onBackPressed();
                 break;
             case PAINT:
+                imagePainting.onBackPressed();
                 imageEditing.switchLayout();
                 break;
             case FILTER:
@@ -408,17 +426,14 @@ public class DetailImageFragment extends Fragment {
         else if(id == R.id.undo){
 
         }
-        else if(id == R.id.redo){
-
-        }
         else if(id == R.id.eraser){
-
+            imagePainting.setErase();
         }
         else if(id == R.id.color){
 
         }
         else if(id == R.id.pen){
-
+            imagePainting.setSize();
         }
         else {
             return false;
@@ -429,7 +444,7 @@ public class DetailImageFragment extends Fragment {
     private void handleShare() {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
-        share.putExtra(Intent.EXTRA_STREAM, image.getImageUri());
+        share.putExtra(Intent.EXTRA_STREAM, ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image.getId()));
         startActivity(Intent.createChooser(share, "Select"));
     }
 
@@ -585,7 +600,7 @@ public class DetailImageFragment extends Fragment {
                 });
     }
 
-    class ImageFilterEffects{
+    class ImageFilterEffects  {
         private Bitmap tempBitmap = bitmap;
 
         private void handleFilter() {
@@ -598,22 +613,34 @@ public class DetailImageFragment extends Fragment {
             autoFilterButton.requestLayout();
             settingFilterButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             settingFilterButton.requestLayout();
+
+
+            List<Bitmap> bmList=new ArrayList<Bitmap>();
+
+
+
+
             int length = ImageFilter.filter_values.length;
             Bitmap bmScaled = Bitmap.createScaledBitmap(bitmap, 80, 80, false);
             for (int i = 0; i < length; ++i) {
+                RecyclerView.ViewHolder viewHolder;
                 final View v = getLayoutInflater().inflate(R.layout.filter_item, null);
                 v.setId(i);
                 TextView tv = v.findViewById(R.id.text_filter);
                 tv.setText(com.example.album.ui.ImageFilter.filter_values[i]);
                 ImageView img = v.findViewById(R.id.img_filter);
-                img.setImageBitmap(com.example.album.ui.ImageFilter.applyFilter(bmScaled, ImageFilter.filter_values[i]));
-
+                Bitmap bmtemp=com.example.album.ui.ImageFilter.applyFilter(bmScaled, ImageFilter.filter_values[i]);
+                bmList.add(bmtemp);
+                img.setImageBitmap(bmtemp);
                 filter_gallery.addView(v);
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        tempBitmap = ImageFilter.applyFilter(bitmap, ImageFilter.filter_values[v.getId()]);
+//                        tempBitmap = ImageFilter.applyFilter(bitmap, ImageFilter.filter_values[v.getId()]);
+//                        imageView.setImageBitmap(tempBitmap);
+                        tempBitmap=bmList.get(v.getId());
                         imageView.setImageBitmap(tempBitmap);
+
                     }
                 });
             }
@@ -629,9 +656,9 @@ public class DetailImageFragment extends Fragment {
         }
 
         private void onDonePressed(){
-            imageView.setImageBitmap(bitmap);
+            imageView.setImageBitmap(tempBitmap);
             try {
-                ImageUri.saveImage(requireContext(), bitmap, "Filter");
+                ImageUri.saveImage(requireContext(), tempBitmap, "Filter");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -639,6 +666,8 @@ public class DetailImageFragment extends Fragment {
             filter_gallery.getLayoutParams().height =0;
             filter_gallery.requestLayout();
             currentState = CurrentState.EDIT;
+
+
         }
 
         private void handleAutoFilter(View v) {
@@ -754,8 +783,12 @@ public class DetailImageFragment extends Fragment {
     }
 
     class ImagePainting{
-
-        private void switchLayout(){
+        View v=getLayoutInflater().inflate(R.layout.paint_photo_view, null);
+        DrawableImageView imageViewPaint = (DrawableImageView) v.findViewById(R.id.photo_view_paint) ;
+        Bitmap temp;
+        private void switchLayout() {
+//            v = getLayoutInflater().inflate(R.layout.paint_photo_view, relativeLayout);
+            relativeLayout.addView(v);
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.paint_nav);
             doneButton.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
@@ -764,19 +797,110 @@ public class DetailImageFragment extends Fragment {
             overflowButton.requestLayout();
             navigationView.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
             currentState = CurrentState.PAINT;
-        }
+            imageViewPaint.setImage(image);
 
+            Bitmap alteredBitmap = Bitmap.createBitmap(bitmap.getWidth(),
+                    bitmap.getHeight(), bitmap.getConfig());
+            imageViewPaint.setNewImage(alteredBitmap, bitmap);
+            temp=alteredBitmap;
+
+
+
+        }
+        private void setErase(){
+            //switch to erase - choose size
+            final Dialog brushDialog = new Dialog(requireContext());
+            brushDialog.setTitle("Eraser size:");
+//            brushDialog.setContentView(R.layout.brush_chooser);
+//            //size buttons
+//            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
+//            smallBtn.setOnClickListener(new OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    drawView.setErase(true);
+//                    drawView.setBrushSize(smallBrush);
+//                    brushDialog.dismiss();
+//                }
+//            });
+//            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
+//            mediumBtn.setOnClickListener(new OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    drawView.setErase(true);
+//                    drawView.setBrushSize(mediumBrush);
+//                    brushDialog.dismiss();
+//                }
+//            });
+//            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
+//            largeBtn.setOnClickListener(new OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    drawView.setErase(true);
+//                    drawView.setBrushSize(largeBrush);
+//                    brushDialog.dismiss();
+//                }
+//            });
+            imageViewPaint.setErase(true);
+
+            brushDialog.show();
+        }
+        private void setSize(){
+            //switch to erase - choose size
+            final Dialog brushDialog = new Dialog(requireContext());
+            brushDialog.setTitle("Draw size:");
+//            brushDialog.setContentView(R.layout.brush_chooser);
+//            //size buttons
+//            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
+//            smallBtn.setOnClickListener(new OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    drawView.setErase(true);
+//                    drawView.setBrushSize(smallBrush);
+//                    brushDialog.dismiss();
+//                }
+//            });
+//            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
+//            mediumBtn.setOnClickListener(new OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    drawView.setErase(true);
+//                    drawView.setBrushSize(mediumBrush);
+//                    brushDialog.dismiss();
+//                }
+//            });
+//            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
+//            largeBtn.setOnClickListener(new OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    drawView.setErase(true);
+//                    drawView.setBrushSize(largeBrush);
+//                    brushDialog.dismiss();
+//                }
+//            });
+            imageViewPaint.setErase(false);
+            imageViewPaint.setSize(5);
+
+            brushDialog.show();
+        }
+        private void onBackPressed(){
+            relativeLayout.removeView(v);
+            imageView.setImage(image);
+        }
         private void onDonePressed(){
-            if(bitmap != null){
-                imageView.setImageBitmap(bitmap);
+
+            if(temp != null){
+                imageView.setImageBitmap(temp);
 //                saveToInternalStorage(bitmap_mod);
                 try {
-                    ImageUri.saveImage(requireContext(), bitmap, "Paint");
+                    bitmap=temp;
+                    ImageUri.saveImage(requireContext(), temp, "Paint");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 currentState = CurrentState.EDIT;
             }
+            relativeLayout.removeView(v);
+
         }
     }
 }
