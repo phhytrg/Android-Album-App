@@ -13,6 +13,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -45,11 +47,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.example.album.ImageUri;
 import com.example.album.MainActivity;
@@ -61,6 +65,9 @@ import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ZoomableImageView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.skydoves.colorpickerview.ColorEnvelope;
+import com.skydoves.colorpickerview.ColorPickerDialog;
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -163,7 +170,6 @@ public class DetailImageFragment extends Fragment {
         imageEditing = new ImageEditing();
         imagePainting = new ImagePainting();
         imageFilterEffects = new ImageFilterEffects();
-
         isChecked = 0;
         navigationView.getMenu().getItem(0).setCheckable(false);
         navigationView.setOnItemSelectedListener(this::itemNavigationBottomSelected);
@@ -430,7 +436,7 @@ public class DetailImageFragment extends Fragment {
             imagePainting.setErase();
         }
         else if(id == R.id.color){
-
+            imagePainting.setColor();
         }
         else if(id == R.id.pen){
             imagePainting.setSize();
@@ -763,12 +769,7 @@ public class DetailImageFragment extends Fragment {
                 }
             });
 
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(dialog.getWindow().getAttributes());
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            dialog.getWindow().setAttributes(layoutParams);
-            dialog.getWindow().setDimAmount(0f);
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.custom_setting_filter_dialog);
+
 
         }
 
@@ -787,7 +788,6 @@ public class DetailImageFragment extends Fragment {
         DrawableImageView imageViewPaint = (DrawableImageView) v.findViewById(R.id.photo_view_paint) ;
         Bitmap temp;
         private void switchLayout() {
-//            v = getLayoutInflater().inflate(R.layout.paint_photo_view, relativeLayout);
             relativeLayout.addView(v);
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.paint_nav);
@@ -804,84 +804,72 @@ public class DetailImageFragment extends Fragment {
             imageViewPaint.setNewImage(alteredBitmap, bitmap);
             temp=alteredBitmap;
 
-
-
         }
         private void setErase(){
-            //switch to erase - choose size
-            final Dialog brushDialog = new Dialog(requireContext());
-            brushDialog.setTitle("Eraser size:");
-//            brushDialog.setContentView(R.layout.brush_chooser);
-//            //size buttons
-//            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-//            smallBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(smallBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-//            mediumBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(mediumBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-//            largeBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(largeBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
             imageViewPaint.setErase(true);
-
-            brushDialog.show();
+            showDialogChooseSize();
         }
         private void setSize(){
-            //switch to erase - choose size
-            final Dialog brushDialog = new Dialog(requireContext());
-            brushDialog.setTitle("Draw size:");
-//            brushDialog.setContentView(R.layout.brush_chooser);
-//            //size buttons
-//            ImageButton smallBtn = (ImageButton)brushDialog.findViewById(R.id.small_brush);
-//            smallBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(smallBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//            ImageButton mediumBtn = (ImageButton)brushDialog.findViewById(R.id.medium_brush);
-//            mediumBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(mediumBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
-//            ImageButton largeBtn = (ImageButton)brushDialog.findViewById(R.id.large_brush);
-//            largeBtn.setOnClickListener(new OnClickListener(){
-//                @Override
-//                public void onClick(View v) {
-//                    drawView.setErase(true);
-//                    drawView.setBrushSize(largeBrush);
-//                    brushDialog.dismiss();
-//                }
-//            });
             imageViewPaint.setErase(false);
-            imageViewPaint.setSize(5);
+            showDialogChooseSize();
 
-            brushDialog.show();
         }
+        public void showDialogChooseSize(){
+            final Dialog dialog = new Dialog(requireContext());
+            dialog.setContentView(R.layout.brush_size_dialog);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogPopupStyle;
+            dialog.show();
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+            final SeekBar sk_brush_size = dialog.findViewById(R.id.brush_size);
+
+
+            sk_brush_size.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                int stop;
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    imageViewPaint.setSize(stop/10);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                    stop=progress;
+                }
+            });
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(dialog.getWindow().getAttributes());
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setAttributes(layoutParams);
+            dialog.getWindow().setDimAmount(0f);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.custom_setting_filter_dialog);
+        }
+        public void setColor(){
+            imageViewPaint.setErase(false);
+            new ColorPickerDialog.Builder(requireContext())
+                    .setTitle("ColorPicker Dialog")
+                    .setPreferenceName("MyColorPickerDialog")
+                    .setPositiveButton("Confirm",
+                            new ColorEnvelopeListener() {
+                                MenuItem color = navigationView.getMenu().findItem(R.id.color);
+                                @Override
+                                public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
+                                    Drawable newIcon = (Drawable)color.getIcon();
+                                    newIcon.mutate().setColorFilter(envelope.getColor(), PorterDuff.Mode.SRC_IN);
+                                    color.setIcon(newIcon);
+                                    imageViewPaint.setColor(envelope.getColor());
+                                }
+                            })
+                    .setNegativeButton("cancel",
+                            (dialogInterface, i) -> dialogInterface.dismiss())
+                    .attachAlphaSlideBar(true) // the default value is true.
+                    .attachBrightnessSlideBar(true)  // the default value is true.
+                    .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
+                    .show();
+            }
+
         private void onBackPressed(){
             relativeLayout.removeView(v);
             imageView.setImage(image);
