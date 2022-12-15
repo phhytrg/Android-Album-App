@@ -14,5 +14,5 @@
         android:title="@string/size"/>
     <item android:id="@+id/stickers"
         android:icon="@drawable/sticker_star"
-        android:title="Stickers"/>
+        android:title="@string/stickers"/>
 </menu>

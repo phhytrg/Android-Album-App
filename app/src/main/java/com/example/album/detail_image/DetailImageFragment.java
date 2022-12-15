@@ -4,27 +4,22 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.WallpaperManager;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
-import android.util.Log;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -34,7 +29,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -47,13 +41,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.example.album.ImageUri;
 import com.example.album.MainActivity;
@@ -73,11 +64,11 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class DetailImageFragment extends Fragment {
     private BottomNavigationView navigationView;
@@ -275,50 +266,144 @@ public class DetailImageFragment extends Fragment {
     }
 
     private void handleDetails() {
-        final AlertDialog.Builder detailsDialog = new AlertDialog.Builder(requireContext());
-        detailsDialog.setTitle("Details");
-        final EditText input = new EditText(requireContext());
-        String info = "details[0] + \n + details[1] + \n + details[2] + \n + details[3]";
-        detailsDialog.setMessage(info);
-        input.setHint("Enter the description of this image");
-        input.setText("details[4]");
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setSingleLine(false);
-        detailsDialog.setView(input);
-        detailsDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+        Context context = requireContext();
+        LayoutInflater factory = LayoutInflater.from(context);
+        final View detailsDialogView = factory.inflate(R.layout.details_dialog, null);
+        final AlertDialog detailsDialog = new AlertDialog.Builder(context).create();
+
+        TextView image_name = (TextView) detailsDialogView.findViewById(R.id.image_name);
+        TextView last_modified_date = (TextView) detailsDialogView.findViewById(R.id.last_modified_date);
+        TextView sizeText = (TextView) detailsDialogView.findViewById(R.id.size);
+        EditText descriptionEdt = (EditText) detailsDialogView.findViewById(R.id.description);
+
+        image_name.setText(image.getName());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
+        String date = image.getDate().format(formatter);
+        last_modified_date.setText(date);
+
+        Double size = image.getSize().doubleValue();
+        String sizeUnit = "B";
+        int scale;
+
+        if (size / 1024 > 1) {
+            size = size / 1024;
+            sizeUnit = "KB";
+
+            if (size / 1024 > 1) {
+                size = size / 1024;
+                sizeUnit = "MB";
+            }
+            scale = (int) Math.pow(10, 1);
+            size = (double) Math.round(size * scale) / scale;
+        }
+        sizeText.setText(size + " " + sizeUnit);
+
+        descriptionEdt.setInputType(InputType.TYPE_CLASS_TEXT);
+        descriptionEdt.setSingleLine(false);
+        String description = image.getDescription();
+        descriptionEdt.setText(description);
+
+        detailsDialog.setView(detailsDialogView);
+        detailsDialogView.findViewById(R.id.cancel_details).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-//                details[4] = input.getText().toString();
+            public void onClick(View v) {
+                detailsDialog.dismiss();
             }
         });
-        detailsDialog.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+        detailsDialogView.findViewById(R.id.save_details).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onClick(View v) {
+                image.setDescription(descriptionEdt.getText().toString());
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DESCRIPTION, descriptionEdt.getText().toString());
+                Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image.getId());
+                int res = context.getContentResolver().update(uri, values, null, null);
+                if (res < 1) {
+                    descriptionEdt.setError(getString(R.string.err_unknown_description));
+                }
+
+                detailsDialog.dismiss();
             }
         });
+
         detailsDialog.show();
     }
 
     public void handleRename() {
-        final AlertDialog.Builder renameDialog = new AlertDialog.Builder(requireContext());
-        renameDialog.setTitle("Rename to:");
-        final EditText input = new EditText(requireContext());
-        input.setText("details[0]");
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        renameDialog.setView(input);
-        renameDialog.setPositiveButton("Rename", new DialogInterface.OnClickListener() {
+        Context context = requireContext();
+        LayoutInflater factory = LayoutInflater.from(context);
+        final View renameDialogView = factory.inflate(R.layout.rename_dialog, null);
+        final AlertDialog renameDialog = new AlertDialog.Builder(context).create();
+
+        EditText renameEditText = (EditText) renameDialogView.findViewById(R.id.rename);
+        renameEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        renameEditText.setSingleLine(false);
+
+        String[] nameSplit = image.getName().split("\\.");
+        List<String> listSplit = new ArrayList<String>(Arrays.asList(nameSplit));
+        String extension = listSplit.remove(nameSplit.length - 1);
+        String name = TextUtils.join(".", listSplit);
+        String nameWithExtension = name + '.' + extension;
+        renameEditText.setText(name);
+
+        renameDialog.setView(renameDialogView);
+        renameDialogView.findViewById(R.id.cancel_rename).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-//                details[0] = input.getText().toString();
+            public void onClick(View v) {
+                renameDialog.dismiss();
             }
         });
-        renameDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        renameDialogView.findViewById(R.id.save_rename).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onClick(View v) {
+                String newName = renameEditText.getText().toString();
+                String newNameWithExtension = newName + '.' + extension;
+
+                // if name and newName are the same
+                if (newNameWithExtension.equals(nameWithExtension)) {
+                    renameDialog.dismiss();
+                    return;
+                }
+
+                // if name is empty
+                if (newName.equals("")) {
+                    renameEditText.setError(getString(R.string.err_empty_name));
+                    return;
+                }
+
+                // if name is invalid
+                if (!newName.matches("^[-_. A-Za-z0-9(){}\\[\\]]+$")) {
+                    renameEditText.setError(getString(R.string.err_invalid_name));
+                    return;
+                }
+
+                String[] str_array = image.getImageUri().getPath().split("/");
+                List<String> list = new ArrayList<String>(Arrays.asList(str_array));
+                list.remove(str_array.length - 1);
+                String newPath = TextUtils.join("/", list) + "/"
+                        + newNameWithExtension;
+                File newFile = new File(newPath);
+
+                // if name already exists
+                if (newFile.exists()) {
+                    renameEditText.setError(getString(R.string.err_exist_name));
+                    return;
+                }
+
+                image.setName(newNameWithExtension);
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, newNameWithExtension);
+                Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image.getId());
+                int res = context.getContentResolver().update(uri, values, null, null);
+                if (res < 1) {
+                    renameEditText.setError(getString(R.string.err_unknown_rename));
+                }
+
+                renameDialog.dismiss();
             }
         });
+
         renameDialog.show();
     }
 
@@ -451,7 +536,7 @@ public class DetailImageFragment extends Fragment {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
         share.putExtra(Intent.EXTRA_STREAM, ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image.getId()));
-        startActivity(Intent.createChooser(share, "Select"));
+        startActivity(Intent.createChooser(share, getString(R.string.select)));
     }
 
     class ImageEditing{

@@ -7,7 +7,7 @@
     <string name="privacy">RIÊNG TƯ</string>
     <string name="gallery">Bộ sưu tập</string>
     <string name="switch_layout_item">switch_layout_item</string>
-    <string name="filter_item">Bộ lọc</string>
+    <string name="filter_item">Lọc ảnh</string>
     <string name="camera_item">camera_item</string>
 
     <!-- Preference Titles -->
@@ -52,6 +52,7 @@
     <string name="label_cancel">Hủy</string>
     <string name="label_ok">OK</string>
 
+    <string name="filter">Bộ lọc</string>
     <string name="crop">Cắt</string>
     <string name="edit">Sửa</string>
     <string name="delete">Xóa</string>
@@ -76,7 +77,7 @@
     <string name="rename">Đổi tên</string>
     <string name="save">Lưu</string>
     <string name="details">Chi tiết</string>
-    <string name="hint_description">Nhập vào mô tả của ảnh</string>
+    <string name="hint_description">Thêm mô tả cho ảnh</string>
     <string name="select">Chọn</string>
     <string name="colorpicker_title">Bộ chọn màu</string>
     <string name="choose_color">Chọn màu của ứng dụng</string>
@@ -94,10 +95,25 @@
     <string name="eraser">Xóa</string>
     <string name="color">Màu</string>
     <string name="size">Kích thước</string>
-//filter
+    <string name="stickers">Nhãn dán</string>
+    //filter
     <string name="filter_brightness">Độ sáng</string>
-    <string name="filter_tint">Nhuộm</string>
-    <string name="filter_corner">Góc</string>
+    <string name="filter_tint">Tông màu</string>
+    <string name="filter_corner">Bo góc</string>
+
+    <string name="description">Mô tả</string>
+    <string name="image_name">Tên hình ảnh</string>
+    <string name="last_modified">Ngày chỉnh sửa gần nhất</string>
+    <string name="details_uppercase">CHI TIẾT</string>
+    <string name="rename_uppercase">ĐỔI TÊN</string>
+    <string name="hint_rename">Nhập vào tên ảnh</string>
+    <string name="file_size">Dung lượng</string>
+
+    <string name="err_empty_name">Tên ảnh không thể để trống</string>
+    <string name="err_exist_name">Tên này đã tồn tại</string>
+    <string name="err_unknown_rename">Đã có lỗi xảy ra khi đổi tên</string>
+    <string name="err_unknown_description">Đã có lỗi xảy ra khi chỉnh sửa mô tả</string>
+    <string name="err_invalid_name">Tên ảnh không hợp lệ</string>
 
     <string name="number_selected_items">Đã chọn %d %s</string>
 
