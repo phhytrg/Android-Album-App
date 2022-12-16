@@ -61,6 +61,7 @@ import com.skydoves.colorpickerview.ColorPickerDialog;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.yalantis.ucrop.UCrop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -498,9 +499,9 @@ public class DetailImageFragment extends Fragment {
         }
         else if(id == R.id.crop){
             imageCropping.handleCrop();
-            if(image.getImageUri() != null){
-                imageView.setImage(image);
-            }
+//            if(image.getImageUri() != null){
+//                imageView.setImage(image);
+//            }
         }
         else if(id == R.id.flip){
             imageEditing.handleFlip();
@@ -562,15 +563,16 @@ public class DetailImageFragment extends Fragment {
         private void handleFlip() {
             Matrix mat = new Matrix();
             mat.postScale(-1f, 1f, bitmap.getWidth() / 2f, bitmap.getHeight() / 2f);
-            Bitmap image_bm_flipped = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
-            bitmap = image_bm_flipped;
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(), bitmap.getHeight(), mat, true);
             imageView.setImageBitmap(bitmap);
         }
 
         private void handleRotate() {
             Matrix mat = new Matrix();
             mat.postRotate(90);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mat, true);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(),bitmap.getHeight(), mat, true);
             imageView.setImageBitmap(bitmap);
         }
 
@@ -589,7 +591,6 @@ public class DetailImageFragment extends Fragment {
         }
 
         private void onDonePressed(){
-            //dang o edit
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.image_option);
             navigationView.getMenu().getItem(0).setCheckable(false);
@@ -601,10 +602,8 @@ public class DetailImageFragment extends Fragment {
             doneButton.requestLayout();
             currentState = CurrentState.DETAIL;
 
-            // Lưu ảnh đã chỉnh sửa vào Internal Storage
-//                saveToInternalStorage(bitmap_mod);
             try {
-                ImageUri.saveImage(requireContext(), bitmap, "Edit");
+                    ImageUri.saveImage(requireContext(), bitmap, "Edit");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -616,13 +615,20 @@ public class DetailImageFragment extends Fragment {
         private Uri resultUri = image.getImageUri();
 
         private void handleCrop() {
+            String srcFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+            //File newSrcFile = new File(requireActivity().getCacheDir(), srcFileName);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(),
+                    bitmap, srcFileName, null);
+            Uri srcUri = Uri.parse(path);
 
             String desFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
-            File newFile = new File(requireActivity().getCacheDir(),desFileName);
-            Uri desUri=Uri.fromFile(newFile);
+            File newDesFile = new File(requireActivity().getCacheDir(), desFileName);
+            Uri desUri = Uri.fromFile(newDesFile);
 
             ArrayList<Uri> listUri = new ArrayList<>();
-            listUri.add(image.getImageUri());
+            listUri.add(srcUri);
             listUri.add(desUri);
             cropImage.launch(listUri);
         }
@@ -680,11 +686,14 @@ public class DetailImageFragment extends Fragment {
                 result -> {
                     resultUri = result;
                     try {
+                        //Log.d("result-value", result.toString());
                         if(result != null){
+                            //Log.d("result", "result!=null");
                             bitmap = MediaStore.Images.Media.getBitmap(requireActivity()
                                     .getContentResolver(), result);
-                            imageView.setImageBitmap(bitmap);
+                            //imageView.setImageBitmap(bitmap);
                         }
+                        imageView.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -934,9 +943,9 @@ public class DetailImageFragment extends Fragment {
         public void setColor(){
             imageViewPaint.setErase(false);
             new ColorPickerDialog.Builder(requireContext())
-                    .setTitle("ColorPicker Dialog")
+                    .setTitle(getString(R.string.colorpicker_title))
                     .setPreferenceName("MyColorPickerDialog")
-                    .setPositiveButton("Confirm",
+                    .setPositiveButton(getString(R.string.confirm),
                             new ColorEnvelopeListener() {
                                 MenuItem color = navigationView.getMenu().findItem(R.id.color);
                                 @Override
@@ -947,7 +956,7 @@ public class DetailImageFragment extends Fragment {
                                     imageViewPaint.setColor(envelope.getColor());
                                 }
                             })
-                    .setNegativeButton("cancel",
+                    .setNegativeButton(getString(R.string.label_cancel),
                             (dialogInterface, i) -> dialogInterface.dismiss())
                     .attachAlphaSlideBar(true) // the default value is true.
                     .attachBrightnessSlideBar(true)  // the default value is true.
