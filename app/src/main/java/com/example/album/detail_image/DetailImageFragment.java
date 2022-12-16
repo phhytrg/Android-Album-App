@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -613,7 +612,6 @@ public class DetailImageFragment extends Fragment {
 
 
     private class ImageCropping{
-        private Uri resultUri = image.getImageUri();
         private Uri srcUri;
 
         private void handleCrop() {
@@ -623,7 +621,6 @@ public class DetailImageFragment extends Fragment {
             String srcPath = MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(),
                     bitmap, srcFileName, null);
             srcUri = Uri.parse(srcPath);
-            Log.d("URI------------: ", srcUri.getPath());
 
             String desFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
             File newDesFile = new File(requireActivity().getCacheDir(), desFileName);
@@ -633,17 +630,6 @@ public class DetailImageFragment extends Fragment {
             listUri.add(srcUri);
             listUri.add(desUri);
             cropImage.launch(listUri);
-//            File srcFile = new File(srcUri.getPath());
-//            if (srcFile.getAbsoluteFile().exists()) {
-//                if (srcFile.delete()) {
-//                    Log.d("file Deleted: ", srcFile.getAbsolutePath());
-//                } else {
-//                    Log.d("file not Deleted: ", srcFile.getAbsolutePath());
-//                }
-//            }
-//            else {
-//                Log.d("file not EXIST: ", srcFile.getAbsolutePath());
-//            }//content://media/external/images/media/55
         }
 
         private final ActivityResultContract<List<Uri>, Uri> uCropContract = new ActivityResultContract<List<Uri>, Uri>() {
@@ -697,12 +683,10 @@ public class DetailImageFragment extends Fragment {
         private ActivityResultLauncher<List<Uri>> cropImage
                 = registerForActivityResult(uCropContract,
                 result -> {
-                    resultUri = result;
                     try {
                         if(result != null){
                             bitmap = MediaStore.Images.Media.getBitmap(requireActivity()
                                     .getContentResolver(), result);
-                            //imageView.setImageBitmap(bitmap);
                         }
                         getActivity().getContentResolver().delete(srcUri, null, null);
                         imageView.setImageBitmap(bitmap);
