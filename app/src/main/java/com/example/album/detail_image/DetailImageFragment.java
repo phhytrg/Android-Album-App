@@ -18,7 +18,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -30,9 +32,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -47,6 +51,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -99,6 +104,14 @@ public class DetailImageFragment extends Fragment {
     private Bitmap bitmap;
     private RelativeLayout relativeLayout;
 
+    // text sticker
+    private LinearLayout font_bar;
+    private int font_index = 0;
+    private ImageButton change_font;
+    private EditText text_input;
+    private TextView text_output;
+    private float ts_xDown = 0, ts_yDown = 0;
+    private RelativeLayout wrapLayout;
 
     DetailImageFragment.ImageCropping imageCropping;
     DetailImageFragment.ImageEditing imageEditing;
@@ -165,6 +178,12 @@ public class DetailImageFragment extends Fragment {
         //filter
         filter_gallery = view.findViewById(R.id.filter_gallery);
         relativeLayout = view.findViewById(R.id.wrap_photo);
+
+        font_bar = view.findViewById(R.id.font_bar);
+        text_input = view.findViewById(R.id.stickerEditText);
+        text_output = view.findViewById(R.id.stickerTextview);
+        change_font = view.findViewById(R.id.btn_font);
+        wrapLayout = (RelativeLayout) view.findViewById(R.id.wrap_photo) ;
 
         imageCropping = new ImageCropping();
         imageEditing = new ImageEditing();
@@ -429,8 +448,8 @@ public class DetailImageFragment extends Fragment {
         else if(id == R.id.paint){
             imagePainting.switchLayout();
         }
-        else if(id == R.id.undo){
-
+        else if(id == R.id.text_sticker){
+            imagePainting.addTextSticker();
         }
         else if(id == R.id.eraser){
             imagePainting.setErase();
@@ -784,7 +803,7 @@ public class DetailImageFragment extends Fragment {
     }
 
     class ImagePainting{
-        View v=getLayoutInflater().inflate(R.layout.paint_photo_view, null);
+        View v = getLayoutInflater().inflate(R.layout.paint_photo_view, null);
         DrawableImageView imageViewPaint = (DrawableImageView) v.findViewById(R.id.photo_view_paint) ;
         Bitmap temp;
         private void switchLayout() {
@@ -812,7 +831,6 @@ public class DetailImageFragment extends Fragment {
         private void setSize(){
             imageViewPaint.setErase(false);
             showDialogChooseSize();
-
         }
         public void showDialogChooseSize(){
             final Dialog dialog = new Dialog(requireContext());
@@ -821,7 +839,6 @@ public class DetailImageFragment extends Fragment {
             dialog.show();
             dialog.getWindow().setGravity(Gravity.BOTTOM);
             final SeekBar sk_brush_size = dialog.findViewById(R.id.brush_size);
-
 
             sk_brush_size.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 int stop;
@@ -860,6 +877,7 @@ public class DetailImageFragment extends Fragment {
                                     newIcon.mutate().setColorFilter(envelope.getColor(), PorterDuff.Mode.SRC_IN);
                                     color.setIcon(newIcon);
                                     imageViewPaint.setColor(envelope.getColor());
+                                    text_output.setTextColor(envelope.getColor());
                                 }
                             })
                     .setNegativeButton("cancel",
@@ -870,25 +888,103 @@ public class DetailImageFragment extends Fragment {
                     .show();
             }
 
+        private void addTextSticker(){
+            relativeLayout.removeView(v);
+            font_bar.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;;
+            font_bar.requestLayout();
+            text_input.setVisibility(View.VISIBLE);
+            text_output.setVisibility(View.VISIBLE);
+
+            text_input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    text_output.setText(charSequence);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+
+            change_font.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switch (font_index) {
+                        case 0:
+                            font_index = 1;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.summer));
+                            break;
+                        case 1:
+                            font_index = 2;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.angel));
+                            break;
+                        case 2:
+                            font_index = 3;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.cute));
+                            break;
+                        case 3:
+                            font_index = 0;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.orange));
+                            break;
+                    }
+                }
+            });
+            text_output.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getActionMasked()){
+                        case MotionEvent.ACTION_DOWN:
+                            ts_xDown = event.getX();
+                            ts_xDown = event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            float movedX, movedY;
+                            movedX = event.getX();
+                            movedY = event.getY();
+
+                            float distanceX = movedX - ts_xDown;
+                            float distanceY = movedY - ts_yDown;
+
+                            text_output.setX(text_output.getX() + distanceX);
+                            text_output.setY(text_output.getY() + distanceY);
+                    }
+                    return true;
+                }
+            });
+        }
+
         private void onBackPressed(){
+            text_input.setVisibility(View.GONE);
+            font_bar.getLayoutParams().height = 0;
+            font_bar.requestLayout();
             relativeLayout.removeView(v);
             imageView.setImage(image);
         }
         private void onDonePressed(){
-
-            if(temp != null){
-                imageView.setImageBitmap(temp);
-//                saveToInternalStorage(bitmap_mod);
+            text_input.setVisibility(View.GONE);
+            font_bar.getLayoutParams().height = 0;
+            font_bar.requestLayout();
+            Bitmap saved = Bitmap.createBitmap(relativeLayout.getWidth(),
+                    relativeLayout.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(saved);
+            relativeLayout.draw(canvas);
+            if(saved!=null){
                 try {
-                    bitmap=temp;
-                    ImageUri.saveImage(requireContext(), temp, "Paint");
+                    bitmap=saved;
+                    imageView.setImageBitmap(saved);
+
+                    ImageUri.saveImage(requireContext(), saved, "Paint");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
                 currentState = CurrentState.EDIT;
             }
             relativeLayout.removeView(v);
-
         }
     }
 }

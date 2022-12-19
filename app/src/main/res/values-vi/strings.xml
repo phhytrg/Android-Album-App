@@ -98,6 +98,11 @@
     <string name="filter_brightness">Độ sáng</string>
     <string name="filter_tint">Nhuộm</string>
     <string name="filter_corner">Góc</string>
+    //sticker
+    <string name="stickers">Nhãn dán</string>
+    <string name="text_stickers">Chữ</string>
+    <string name="font">Nét</string>
+    <string name="font_color">Màu chữ</string>
 
     <string name="number_selected_items">Đã chọn %d %s</string>
 

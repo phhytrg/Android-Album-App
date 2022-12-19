@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/undo"
-        android:icon="@drawable/ic_undo"
-        android:title="@string/undo"/>
     <item android:id="@+id/eraser"
         android:icon="@drawable/ic_eraser"
         android:title="@string/eraser"/>
@@ -10,9 +7,12 @@
         android:icon="@drawable/ic_circle"
         android:title="@string/color"/>
     <item android:id="@+id/pen"
-        android:icon="@drawable/ic_draw_size"
+        android:icon="@drawable/ic_pen"
         android:title="@string/size"/>
     <item android:id="@+id/stickers"
         android:icon="@drawable/sticker_star"
         android:title="Stickers"/>
+    <item android:id="@+id/text_sticker"
+        android:icon="@drawable/ic_text"
+        android:title="@string/text_stickers"/>
 </menu>
