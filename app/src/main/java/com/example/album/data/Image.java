@@ -53,7 +53,6 @@ public class Image implements Parcelable {
         bucketName = in.readString();
     }
 
-
     public String getBucketName() {
         return bucketName;
     }

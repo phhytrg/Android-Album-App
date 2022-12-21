@@ -105,6 +105,7 @@
     <string name="font_color">Font Color</string>
 
     <string name="number_selected_items">%d selected %s</string>
+    <string name="pick_done">Done</string>
 
 
 </resources>

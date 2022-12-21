@@ -105,5 +105,6 @@
     <string name="font_color">Màu chữ</string>
 
     <string name="number_selected_items">Đã chọn %d %s</string>
+    <string name="pick_done">Xong</string>
 
 </resources>

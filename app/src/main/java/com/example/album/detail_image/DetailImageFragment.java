@@ -975,9 +975,8 @@ public class DetailImageFragment extends Fragment {
             relativeLayout.draw(canvas);
             if(saved!=null){
                 try {
-                    bitmap=saved;
+                    bitmap = saved;
                     imageView.setImageBitmap(saved);
-
                     ImageUri.saveImage(requireContext(), saved, "Paint");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
