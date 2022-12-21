@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -36,15 +34,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.ImageUri;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.data.Image;
-import com.example.album.gallery.PhotosFragmentDirections;
 import com.example.album.ui.DrawableImageView;
 import com.example.album.ui.ImageFilter;
 import com.example.album.ui.SplitToolbar;
@@ -56,6 +51,7 @@ import com.skydoves.colorpickerview.ColorPickerDialog;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.yalantis.ucrop.UCrop;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -233,9 +229,9 @@ public class EditImageFragment extends Fragment{
         int id = item.getItemId();
         if(id == R.id.crop){
             imageCropping.handleCrop();
-            if(image.getImageUri() != null){
-                imageView.setImage(image);
-            }
+//            if(image.getImageUri() != null){
+//                imageView.setImage(image);
+//            }
         }
         else if(id == R.id.flip){
             imageEditing.handleFlip();
@@ -287,15 +283,16 @@ public class EditImageFragment extends Fragment{
         private void handleFlip() {
             Matrix mat = new Matrix();
             mat.postScale(-1f, 1f, bitmap.getWidth() / 2f, bitmap.getHeight() / 2f);
-            Bitmap image_bm_flipped = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
-            bitmap = image_bm_flipped;
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(), bitmap.getHeight(), mat, true);
             imageView.setImageBitmap(bitmap);
         }
 
         private void handleRotate() {
             Matrix mat = new Matrix();
             mat.postRotate(90);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0,bitmap.getWidth(),bitmap.getHeight(), mat, true);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(),bitmap.getHeight(), mat, true);
             imageView.setImageBitmap(bitmap);
         }
 
@@ -312,15 +309,22 @@ public class EditImageFragment extends Fragment{
     }
 
     private class ImageCropping{
-        private Uri resultUri = image.getImageUri();
+        private Uri srcUri;
+
         private void handleCrop() {
+            String srcFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String srcPath = MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(),
+                    bitmap, srcFileName, null);
+            srcUri = Uri.parse(srcPath);
 
             String desFileName = new StringBuilder(UUID.randomUUID().toString()).append(".jpg").toString();
-            File newFile = new File(requireActivity().getCacheDir(),desFileName);
-            Uri desUri=Uri.fromFile(newFile);
+            File newDesFile = new File(requireActivity().getCacheDir(), desFileName);
+            Uri desUri = Uri.fromFile(newDesFile);
 
             ArrayList<Uri> listUri = new ArrayList<>();
-            listUri.add(image.getImageUri());
+            listUri.add(srcUri);
             listUri.add(desUri);
             cropImage.launch(listUri);
         }
@@ -376,13 +380,13 @@ public class EditImageFragment extends Fragment{
         private ActivityResultLauncher<List<Uri>> cropImage
                 = registerForActivityResult(uCropContract,
                 result -> {
-                    resultUri = result;
                     try {
                         if(result != null){
                             bitmap = MediaStore.Images.Media.getBitmap(requireActivity()
                                     .getContentResolver(), result);
-                            imageView.setImageBitmap(bitmap);
                         }
+                        getActivity().getContentResolver().delete(srcUri, null, null);
+                        imageView.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -436,18 +440,11 @@ public class EditImageFragment extends Fragment{
 
         private void onDonePressed(){
             imageView.setImageBitmap(tempBitmap);
-            try {
-                bitmap=tempBitmap;
-                ImageUri.saveImage(requireContext(), tempBitmap, "Filter");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            bitmap=tempBitmap;
             navigationView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;
             filter_gallery.getLayoutParams().height =0;
             filter_gallery.requestLayout();
             currentState = CurrentState.EDIT;
-
-
         }
 
         private void handleAutoFilter(View v) {
@@ -632,9 +629,9 @@ public class EditImageFragment extends Fragment{
         public void setColor(){
             imageViewPaint.setErase(false);
             new ColorPickerDialog.Builder(requireContext())
-                    .setTitle("ColorPicker Dialog")
+                    .setTitle(getString(R.string.colorpicker_title))
                     .setPreferenceName("MyColorPickerDialog")
-                    .setPositiveButton("Confirm",
+                    .setPositiveButton(getString(R.string.confirm),
                             new ColorEnvelopeListener() {
                                 MenuItem color = navigationView.getMenu().findItem(R.id.color);
                                 @Override
@@ -645,7 +642,7 @@ public class EditImageFragment extends Fragment{
                                     imageViewPaint.setColor(envelope.getColor());
                                 }
                             })
-                    .setNegativeButton("cancel",
+                    .setNegativeButton(getString(R.string.label_cancel),
                             (dialogInterface, i) -> dialogInterface.dismiss())
                     .attachAlphaSlideBar(true) // the default value is true.
                     .attachBrightnessSlideBar(true)  // the default value is true.
@@ -667,14 +664,8 @@ public class EditImageFragment extends Fragment{
 
 
             if(saved!=null){
-                try {
-                    bitmap=saved;
-                    imageView.setImageBitmap(saved);
-
-                    ImageUri.saveImage(requireContext(), saved, "Paint");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+                bitmap=saved;
+                imageView.setImageBitmap(saved);
                 currentState = CurrentState.EDIT;
             }
             relativeLayout.removeView(v);
@@ -682,5 +673,3 @@ public class EditImageFragment extends Fragment{
         }
     }
 }
-
-

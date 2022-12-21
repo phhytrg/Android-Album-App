@@ -80,7 +80,7 @@
     <string name="hint_description">Enter the description of this image</string>
     <string name="select">Select</string>
     <string name="colorpicker_title">ColorPicker Dialog</string>
-    <string name="choose_color">Choose color</string>
+    <string name="choose_color">Choose Color</string>
     <string name="secs_3">3 seconds</string>
     <string name="secs_5">5 seconds</string>
     <string name="secs_10">10 seconds</string>
@@ -114,6 +114,9 @@
     <string name="err_unknown_rename">An error occurs while renaming image</string>
     <string name="err_unknown_description">An error occurs while editing description</string>
     <string name="err_invalid_name">Invalid name</string>
+    <string name="albums_name">Album\'s name</string>
+    <string name="create_album">Create Album</string>
+    <string name="confirm">Confirm</string>
 
     <string name="number_selected_items">%d selected %s</string>
 
