@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/AlbumFragment">
 
@@ -35,12 +36,21 @@
             <argument
                 android:name="image"
                 app:argType="com.example.album.data.Image"/>
+            <argument
+                android:name="albumName"
+                app:argType="string" />
         </action>
     </fragment>
     <fragment
         android:id="@+id/DetailImage"
         android:name="com.example.album.detail_image.DetailImageFragment" >
-
+        <action
+            android:id="@+id/action_DetailImage_to_editImageFragment"
+            app:destination="@id/editImageFragment">
+            <argument
+                android:name="image"
+                app:argType="com.example.album.data.Image"/>
+        </action>
     </fragment>
     <fragment
         android:id="@+id/SettingsFragment"
@@ -62,6 +72,7 @@
             app:destination="@id/AlbumFragment" />
     </fragment>
 
+
     <fragment
         android:id="@+id/pickImagesFragment"
         android:name="com.example.album.album.pickImagesFragment">
@@ -76,6 +87,14 @@
             android:id="@+id/action_pickImagesFragment_to_AlbumFragment"
             app:destination="@id/AlbumFragment">
         </action>
+    </fragment>
 
+    <fragment
+        android:id="@+id/editImageFragment"
+        android:name="com.example.album.detail_image.EditImageFragment" >
+        <action
+            android:id="@+id/action_editImageFragment_to_DetailImage"
+            app:destination="@id/DetailImage" >
+        </action>
     </fragment>
 </navigation>

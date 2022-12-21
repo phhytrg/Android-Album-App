@@ -1,5 +1,6 @@
 package com.example.album.gallery;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,8 +46,10 @@ public class PhotosFragment extends Fragment {
     PhotosAdapter adapter;
     RecyclerView recyclerView;
     ImagesViewModel imagesViewModel;
+    private SharedPreferences shared_prefs;
+    private SharedPreferences.Editor editor;
 
-    private boolean isLinearLayout = false;
+    private boolean isLinearLayout;
 
     @Nullable
     @Override
@@ -66,6 +70,9 @@ public class PhotosFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         listItems = new ArrayList<>();
         TreeMap<LocalDateTime, List<Image>> images = toMap(imagesViewModel.getImages().getValue());
+        shared_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        editor = shared_prefs.edit();
+        isLinearLayout = shared_prefs.getBoolean("photosLayout", true);
 
         for (LocalDateTime date : images.descendingKeySet()) {
             HeaderItem header = new HeaderItem(date);
@@ -111,6 +118,7 @@ public class PhotosFragment extends Fragment {
                 int id = menuItem.getItemId();
                 if(id == R.id.action_switch_layout){
                     isLinearLayout = !isLinearLayout;
+                    editor.putBoolean("photosLayout", isLinearLayout).apply();
                     chooseLayout();
                     setIcon(menuItem);
                     return true;
