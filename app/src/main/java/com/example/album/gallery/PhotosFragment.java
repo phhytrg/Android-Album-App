@@ -12,6 +12,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.MenuProvider;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class PhotosFragment extends Fragment {
+    View view;
     List<ListItem> listItems;
     NavController navController;
     PhotosAdapter adapter;
@@ -51,7 +54,6 @@ public class PhotosFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         NavHostFragment navHostFragment = (NavHostFragment) requireActivity()
                 .getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);

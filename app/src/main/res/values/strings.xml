@@ -100,6 +100,11 @@
     <string name="filter_brightness">Brightness</string>
     <string name="filter_tint">Tint</string>
     <string name="filter_corner">Corner</string>
+    //sticker
+    <string name="stickers">Stickers</string>
+    <string name="text_stickers">Text</string>
+    <string name="font">Font</string>
+    <string name="font_color">Font Color</string>
 
     <string name="description">Description</string>
     <string name="image_name">Image name</string>
@@ -119,5 +124,6 @@
     <string name="confirm">Confirm</string>
 
     <string name="number_selected_items">%d selected %s</string>
+    <string name="pick_done">Done</string>
 
 </resources>

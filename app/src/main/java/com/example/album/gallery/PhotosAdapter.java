@@ -35,16 +35,11 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             headerText = itemView.findViewById(R.id.date);
         }
     }
-
     private static class ImageViewHolder extends RecyclerView.ViewHolder{
-        /** TODO */
-//        RecyclerView recyclerView;
-
         ImageView imageView;
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
-//            itemView.setOnClickListener(v -> listener.OnItemClick((ImageItem) items.get(getAdapterPosition())));
         }
     }
 
@@ -63,7 +58,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.listener = listener;
         set = new ConstraintSet();
     }
-
 
     @NonNull
     @Override
