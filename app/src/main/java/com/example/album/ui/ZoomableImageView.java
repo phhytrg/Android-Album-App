@@ -1,7 +1,5 @@
 package com.example.album.ui;
 
-import static android.util.Half.EPSILON;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -152,9 +150,7 @@ public class ZoomableImageView extends androidx.appcompat.widget.AppCompatImageV
 
         });
     }
-    public boolean isZooming() {
-        return (!(Math.abs(saveScale - 1) <= EPSILON));
-    }
+
     public void setImage(Image image){
         super.setImageURI(image.getImageUri());
         bmWidth = image.getWidth();

@@ -11,7 +11,7 @@
         android:title="@string/rotate"/>
     <item android:id="@+id/filter"
         android:icon="@drawable/ic_photo_filter"
-        android:title="@string/filter"/>
+        android:title="@string/filter_item"/>
     <item android:id="@+id/paint"
         android:icon="@drawable/ic_brush"
         android:title="@string/paint"/>

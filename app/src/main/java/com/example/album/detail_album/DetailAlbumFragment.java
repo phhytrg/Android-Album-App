@@ -114,7 +114,7 @@ public class DetailAlbumFragment extends Fragment {
             @Override
             public void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder, int position) {
                 NavDirections action = DetailAlbumFragmentDirections
-                        .actionDetailAlbumFragmentToDetailFragment(images.get(position), albumName);
+                        .actionDetailAlbumFragmentToDetailFragment(images.get(position));
                 navController.navigate(action);
             }
         };

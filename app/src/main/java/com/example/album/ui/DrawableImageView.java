@@ -23,10 +23,11 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
     float downy = 0;
     float upx = 0;
     float upy = 0;
+
     Canvas canvas;
     Paint paint;
     Matrix matrix;
-    Bitmap temp;
+    float  bmWidth, bmHeight;
     private boolean erase=false;
     public DrawableImageView(Context context)
     {
@@ -48,22 +49,23 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
     }
     public void setImage(Image image){
         super.setImageURI(image.getImageUri());
+        bmWidth = image.getWidth();
+        bmHeight = image.getHeight();
     }
     public void setNewImage(Bitmap alteredBitmap, Bitmap bmp)
     {
-
         canvas = new Canvas(alteredBitmap );
         paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStrokeWidth(1);
-        paint.setAntiAlias(true);
-        paint.setDither(true);
+//        paint.setAntiAlias(true);
+//        paint.setDither(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         matrix = new Matrix();
-        canvas.drawBitmap(bmp,0,0,null);
-//        canvas.drawBitmap(bmp, matrix, paint);
+        canvas.drawBitmap(bmp, matrix, paint);
+
         setImageBitmap(alteredBitmap);
     }
     @Override
@@ -75,10 +77,9 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
         switch (action)
         {
             case MotionEvent.ACTION_DOWN:
-
                 downx = getPointerCoords(event)[0];//event.getX();
                 downy = getPointerCoords(event)[1];//event.getY();
-                invalidate();
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 upx = getPointerCoords(event)[0];//event.getX();
@@ -91,11 +92,10 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
             case MotionEvent.ACTION_UP:
                 upx = getPointerCoords(event)[0];//event.getX();
                 upy = getPointerCoords(event)[1];//event.getY();
-                canvas.drawLine(downx, downy, upx, upy, paint);
+                if (!erase) {
+                    canvas.drawLine(downx, downy, upx, upy, paint);
 
-//                if (!erase) {
-//                    canvas.drawLine(downx, downy, upx, upy, paint);
-//                }
+                }
                 invalidate();
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -109,10 +109,12 @@ public class DrawableImageView extends androidx.appcompat.widget.AppCompatImageV
     //set erase true or false
     public void setErase(boolean isErase){
         erase=isErase;
-        if(erase) {
-//            paint.setColor(Color.TRANSPARENT);
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+//        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);//delete all
 
+        if(erase) {
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+//            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+//            canvas.drawCircle(50,50,5,paint);
         }
         else paint.setXfermode(null);
     }

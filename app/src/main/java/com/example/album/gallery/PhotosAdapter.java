@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.ObjectKey;
 import com.example.album.R;
 
 import java.util.Collections;
@@ -35,16 +34,11 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             headerText = itemView.findViewById(R.id.date);
         }
     }
-
     private static class ImageViewHolder extends RecyclerView.ViewHolder{
-        /** TODO */
-//        RecyclerView recyclerView;
-
         ImageView imageView;
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
-//            itemView.setOnClickListener(v -> listener.OnItemClick((ImageItem) items.get(getAdapterPosition())));
         }
     }
 
@@ -63,7 +57,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.listener = listener;
         set = new ConstraintSet();
     }
-
 
     @NonNull
     @Override
@@ -119,7 +112,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .load(imageItem.getImage().getImageUri())
                         .fitCenter()
                         .placeholder(R.drawable.image_border)
-                        .signature(new ObjectKey(imageItem.getImage().getId()))
                         .into(viewHolder.imageView);
                 viewHolder.imageView.setOnClickListener(v -> listener.onItemClick(imageItem));
                 break;

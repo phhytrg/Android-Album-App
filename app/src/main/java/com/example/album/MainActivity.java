@@ -389,7 +389,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     Bitmap bmp;
                     if (result.getData() != null) {
                         bmp = (Bitmap) result.getData().getExtras().get("data");
-
                         try {
                             ImageUri.saveImage(this, bmp, "Camera");
                             Image image = imagesViewModel.getImages().getValue().get(0);

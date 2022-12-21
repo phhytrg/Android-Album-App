@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.ObjectKey;
 import com.example.album.R;
 import com.example.album.data.Image;
 
@@ -53,7 +52,6 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
 //        holder.imageView.setImageURI(images.get(position).getImageUri());
         Glide.with(context)
                 .load(images.get(position).getImageUri())
-                .signature(new ObjectKey(images.get(position).getId()))
                 .into(holder.imageView);
         ConstraintLayout.LayoutParams itemView = (ConstraintLayout.LayoutParams)holder.imageView.getLayoutParams();
         if(isLinearLayout){

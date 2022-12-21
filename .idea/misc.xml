@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/drawable/unchecked.xml" value="0.1035" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/album_edit_bar.xml" value="0.245018115942029" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/album_layout.xml" value="0.1621376811594203" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/bottom_bar.xml" value="0.1621376811594203" />
@@ -10,6 +11,7 @@
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/custom_dialog_set.xml" value="0.1621376811594203" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/delete_album_dialog_layout.xml" value="0.1" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/fragment_image_detail.xml" value="0.1" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/fragment_image_edit.xml" value="0.2259963768115942" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/image_item.xml" value="0.245018115942029" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.12158054711246201" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/selected_option.xml" value="0.245018115942029" />
