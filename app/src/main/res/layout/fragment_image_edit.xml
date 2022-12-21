@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/wrap_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/bottom_nav">
+
+
+        <com.example.album.ui.ZoomableImageView
+            android:id="@+id/photo_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="-3dp"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/cat1" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sticker_view"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_alignParentBottom="true"
+        >
+        <LinearLayout
+            android:id="@+id/filter_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            />
+    </HorizontalScrollView>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/trans"
+            android:elevation="1dp"
+            android:src="@drawable/ic_back" />
+
+
+        <ImageButton
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@color/trans"
+            android:src="@drawable/ic_done" />
+
+        <ImageButton
+            android:id="@+id/auto_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/trans"
+            android:src="@drawable/ic_auto_filter"
+            android:layout_toStartOf="@id/done"
+            android:layout_marginEnd="8dp"/>
+        <ImageButton
+            android:id="@+id/setting_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/trans"
+            android:src="@drawable/ic_edit_filter"
+            android:layout_toStartOf="@id/auto_filter"
+            android:layout_marginEnd="8dp"/>
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:layout_above="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#44aaaaaa" >
+        <LinearLayout
+            android:id="@+id/viewgroup"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:padding="10dip"/>
+    </HorizontalScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:elevation="1dp"
+        app:menu="@menu/edit_nav"
+        app:itemIconTint="@color/icon_selector"
+        app:itemTextColor="@color/icon_selector"
+        app:labelVisibilityMode="labeled"
+        android:visibility="visible"/>
+
+</RelativeLayout>
