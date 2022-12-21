@@ -4,36 +4,24 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.album.ImageUri;
@@ -41,23 +29,12 @@ import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.data.Image;
 import com.example.album.data.ImagesViewModel;
-import com.example.album.detail_album.DetailAlbumAdapter;
-import com.example.album.detail_album.DetailAlbumFragmentDirections;
-import com.example.album.gallery.HeaderItem;
-import com.example.album.gallery.ImageItem;
 import com.example.album.gallery.ListItem;
-import com.example.album.gallery.PhotosAdapter;
-import com.example.album.gallery.PhotosFragmentDirections;
-import com.example.album.item_decoration.GridSpacingItemDecoration;
-import com.example.album.item_decoration.LinearSpacingItemDecoration;
 import com.example.album.ui.SplitToolbar;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 public class pickImagesFragment extends Fragment {
     View view;
@@ -74,7 +51,7 @@ public class pickImagesFragment extends Fragment {
     ActionBar appbar;
     List<ListItem> listItems;
 
-    boolean isLinearLayout = false;
+//    boolean isLinearLayout = false;
 
 
     @Nullable

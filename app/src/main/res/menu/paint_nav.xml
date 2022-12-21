@@ -11,7 +11,7 @@
         android:title="@string/size"/>
     <item android:id="@+id/stickers"
         android:icon="@drawable/sticker_star"
-        android:title="Stickers"/>
+        android:title="@string/stickers"/>
     <item android:id="@+id/text_sticker"
         android:icon="@drawable/ic_text"
         android:title="@string/text_stickers"/>

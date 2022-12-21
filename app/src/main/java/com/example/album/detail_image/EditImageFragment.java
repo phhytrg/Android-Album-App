@@ -11,16 +11,21 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -32,6 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -73,6 +79,15 @@ public class EditImageFragment extends Fragment{
     private Image image;
     private Bitmap bitmap;
     private RelativeLayout relativeLayout;
+
+    // text sticker
+    private LinearLayout font_bar;
+    private int font_index = 0;
+    private ImageButton change_font;
+    private EditText text_input;
+    private TextView text_output;
+    private float ts_xDown = 0, ts_yDown = 0;
+    private RelativeLayout wrapLayout;
 
     EditImageFragment.ImageCropping imageCropping;
     EditImageFragment.ImageEditing imageEditing;
@@ -139,6 +154,12 @@ public class EditImageFragment extends Fragment{
         //filter
         filter_gallery = view.findViewById(R.id.filter_gallery);
         relativeLayout = view.findViewById(R.id.wrap_photo);
+
+        font_bar = view.findViewById(R.id.font_bar);
+        text_input = view.findViewById(R.id.stickerEditText);
+        text_output = view.findViewById(R.id.stickerTextview);
+        change_font = view.findViewById(R.id.btn_font);
+        wrapLayout = (RelativeLayout) view.findViewById(R.id.wrap_photo) ;
 
         imageCropping = new ImageCropping();
         imageEditing = new ImageEditing();
@@ -245,8 +266,11 @@ public class EditImageFragment extends Fragment{
         else if(id == R.id.paint){
             imagePainting.switchLayout();
         }
-        else if(id == R.id.undo){
-
+//        else if(id == R.id.undo){
+//
+//        }
+        else if(id == R.id.text_sticker){
+            imagePainting.addTextSticker();
         }
         else if(id == R.id.eraser){
             imagePainting.setErase();
@@ -298,8 +322,6 @@ public class EditImageFragment extends Fragment{
 
 
         private void onDonePressed(){
-            // Lưu ảnh đã chỉnh sửa vào Internal Storage
-//                saveToInternalStorage(bitmap_mod);
             try {
                 ImageUri.saveImage(requireContext(), bitmap, "Edit");
             } catch (FileNotFoundException e) {
@@ -650,13 +672,88 @@ public class EditImageFragment extends Fragment{
                     .show();
         }
 
-        private void onBackPressed(){
-            imageView.setImage(image);
+        private void addTextSticker(){
             relativeLayout.removeView(v);
-            currentState = CurrentState.EDIT;
+            font_bar.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;;
+            font_bar.requestLayout();
+            text_input.setVisibility(View.VISIBLE);
+            text_output.setVisibility(View.VISIBLE);
 
+            text_input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    text_output.setText(charSequence);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+
+            change_font.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switch (font_index) {
+                        case 0:
+                            font_index = 1;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.summer));
+                            break;
+                        case 1:
+                            font_index = 2;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.angel));
+                            break;
+                        case 2:
+                            font_index = 3;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.cute));
+                            break;
+                        case 3:
+                            font_index = 0;
+                            text_output.setTypeface(ResourcesCompat.getFont(requireContext(), R.font.orange));
+                            break;
+                    }
+                }
+            });
+            text_output.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getActionMasked()){
+                        case MotionEvent.ACTION_DOWN:
+                            ts_xDown = event.getX();
+                            ts_xDown = event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            float movedX, movedY;
+                            movedX = event.getX();
+                            movedY = event.getY();
+
+                            float distanceX = movedX - ts_xDown;
+                            float distanceY = movedY - ts_yDown;
+
+                            text_output.setX(text_output.getX() + distanceX);
+                            text_output.setY(text_output.getY() + distanceY);
+                    }
+                    return true;
+                }
+            });
+        }
+
+        private void onBackPressed(){
+            text_input.setVisibility(View.GONE);
+            font_bar.getLayoutParams().height = 0;
+            font_bar.requestLayout();
+            relativeLayout.removeView(v);
+            imageView.setImage(image);
+            currentState = CurrentState.EDIT;
         }
         private void onDonePressed(){
+            text_input.setVisibility(View.GONE);
+            font_bar.getLayoutParams().height = 0;
+            font_bar.requestLayout();
             Bitmap saved = Bitmap.createBitmap(relativeLayout.getWidth(),
                     relativeLayout.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(saved);

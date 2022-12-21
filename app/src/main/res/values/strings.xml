@@ -95,7 +95,6 @@
     <string name="eraser">Eraser</string>
     <string name="color">Color</string>
     <string name="size">Size</string>
-    <string name="stickers">Stickers</string>
     //filter
     <string name="filter_brightness">Brightness</string>
     <string name="filter_tint">Tint</string>

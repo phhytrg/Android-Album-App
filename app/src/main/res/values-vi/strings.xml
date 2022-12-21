@@ -95,7 +95,7 @@
     <string name="eraser">Xóa</string>
     <string name="color">Màu</string>
     <string name="size">Kích thước</string>
-    <string name="stickers">Nhãn dán</string>
+
     //filter
     <string name="filter_brightness">Độ sáng</string>
     <string name="filter_tint">Tông màu</string>

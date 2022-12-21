@@ -32,6 +32,25 @@
             android:id="@+id/sticker_view"
             android:layout_centerInParent="true"
             android:visibility="gone"/>
+        <TextView
+            android:id="@+id/stickerTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="40dp"
+            android:textColor="@color/white"
+            android:text=""
+            android:textStyle="bold"
+            android:visibility="gone"
+            />
+        <EditText
+            android:id="@+id/stickerEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="500dp"
+            android:hint="Enter your text here ..."
+            android:visibility="gone"
+            android:textAlignment="center" />
     </RelativeLayout>
 
     <HorizontalScrollView
@@ -101,6 +120,21 @@
             android:orientation="horizontal"
             android:padding="10dip"/>
     </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/font_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@id/bottom_nav"
+        android:background="#44aaaaaa"
+        android:gravity="center"
+        >
+        <ImageButton
+            android:id="@+id/btn_font"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_circle_change"/>
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
