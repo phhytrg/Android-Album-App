@@ -1,5 +1,6 @@
 package com.example.album.gallery;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.MenuProvider;
@@ -20,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,18 +40,20 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class PhotosFragment extends Fragment {
+    View view;
     List<ListItem> listItems;
     NavController navController;
     PhotosAdapter adapter;
     RecyclerView recyclerView;
     ImagesViewModel imagesViewModel;
+    private SharedPreferences shared_prefs;
+    private SharedPreferences.Editor editor;
 
-    private boolean isLinearLayout = false;
+    private boolean isLinearLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         NavHostFragment navHostFragment = (NavHostFragment) requireActivity()
                 .getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
@@ -64,6 +70,9 @@ public class PhotosFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         listItems = new ArrayList<>();
         TreeMap<LocalDateTime, List<Image>> images = toMap(imagesViewModel.getImages().getValue());
+        shared_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        editor = shared_prefs.edit();
+        isLinearLayout = shared_prefs.getBoolean("photosLayout", true);
 
         for (LocalDateTime date : images.descendingKeySet()) {
             HeaderItem header = new HeaderItem(date);
@@ -109,6 +118,7 @@ public class PhotosFragment extends Fragment {
                 int id = menuItem.getItemId();
                 if(id == R.id.action_switch_layout){
                     isLinearLayout = !isLinearLayout;
+                    editor.putBoolean("photosLayout", isLinearLayout).apply();
                     chooseLayout();
                     setIcon(menuItem);
                     return true;
@@ -182,4 +192,3 @@ public class PhotosFragment extends Fragment {
         }
     }
 }
-

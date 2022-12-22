@@ -52,6 +52,7 @@
     <string name="label_cancel">Cancel</string>
     <string name="label_ok">OK</string>
 
+    <string name="filter">Filter</string>
     <string name="crop">Crop</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
@@ -79,7 +80,7 @@
     <string name="hint_description">Enter the description of this image</string>
     <string name="select">Select</string>
     <string name="colorpicker_title">ColorPicker Dialog</string>
-    <string name="choose_color">Choose color</string>
+    <string name="choose_color">Choose Color</string>
     <string name="secs_3">3 seconds</string>
     <string name="secs_5">5 seconds</string>
     <string name="secs_10">10 seconds</string>
@@ -87,7 +88,7 @@
     <string name="dark">Dark</string>
     <string name="custom">Custom</string>
     <string name="confirm_delete">Are you sure you want to delete these albums?
-        The photos will not be delected</string>
+        The photos will not be deleted</string>
     <string name="add_to_album">Add to album</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
@@ -99,8 +100,31 @@
     <string name="filter_brightness">Brightness</string>
     <string name="filter_tint">Tint</string>
     <string name="filter_corner">Corner</string>
+    //sticker
+    <string name="stickers">Stickers</string>
+    <string name="text_stickers">Text</string>
+    <string name="font">Font</string>
+    <string name="font_color">Font Color</string>
+
+    <string name="description">Description</string>
+    <string name="image_name">Image name</string>
+    <string name="last_modified">Last modified date</string>
+    <string name="details_uppercase">DETAILS</string>
+    <string name="rename_uppercase">RENAME</string>
+    <string name="hint_rename">Enter image name</string>
+    <string name="file_size">Size</string>
+
+    <string name="err_empty_name">Image name can not be empty</string>
+    <string name="err_exist_name">This name already exists</string>
+    <string name="err_unknown_rename">An error occurs while renaming image</string>
+    <string name="err_unknown_description">An error occurs while editing description</string>
+    <string name="err_invalid_name">Invalid name</string>
+    <string name="albums_name">Album\'s name</string>
+    <string name="create_album">Create Album</string>
+    <string name="confirm">Confirm</string>
 
     <string name="number_selected_items">%d selected %s</string>
-
+    <string name="pick_done">Done</string>
+    <string name="on_this_day">ON THIS DAY</string>
 
 </resources>
