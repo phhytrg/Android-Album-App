@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -81,7 +82,7 @@ public class AlbumFragment extends Fragment{
     TreeMap<String,List<Image>> map;
 
     List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
-            "Picnic", "Friends", "Selfie", "Memes","Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
+            "Picnic", "Friends", "Selfie", "Memes", "Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
             "Picnic", "Friends", "Selfie", "Memes"));
     List<Integer> albumImages = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
             R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
@@ -355,7 +356,6 @@ public class AlbumFragment extends Fragment{
             );
         }
         else{
-
             adapter = new AlbumAdapter(map,
                     listener
                     , AlbumAdapter.GRID_LAYOUT);
@@ -385,16 +385,13 @@ public class AlbumFragment extends Fragment{
         Button cancelButton = dialog.findViewById(R.id.cancelDialogBtn);
 
         nameEt.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 okButton.setEnabled(!nameEt.getText().toString().isEmpty());
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -412,13 +409,21 @@ public class AlbumFragment extends Fragment{
 
             @Override
             public void onClick(View v) {
-                String name = nameEt.getText().toString();
+                String new_album_name = nameEt.getText().toString();
+
+//                List<Image> images = imagesViewModel.getImages().getValue();
+//                Image[] arrayImages = new Image[images.size()];
+//                images.toArray(arrayImages);
+//                NavDirections action = AlbumFragmentDirections
+//                        .actionAlbumFragmentToDetailAlbumFragment(albumname);
+//                navController.navigate(action);
+
+                NavDirections action = AlbumFragmentDirections.actionAlbumFragmentToPickImagesFragment(new_album_name);
+                navController.navigate(action);
+
 //            albumNames.add(name);
 //            albumImages.add(R.drawable.image2);
 //            adapter.notifyItemChanged(albumImages.size() - 1);
-
-
-
                 adapter.notifyDataSetChanged();
                 dialog.dismiss();
             }

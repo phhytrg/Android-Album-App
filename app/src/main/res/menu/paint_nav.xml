@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/undo"
-        android:icon="@drawable/ic_undo"
-        android:title="@string/undo"/>
-    <item android:id="@+id/redo"
-        android:icon="@drawable/ic_redo"
-        android:title="@string/redo"/>
     <item android:id="@+id/eraser"
         android:icon="@drawable/ic_eraser"
         android:title="@string/eraser"/>
@@ -17,5 +11,8 @@
         android:title="@string/size"/>
     <item android:id="@+id/stickers"
         android:icon="@drawable/sticker_star"
-        android:title="Stickers"/>
+        android:title="@string/stickers"/>
+    <item android:id="@+id/text_sticker"
+        android:icon="@drawable/ic_text"
+        android:title="@string/text_stickers"/>
 </menu>

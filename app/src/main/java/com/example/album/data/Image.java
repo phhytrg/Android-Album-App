@@ -8,40 +8,15 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class Image implements Parcelable {
+public class Image implements Parcelable{
     private Uri imageUri;
     private LocalDateTime date;
     private int width,height;
     private String bucketName;
     private long id;
-    private String description;
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     private String name;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
+    private String description;
+    private Long size;
 
     public Image() {}
 
@@ -53,6 +28,14 @@ public class Image implements Parcelable {
         bucketName = in.readString();
     }
 
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getBucketName() {
         return bucketName;
@@ -93,6 +76,31 @@ public class Image implements Parcelable {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
     @Override
     public int describeContents() {
         return 0;
