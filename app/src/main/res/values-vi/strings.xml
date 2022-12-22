@@ -101,4 +101,6 @@
 
     <string name="number_selected_items">Đã chọn %d %s</string>
 
+    <string name="on_this_day">Ngày này năm xưa</string>
+
 </resources>

@@ -32,6 +32,7 @@
     <string name="change_title">Convert HEIF to JPEG when sending</string>
     <string name="change_describe">Convert HEIF images to JPEG to ensure compatibility</string>
 
+    <string name="blur">Blur</string>
 
     /////////////////////////////////////////
 
@@ -100,6 +101,7 @@
     <string name="filter_corner">Corner</string>
 
     <string name="number_selected_items">%d selected %s</string>
+    <string name="on_this_day">ON THIS DAY</string>
 
 
 </resources>
