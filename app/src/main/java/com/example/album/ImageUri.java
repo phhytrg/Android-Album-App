@@ -2,7 +2,6 @@ package com.example.album;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.RecoverableSecurityException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.IntentSenderRequest;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,9 +30,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ImageUri {
     public static final int DELETE_REQUEST_CODE = 13;
@@ -195,25 +190,6 @@ public class ImageUri {
 
     }
 
-    private static void deleteImageAPI28(Uri imageUri, Context context){
-        ContentResolver contentResolver = context.getContentResolver();
-        contentResolver.delete(imageUri, null, null);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    private static void deleteImageAPI30(Uri imageUri, Context context) throws IntentSender.SendIntentException {
-        ContentResolver contentResolver = context.getContentResolver();
-        // API 30
-
-        List<Uri> uriList = new ArrayList<>();
-        Collections.addAll(uriList, imageUri);
-        PendingIntent pendingIntent = MediaStore.createDeleteRequest(contentResolver, uriList);
-        ((Activity)context).startIntentSenderForResult(pendingIntent.getIntentSender(),
-                DELETE_REQUEST_CODE,null,0,
-                0,0,null);
-
-    }
-
     public static void deleteImage(final Context context, final Activity activity, final Uri uri){
         try{
             context.getContentResolver().delete(uri, null, null);
@@ -228,4 +204,8 @@ public class ImageUri {
             }
         }
     }
+
+    /*TODO: how to delete an image:
+    1. get content uri from image uri - call getContentUri()
+    2. delete this image by deleteImage() */
 }
