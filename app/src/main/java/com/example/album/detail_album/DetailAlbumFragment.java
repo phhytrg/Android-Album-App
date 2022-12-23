@@ -156,6 +156,7 @@ public class DetailAlbumFragment extends Fragment {
                             ? ""
                             : getString(R.string.number_selected_items, selectedItems.size(), syntax);
                     countItemTextView.setText(notification);
+                    selectAllCheckBox.setChecked(selectedItems.size() >= images.size());
                 }
             }
 
@@ -189,6 +190,7 @@ public class DetailAlbumFragment extends Fragment {
                         ? ""
                         : getString(R.string.number_selected_items, selectedItems.size(), syntax);
                 countItemTextView.setText(notification);
+                selectAllCheckBox.setChecked(selectedItems.size() >= images.size());
             }
 
             void showDeleteBar(){

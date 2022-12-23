@@ -47,7 +47,6 @@ import com.example.album.ui.SplitToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
@@ -79,17 +78,6 @@ public class AlbumFragment extends Fragment{
 
     ImagesViewModel imagesViewModel;
     TreeMap<String,List<Image>> map;
-
-    List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
-            "Picnic", "Friends", "Selfie", "Memes", "Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
-            "Picnic", "Friends", "Selfie", "Memes"));
-    List<Integer> albumImages = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
-            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
-            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
-            R.drawable.photo9, R.drawable.photo1, R.drawable.photo2,
-            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
-            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
-            R.drawable.photo9));
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -235,8 +223,6 @@ public class AlbumFragment extends Fragment{
                 while (!selectedItems.isEmpty()) {
                     int selectedIndex = selectedItems.get(0);
                     selectedItems.remove(0);
-                    albumImages.remove(selectedIndex);
-                    albumNames.remove(selectedIndex);
                     adapter.notifyItemRemoved(selectedIndex);
                 }
                 if(selectAllCheckBox.isChecked()){
@@ -297,6 +283,7 @@ public class AlbumFragment extends Fragment{
                             ? ""
                             : getString(R.string.number_selected_items, selectedItems.size(), syntax);
                     countItemTextView.setText(notification);
+                    selectAllCheckBox.setChecked(selectedItems.size() >= imagesViewModel.getAlbums().size());
                 }
             }
 
@@ -318,6 +305,8 @@ public class AlbumFragment extends Fragment{
                         ? ""
                         : getString(R.string.number_selected_items, selectedItems.size(), syntax);
                 countItemTextView.setText(notification);
+
+                selectAllCheckBox.setChecked(selectedItems.size() >= imagesViewModel.getAlbums().size());
             }
 
             @Override
@@ -380,7 +369,7 @@ public class AlbumFragment extends Fragment{
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        final EditText nameEt = (EditText) dialog.findViewById(R.id.userInputDialog);
+        final EditText nameEt = dialog.findViewById(R.id.userInputDialog);
         Button okButton = dialog.findViewById(R.id.okDialogBtn);
         Button cancelButton = dialog.findViewById(R.id.cancelDialogBtn);
 
@@ -398,35 +387,14 @@ public class AlbumFragment extends Fragment{
         });
 
         cancelButton.setOnClickListener(view -> dialog.dismiss());
-        okButton.setOnClickListener(new View.OnClickListener() {
+        okButton.setOnClickListener(v -> {
+            String new_album_name = nameEt.getText().toString();
 
-//            private void addNewAlbumIntoExternal(){
-//                File newDir = new File(Environment.getExternalStoragePublicDirectory(
-//                        Environment.DIRECTORY_PICTURES
-//                ), "/" + getString(R.string.app_name));
-//                requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, )
-//            }
+            NavDirections action = AlbumFragmentDirections.actionAlbumFragmentToPickImagesFragment(new_album_name);
+            navController.navigate(action);
 
-            @Override
-            public void onClick(View v) {
-                String new_album_name = nameEt.getText().toString();
-
-//                List<Image> images = imagesViewModel.getImages().getValue();
-//                Image[] arrayImages = new Image[images.size()];
-//                images.toArray(arrayImages);
-//                NavDirections action = AlbumFragmentDirections
-//                        .actionAlbumFragmentToDetailAlbumFragment(albumname);
-//                navController.navigate(action);
-
-                NavDirections action = AlbumFragmentDirections.actionAlbumFragmentToPickImagesFragment(new_album_name);
-                navController.navigate(action);
-
-//            albumNames.add(name);
-//            albumImages.add(R.drawable.image2);
-//            adapter.notifyItemChanged(albumImages.size() - 1);
-                adapter.notifyDataSetChanged();
-                dialog.dismiss();
-            }
+            adapter.notifyDataSetChanged();
+            dialog.dismiss();
         });
         dialog.show();
     }
