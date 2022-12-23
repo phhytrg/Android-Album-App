@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -461,7 +462,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         takePicture.launch(cameraIntent);
 
     }
-
     ActivityResultLauncher<Intent> takePicture
             = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -524,6 +524,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         throw new IllegalStateException("Can not get image returned by camera :)");
                     }
                 }
+            });
+
+    public ActivityResultLauncher<IntentSenderRequest> deleteImage
+            = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(),
+            result -> {
+
             });
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -15,17 +16,28 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.example.album.R;
 import com.example.album.data.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.GalleryViewHolder> {
 
     public interface OnClickListener{
         void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder, int position);
+        void OnItemLongClick(DetailAlbumAdapter.GalleryViewHolder holder);
+        void OnCheckBoxClick(DetailAlbumAdapter.GalleryViewHolder holder);
     }
 //    View view;
 //    Context context;
 
     private OnClickListener listener;
+
+    private boolean allSelectedFlags;
+
+    public void setCurrentState(int currentState) {
+        this.currentState = currentState;
+    }
+
+    public int currentState = DetailAlbumFragment.UNCHANGED_MODE;
 
     private boolean isLinearLayout;
     public void setLinearLayout(boolean linearLayout) {
@@ -33,10 +45,15 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
     }
     Context context;
     List<Image> images;
+    private final List<CheckBox> checkBoxes = new ArrayList<>();
 
     public DetailAlbumAdapter(OnClickListener listener, List<Image> images) {
         this.listener = listener;
         this.images = images;
+    }
+
+    public void setAllSelectedFlags(boolean allSelectedFlags) {
+        this.allSelectedFlags = allSelectedFlags;
     }
 
     @NonNull
@@ -65,7 +82,24 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
             itemView.width=0;
             itemView.height=0;
         }
-        holder.imageView.setOnClickListener(v -> {listener.OnItemClick(holder, position);});
+        if(currentState == DetailAlbumFragment.CHANGED_MODE){
+            holder.checkBox.setVisibility(View.VISIBLE);
+            if(allSelectedFlags){
+                holder.checkBox.setChecked(true);
+            }
+            else{
+                holder.checkBox.setChecked(false);
+            }
+        }
+        else{
+            holder.checkBox.setVisibility(View.GONE);
+        }
+        checkBoxes.add(holder.checkBox);
+        holder.imageView.setOnClickListener(v -> listener.OnItemClick(holder, position));
+        holder.imageView.setOnLongClickListener(v -> {
+            listener.OnItemLongClick(holder);
+            setCheckBoxesVisible();
+            return true;});
     }
 
     @Override
@@ -75,13 +109,46 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
 
     public class GalleryViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
+        CheckBox checkBox;
+        boolean isCheckedFlag = false;
         public GalleryViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
+            checkBox = itemView.findViewById(R.id.selected_item);
+
+            checkBox.setOnClickListener(v -> listener.OnCheckBoxClick(this));
+//            if (layoutType == LINEAR_LAYOUT) {
+//                numImages = itemView.findViewById(R.id.number_of_images);
+//            }
+
         }
     }
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public void setCheckBoxesVisible(){
+        for(int i =0 ;i<checkBoxes.size(); i++){
+            checkBoxes.get(i).setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setCheckBoxesInvisible(){
+        for(int i =0 ;i<checkBoxes.size(); i++){
+            checkBoxes.get(i).setVisibility(View.GONE);
+        }
+    }
+
+    public void selectAll(){
+        for(int i =0 ;i<checkBoxes.size(); i++){
+            checkBoxes.get(i).setChecked(true);
+        }
+    }
+
+    public void unSelectAll(){
+        for(int i =0 ;i<checkBoxes.size(); i++){
+            checkBoxes.get(i).setChecked(false);
+        }
     }
 }

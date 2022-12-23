@@ -1,14 +1,20 @@
 package com.example.album;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.app.RecoverableSecurityException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -16,7 +22,9 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.widget.Toast;
 
+import androidx.activity.result.IntentSenderRequest;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,8 +32,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ImageUri {
+    public static final int DELETE_REQUEST_CODE = 13;
+
     public static Uri getImageUri(@NonNull Context inContext, @NonNull Bitmap inImage){
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -158,5 +171,61 @@ public class ImageUri {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         mContext.sendBroadcast(mediaScanIntent);
+    }
+
+    public static Uri getContentUri(Context context, Uri imageUri){
+        String[] projections = {MediaStore.MediaColumns._ID};
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projections,
+                MediaStore.MediaColumns.DATA + "=?",
+                new String[]{imageUri.getPath()},
+                null
+        );
+        long id = 0;
+        if (cursor != null){
+            if(cursor.getCount() > 0){
+                cursor.moveToFirst();
+                id = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+
+            }
+        }
+        cursor.close();
+        return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,String.valueOf((int)id));
+
+    }
+
+    private static void deleteImageAPI28(Uri imageUri, Context context){
+        ContentResolver contentResolver = context.getContentResolver();
+        contentResolver.delete(imageUri, null, null);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private static void deleteImageAPI30(Uri imageUri, Context context) throws IntentSender.SendIntentException {
+        ContentResolver contentResolver = context.getContentResolver();
+        // API 30
+
+        List<Uri> uriList = new ArrayList<>();
+        Collections.addAll(uriList, imageUri);
+        PendingIntent pendingIntent = MediaStore.createDeleteRequest(contentResolver, uriList);
+        ((Activity)context).startIntentSenderForResult(pendingIntent.getIntentSender(),
+                DELETE_REQUEST_CODE,null,0,
+                0,0,null);
+
+    }
+
+    public static void deleteImage(final Context context, final Activity activity, final Uri uri){
+        try{
+            context.getContentResolver().delete(uri, null, null);
+        }catch (SecurityException e){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                if(e instanceof RecoverableSecurityException){
+                    final IntentSender intent = ((RecoverableSecurityException)e).getUserAction()
+                            .getActionIntent().getIntentSender();
+
+                    final IntentSenderRequest intentSenderRequest = new IntentSenderRequest.Builder(intent).build();
+                    ((MainActivity)activity).deleteImage.launch(intentSenderRequest);}
+            }
+        }
     }
 }

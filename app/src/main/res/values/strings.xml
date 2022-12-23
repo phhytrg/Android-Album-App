@@ -125,5 +125,6 @@
     <string name="number_selected_items">%d selected %s</string>
     <string name="pick_done">Done</string>
     <string name="on_this_day">ON THIS DAY</string>
+    <string name="blur">Blur</string>
 
 </resources>

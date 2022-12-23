@@ -1,19 +1,25 @@
 package com.example.album.detail_album;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -27,13 +33,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.ImageUri;
 import com.example.album.R;
 import com.example.album.data.Image;
 import com.example.album.data.ImagesViewModel;
 import com.example.album.item_decoration.GridSpacingItemDecoration;
 import com.example.album.item_decoration.LinearSpacingItemDecoration;
 import com.example.album.ui.SplitToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailAlbumFragment extends Fragment {
@@ -42,25 +51,32 @@ public class DetailAlbumFragment extends Fragment {
     DetailAlbumAdapter adapter;
     String albumName;
     NavController navController;
+    SplitToolbar navigationBar;
     ImagesViewModel imagesViewModel;
     List<Image> images;
+    ActionBar actionBar;
+    CheckBox selectAllCheckBox;
+    TextView countItemTextView;
 
     boolean isLinearLayout = false;
+    List<Integer>selectedItems;
+    public final static int CHANGED_MODE = 1;
+    public final static int UNCHANGED_MODE = 0;
 
+    private int currentState = UNCHANGED_MODE;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.gallery_fragment, container, false).getRootView();
-        if(getActivity()!=null){
-            ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-            if(actionBar!=null) {
-                actionBar.setTitle(albumName);
-            }
+
+        actionBar = ((AppCompatActivity)requireActivity()).getSupportActionBar();
+        if(actionBar!=null) {
+            actionBar.setTitle(albumName);
         }
 
-        SplitToolbar toolbar = getActivity().findViewById(R.id.navigation_bar);
-        toolbar.setVisibility(View.GONE);
+        navigationBar = requireActivity().findViewById(R.id.navigation_bar);
+        navigationBar.setVisibility(View.GONE);
         return view;
     }
 
@@ -113,9 +129,78 @@ public class DetailAlbumFragment extends Fragment {
         DetailAlbumAdapter.OnClickListener listener = new DetailAlbumAdapter.OnClickListener() {
             @Override
             public void OnItemClick(DetailAlbumAdapter.GalleryViewHolder holder, int position) {
-                NavDirections action = DetailAlbumFragmentDirections
-                        .actionDetailAlbumFragmentToDetailFragment(images.get(position), albumName);
-                navController.navigate(action);
+                if(currentState == UNCHANGED_MODE){
+                    NavDirections action = DetailAlbumFragmentDirections
+                            .actionDetailAlbumFragmentToDetailFragment(images.get(position), albumName);
+                    navController.navigate(action);
+                }
+                else{
+                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
+                    //Blur item here
+                    if(selectAllCheckBox.isChecked()){
+                        selectAllCheckBox.setChecked(false);
+                    }
+                    if(holder.checkBox.isChecked()){
+                        selectedItems.add(holder.getAdapterPosition());
+                        //Blur item here
+                    }
+                    else{
+                        selectedItems.remove((Object)holder.getAdapterPosition());
+                        holder.isCheckedFlag = true;
+                        //Back
+                    }
+                    String syntax = (selectedItems.size() == 1)
+                            ? "item"
+                            : "items";
+                    String notification = (selectedItems.isEmpty())
+                            ? ""
+                            : getString(R.string.number_selected_items, selectedItems.size(), syntax);
+                    countItemTextView.setText(notification);
+                }
+            }
+
+            @Override
+            public void OnItemLongClick(DetailAlbumAdapter.GalleryViewHolder holder) {
+                selectedItems = new ArrayList<>();
+                if(currentState == CHANGED_MODE){
+                    return;
+                }
+                currentState = CHANGED_MODE;
+                adapter.setCurrentState(currentState);
+                actionBar.hide();
+                showDeleteBar();
+            }
+
+            @Override
+            public void OnCheckBoxClick(DetailAlbumAdapter.GalleryViewHolder holder) {
+                if(holder.checkBox.isChecked()){
+                    selectedItems.add(holder.getAdapterPosition());
+                    //Blur item here
+                }
+                else{
+                    Log.d("AAA",Integer.toString(holder.getAdapterPosition()));
+                    selectedItems.remove((Object)holder.getAdapterPosition());
+                    //Back
+                }
+                String syntax = (selectedItems.size() == 1)
+                        ? "item"
+                        : "items";
+                String notification = (selectedItems.isEmpty())
+                        ? ""
+                        : getString(R.string.number_selected_items, selectedItems.size(), syntax);
+                countItemTextView.setText(notification);
+            }
+
+            void showDeleteBar(){
+                if(getView() == null)
+                {
+                    currentState = UNCHANGED_MODE;
+                    adapter.setCurrentState(currentState);
+                    actionBar.show();
+                    return;
+                }
+                ConstraintLayout bar = getView().findViewById(R.id.delete_bar);
+                bar.setVisibility(View.VISIBLE);
             }
         };
         adapter = new DetailAlbumAdapter(listener,images);
@@ -141,6 +226,95 @@ public class DetailAlbumFragment extends Fragment {
                 return true;
             }
         },getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
+        ImageButton backButton = view.findViewById(R.id.go_back_option);
+        ImageButton deleteButton = view.findViewById(R.id.delete_option);
+        ConstraintLayout deleteBar = view.findViewById(R.id.delete_bar);
+        selectAllCheckBox = view.findViewById(R.id.select_all_option);
+        countItemTextView = view.findViewById(R.id.count_item);
+
+        selectAllCheckBox.setOnClickListener(new View.OnClickListener() {
+            void allSelected() {
+                selectedItems.clear();
+                for (int i = adapter.getItemCount() - 1; i >= 0; --i) {
+                    selectedItems.add(i);
+                }
+                String syntax = (selectedItems.size() == 1)
+                        ? "item"
+                        : "items";
+                String notification = (selectedItems.isEmpty())
+                        ? ""
+                        : getString(R.string.number_selected_items, selectedItems.size(), syntax);
+                countItemTextView.setText(notification);
+                adapter.selectAll();
+                adapter.setAllSelectedFlags(true);
+
+            }
+
+            void allUnselected() {
+                selectedItems.clear();
+                adapter.setAllSelectedFlags(false);
+                adapter.unSelectAll();
+                countItemTextView.setText("");
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (selectAllCheckBox.isChecked()) {
+                    allSelected();
+                } else {
+                    allUnselected();
+                }
+            }
+        });
+
+        backButton.setOnClickListener(v -> {
+            deleteBar.setVisibility(View.GONE);
+            currentState = UNCHANGED_MODE;
+            adapter.setCurrentState(UNCHANGED_MODE);
+            adapter.setCheckBoxesInvisible();
+            for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
+                navigationBar.getMenu().getItem(i).setEnabled(true);
+            }
+            adapter.unSelectAll();
+            actionBar.show();
+            countItemTextView.setText("");
+            selectAllCheckBox.setChecked(false);
+        });
+        deleteButton.setOnClickListener(v -> {
+            MaterialAlertDialogBuilder builder
+                    = new MaterialAlertDialogBuilder(getActivity()
+                    , R.style.AlertDialog_AppCompat_Submit);
+
+            View dialogView = getLayoutInflater().inflate(R.layout.submit_dialog,null);
+            TextView notification = dialogView.findViewById(R.id.notification);
+            String albumSyntax;
+            if(selectedItems.size() > 1){
+                albumSyntax = "images";
+            }else{
+                albumSyntax = "image";
+            }
+            notification.setText(getString(
+                    R.string.delete_notification,
+                    selectedItems.size(),
+                    albumSyntax)
+            );
+            builder.setView(dialogView);
+            builder.setPositiveButton(R.string.label_ok, (dialog1, id) -> {
+                selectedItems.forEach(i -> {
+                    Uri uri = ImageUri.getContentUri(requireContext(),images.get(i).getImageUri());
+                    adapter.notifyItemRemoved(i);
+                    ImageUri.deleteImage(requireContext(), requireActivity(), uri);
+                });
+                if(selectAllCheckBox.isChecked()){
+                    selectAllCheckBox.setChecked(false);
+                }
+                countItemTextView.setText("");
+            });
+            builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
+            });
+            builder.show();
+        });
     }
 
     private void setIcon(MenuItem menuItem){
