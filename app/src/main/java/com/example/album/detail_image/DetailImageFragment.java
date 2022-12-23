@@ -1024,7 +1024,7 @@ public class DetailImageFragment extends Fragment {
 //            // Lưu ảnh đã chỉnh sửa vào Internal Storage
 ////                saveToInternalStorage(bitmap_mod);
 //            try {
-//                ImageUri.saveImage(requireContext(), bitmap, "Edit");
+//                ImageStorageHandler.saveImage(requireContext(), bitmap, "Edit");
 //            } catch (FileNotFoundException e) {
 //                e.printStackTrace();
 //            }
@@ -1166,7 +1166,7 @@ public class DetailImageFragment extends Fragment {
 //            imageView.setImageBitmap(tempBitmap);
 //            try {
 //                bitmap=tempBitmap;
-//                ImageUri.saveImage(requireContext(), tempBitmap, "Filter");
+//                ImageStorageHandler.saveImage(requireContext(), tempBitmap, "Filter");
 //            } catch (FileNotFoundException e) {
 //                e.printStackTrace();
 //            }
@@ -1392,7 +1392,7 @@ public class DetailImageFragment extends Fragment {
 //                    bitmap=saved;
 //                    imageView.setImageBitmap(saved);
 //
-//                    ImageUri.saveImage(requireContext(), saved, "Paint");
+//                    ImageStorageHandler.saveImage(requireContext(), saved, "Paint");
 //                } catch (FileNotFoundException e) {
 //                    e.printStackTrace();
 //                }
@@ -1788,7 +1788,7 @@ public class DetailImageFragment extends Fragment {
 //                imageView.setImageBitmap(bitmap_mod);
 ////                saveToInternalStorage(bitmap_mod);
 //                try {
-//                    ImageUri.saveImage(requireContext(), bitmap_mod, "Edit");
+//                    ImageStorageHandler.saveImage(requireContext(), bitmap_mod, "Edit");
 //                } catch (FileNotFoundException e) {
 //                    e.printStackTrace();
 //                }
@@ -1798,7 +1798,7 @@ public class DetailImageFragment extends Fragment {
 //                imageView.setImageBitmap(bitmap_mod);
 ////                saveToInternalStorage(bitmap_mod);
 //                try {
-//                    ImageUri.saveImage(requireContext(), bitmap_mod, "Paint");
+//                    ImageStorageHandler.saveImage(requireContext(), bitmap_mod, "Paint");
 //                } catch (FileNotFoundException e) {
 //                    e.printStackTrace();
 //                }
@@ -1809,7 +1809,7 @@ public class DetailImageFragment extends Fragment {
 //                imageView.setImageBitmap(bitmap_mod);
 ////                saveToInternalStorage(bitmap_mod);
 //                try {
-//                    ImageUri.saveImage(requireContext(), bitmap_mod, "Filter");
+//                    ImageStorageHandler.saveImage(requireContext(), bitmap_mod, "Filter");
 //                } catch (FileNotFoundException e) {
 //                    e.printStackTrace();
 //                }

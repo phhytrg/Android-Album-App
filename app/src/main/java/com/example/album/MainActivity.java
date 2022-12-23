@@ -470,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     if (result.getData() != null) {
                         bmp = (Bitmap) result.getData().getExtras().get("data");
                         try {
-                            Uri uri = ImageUri.saveImage(this, bmp,"Camera");
+                            Uri uri = ImageStorageHandler.saveImage(this, bmp,"Camera");
                             try {
                                 Thread.sleep(500);
                             } catch (InterruptedException e) {

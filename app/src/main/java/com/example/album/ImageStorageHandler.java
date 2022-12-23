@@ -31,8 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class ImageUri {
-    public static final int DELETE_REQUEST_CODE = 13;
+public class ImageStorageHandler {
 
     public static Uri getImageUri(@NonNull Context inContext, @NonNull Bitmap inImage){
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.album.ImageUri;
+import com.example.album.ImageStorageHandler;
 import com.example.album.R;
 import com.example.album.data.Image;
 import com.example.album.data.ImagesViewModel;
@@ -302,9 +302,9 @@ public class DetailAlbumFragment extends Fragment {
             builder.setView(dialogView);
             builder.setPositiveButton(R.string.label_ok, (dialog1, id) -> {
                 selectedItems.forEach(i -> {
-                    Uri uri = ImageUri.getContentUri(requireContext(),images.get(i).getImageUri());
+                    Uri uri = ImageStorageHandler.getContentUri(requireContext(),images.get(i).getImageUri());
                     adapter.notifyItemRemoved(i);
-                    ImageUri.deleteImage(requireContext(), requireActivity(), uri);
+                    ImageStorageHandler.deleteImage(requireContext(), requireActivity(), uri);
                 });
                 if(selectAllCheckBox.isChecked()){
                     selectAllCheckBox.setChecked(false);

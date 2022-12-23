@@ -42,7 +42,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.album.ImageUri;
+import com.example.album.ImageStorageHandler;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.data.Image;
@@ -323,7 +323,7 @@ public class EditImageFragment extends Fragment{
 
         private void onDonePressed(){
             try {
-                ImageUri.saveImage(requireContext(), bitmap, "Edit");
+                ImageStorageHandler.saveImage(requireContext(), bitmap, "Edit");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
