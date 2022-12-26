@@ -90,6 +90,7 @@
     <string name="confirm_delete">Are you sure you want to delete these albums?
         The photos will not be deleted</string>
     <string name="add_to_album">Add to album</string>
+    <string name="add_to_Fav">Add to Favorites</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
     <string name="eraser">Eraser</string>

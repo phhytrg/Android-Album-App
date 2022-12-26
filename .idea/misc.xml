@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/add_to_album_dialog.xml" value="0.20878623188405798" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/album_edit_bar.xml" value="0.245018115942029" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/album_layout.xml" value="0.1621376811594203" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/bottom_bar.xml" value="0.1621376811594203" />
@@ -11,7 +12,11 @@
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/delete_album_dialog_layout.xml" value="0.1" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/fragment_image_detail.xml" value="0.1" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/image_item.xml" value="0.245018115942029" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/images_viewpager.xml" value="0.20878623188405798" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.20878623188405798" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/selected_option.xml" value="0.245018115942029" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/settings_activity.xml" value="0.20878623188405798" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/submit_dialog.xml" value="0.20878623188405798" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/menu/album_option.xml" value="0.25" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/menu/default_menu.xml" value="0.25" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/menu/edit_nav.xml" value="0.25" />

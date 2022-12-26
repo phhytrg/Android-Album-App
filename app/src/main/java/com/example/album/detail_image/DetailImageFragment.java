@@ -8,11 +8,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -38,6 +43,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.album.ImageStorageHandler;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.data.Image;
@@ -46,6 +52,7 @@ import com.example.album.ui.SplitToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -57,10 +64,8 @@ public class DetailImageFragment extends Fragment {
     private PopupMenu popup;
     private ImageButton navigateUpButton;
     private ImageButton overflowButton;
-    private ImageButton favoriteButton;
     private ActionBar app_bar;
     private SplitToolbar navigationBar;
-    private int isChecked;
     //swipe
     ImagesViewModel imagesViewModel;
     ViewPagerAdapter mViewPagerAdapter;
@@ -108,7 +113,6 @@ public class DetailImageFragment extends Fragment {
         navigationBar.setVisibility(View.GONE);
         //swipe
         imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
-        //
 
         return inflater.inflate(R.layout.images_viewpager,container,false).getRootView();
     }
@@ -124,9 +128,7 @@ public class DetailImageFragment extends Fragment {
 //
         navigateUpButton = view.findViewById(R.id.back_button);
         overflowButton = view.findViewById(R.id.overflow_button);
-        favoriteButton = view.findViewById(R.id.favorite);
         navigationView = view.findViewById(R.id.bottom_nav);
-
 //swipe
         if(albumName!=null){
             images = imagesViewModel.getAlbums().get(albumName);
@@ -156,13 +158,11 @@ public class DetailImageFragment extends Fragment {
             }
         });
 
-//
 
-        isChecked = 0;
         navigationView.getMenu().getItem(0).setCheckable(false);
         navigationView.setOnItemSelectedListener(this::itemNavigationBottomSelected);
         overflowButton.setOnClickListener(this::showPopup);
-        favoriteButton.setOnClickListener(v -> handleFavorite());
+        //favoriteButton.setOnClickListener(v -> handleFavorite());
         navigateUpButton.setOnClickListener(v->onBackPressed());
 
     }
@@ -174,7 +174,10 @@ public class DetailImageFragment extends Fragment {
             handleDetails();
         }
         else if(id == R.id.add){
-            Toast.makeText(requireContext(), "add", Toast.LENGTH_SHORT).show();
+            handleAdd();
+        }
+        else if(id == R.id.add_to_Fav){
+            handleFavorite();
         }
         else if(id == R.id.set){
             handleSet();
@@ -347,6 +350,43 @@ public class DetailImageFragment extends Fragment {
         renameDialog.show();
     }
 
+    private void handleAdd() {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.add_to_album_dialog);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        final EditText nameEdt = dialog.findViewById(R.id.add_to_album_edt);
+        Button okButton = dialog.findViewById(R.id.add_to_album_ok);
+        Button cancelButton = dialog.findViewById(R.id.add_to_album_cancel);
+
+        nameEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                okButton.setEnabled(!nameEdt.getText().toString().isEmpty());
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        cancelButton.setOnClickListener(view -> dialog.dismiss());
+        okButton.setOnClickListener(v -> {
+            String album_name = nameEdt.getText().toString();
+            try {
+                ImageStorageHandler.saveImage(requireContext(), bitmap, album_name);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
 
     private void handleSet() {
 
@@ -416,12 +456,10 @@ public class DetailImageFragment extends Fragment {
     }
 
     public void handleFavorite() {
-        if(isChecked==0){
-            favoriteButton.setImageResource(R.drawable.ic_favorite_colored);
-            isChecked=1;
-        }else {
-            favoriteButton.setImageResource(R.drawable.ic_favorite);
-            isChecked=0;
+        try {
+            ImageStorageHandler.saveImage(requireContext(), bitmap, "Favorites");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
