@@ -118,6 +118,7 @@ public class ImageUri {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return imageUri;
     }
 }
