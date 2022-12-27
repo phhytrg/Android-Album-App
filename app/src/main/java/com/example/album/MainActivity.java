@@ -1,6 +1,10 @@
 package com.example.album;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -30,6 +34,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -57,13 +63,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     Resources resources;
     ImagesViewModel imagesViewModel;
     Observer<List<Image>> observer;
+    Boolean isMemoryDay = false;
 
 
     @Override
@@ -118,6 +121,68 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setUpNavController();
         setUpMainActionBar();
         setUpNavigationActionBar();
+
+        List<Image> images;
+        List<Image> memories = new ArrayList<>();
+
+        int month = LocalDateTime.now().getMonthValue();
+        int day = LocalDateTime.now().getDayOfMonth();
+        int year = LocalDateTime.now().getYear();
+        String date = "";
+
+        images = imagesViewModel.getImages().getValue();
+        for (int i = 0; i < images.size(); ++i){
+            if (images.get(i).getDate().getMonthValue() == month
+                    && images.get(i).getDate().getDayOfMonth() == day
+                    && images.get(i).getDate().getYear() < year){
+                memories.add(images.get(i));
+                isMemoryDay = true;
+                String months[] = {"Jan", "Feb", "Mar", "Apr",
+                        "May", "Jun", "Jul", "Aug", "Sep",
+                        "Oct", "Nov", "Dec"};
+                date = months[month - 1] + " " + Integer.toString(day) + ", " + Integer.toString(images.get(i).getDate().getYear());
+            }
+        }
+        if (isMemoryDay) {
+            String id = "my_channel_id_01";
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = manager.getNotificationChannel(id);
+                if (channel == null) {
+                    channel = new NotificationChannel(id, "channel title", NotificationManager.IMPORTANCE_HIGH);
+                    channel.setDescription("channel description");
+                    channel.setVibrationPattern(new long[]{100, 1000, 200, 340});
+                    channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+                    manager.createNotificationChannel(channel);
+                }
+            }
+
+            Intent notificationIntent = new Intent(this, NotificationActivity.class);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            Bitmap bitmap;
+            Image image = memories.get(0);
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), image.getImageUri());
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, id)
+                        .setSmallIcon(R.drawable.ic_launcher_background) //icon of app
+                        .setLargeIcon(bitmap)
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(bitmap)
+                                .bigLargeIcon(null))
+                        .setContentTitle("You have a new memory")
+                        .setContentText("On this day - " + date)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setAutoCancel(true)
+                        .setTicker("notification");
+                builder.setContentIntent(contentIntent);
+                NotificationManagerCompat m = NotificationManagerCompat.from(getApplicationContext());
+                m.notify(1, builder.build());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            BitmapFactory.decodeResource(getResources(), R.drawable.cat1)
+        }
     }
 
     @Override
@@ -181,6 +246,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     navigationBar.setVisibility(View.GONE);
                 }
                 if(id == R.id.camera){
+//                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+//                    startActivity(intent);
                     startCamera();
                 }
                 if(id == R.id.thisDayFragment){
@@ -455,7 +522,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         return imageUri;
     }
 
-
     private void startCamera(){
 //        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 //        takePicture.launch(cameraIntent);
@@ -495,12 +561,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     if (result.getData() != null) {
                         bmp = (Bitmap) result.getData().getExtras().get("data");
                         try {
-                            Log.d(TAG, "MainActivity: SaveImage");
-                            Uri uri = ImageStorageHandler.saveImage(this, bmp,"Camera");
-
+                            ImageUri.saveImage(this, bmp, "Camera");
+                            Image image = imagesViewModel.getImages().getValue().get(0);
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("image", image);
+                            navController.navigate(R.id.DetailImage, bundle);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
+
                     }
                     else{
                         throw new IllegalStateException("Can not get image returned by camera :)");
@@ -519,5 +588,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onDestroy() {
         super.onDestroy();
         imagesViewModel.getImages().removeObserver(observer);
+        isMemoryDay = false;
     }
 }

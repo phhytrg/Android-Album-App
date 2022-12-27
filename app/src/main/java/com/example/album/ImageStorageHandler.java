@@ -127,6 +127,7 @@ public class ImageStorageHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return imageUri;
     }
 
