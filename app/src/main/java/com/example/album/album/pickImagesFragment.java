@@ -24,7 +24,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.album.ImageUri;
+import com.example.album.ImageStorageHandler;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.data.Image;
@@ -207,14 +207,14 @@ public class pickImagesFragment extends Fragment {
             navController.navigate(action);
         });
         doneButton.setOnClickListener(v -> {
-//            ImageUri.saveImage(requireContext(), saved, albumName);
+//            ImageStorageHandler.saveImage(requireContext(), saved, albumName);
             Bitmap bitmap;
             for (int i = 0 ; i < selectedItems.size(); ++i){
                 Image image = images.get(selectedItems.get(i));
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(),
                             image.getImageUri());
-                    ImageUri.saveImage(requireContext(), bitmap, albumName);
+                    ImageStorageHandler.saveImage(requireContext(), bitmap, albumName);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

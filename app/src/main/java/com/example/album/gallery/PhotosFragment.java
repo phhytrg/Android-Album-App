@@ -1,19 +1,25 @@
 package com.example.album.gallery;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.MenuProvider;
@@ -28,19 +34,21 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.album.ImageStorageHandler;
 import com.example.album.R;
 import com.example.album.data.Image;
 import com.example.album.data.ImagesViewModel;
 import com.example.album.ui.SplitToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class PhotosFragment extends Fragment {
-    View view;
     List<ListItem> listItems;
     NavController navController;
     PhotosAdapter adapter;
@@ -49,7 +57,16 @@ public class PhotosFragment extends Fragment {
     private SharedPreferences shared_prefs;
     private SharedPreferences.Editor editor;
 
+    private ActionBar actionBar;
+    private SplitToolbar navigationBar;
+
     private boolean isLinearLayout;
+
+    public final static int CHANGED_MODE = 1;
+    public final static int UNCHANGED_MODE = 0;
+    private int currentState;
+    private CheckBox selectAllCheckBox;
+    private TextView countItemTextView;
 
     @Nullable
     @Override
@@ -60,7 +77,9 @@ public class PhotosFragment extends Fragment {
 
         navController = navHostFragment == null ? null : navHostFragment.getNavController();
         imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
-        SplitToolbar navigationBar = requireActivity().findViewById(R.id.navigation_bar);
+
+        actionBar = ((AppCompatActivity)requireActivity()).getSupportActionBar();
+        navigationBar = requireActivity().findViewById(R.id.navigation_bar);
         navigationBar.setVisibility(View.VISIBLE);
         return inflater.inflate(R.layout.gallery_fragment, container, false).getRootView();
     }
@@ -86,10 +105,50 @@ public class PhotosFragment extends Fragment {
         recyclerView = view.findViewById(R.id.gallery_recyclerview);
         PhotosAdapter.AdapterCallback listener = new PhotosAdapter.AdapterCallback() {
             @Override
-            public void onItemClick(@NonNull ImageItem item) {
-                NavDirections action = PhotosFragmentDirections
-                        .actionPhotosFragmentToDetailFragment(item.getImage());
-                navController.navigate(action);
+            public void onItemClick(PhotosAdapter.ImageViewHolder holder, ImageItem item) {
+                if(currentState == UNCHANGED_MODE){
+                    NavDirections action = PhotosFragmentDirections
+                            .actionPhotosFragmentToDetailFragment(item.getImage());
+                    navController.navigate(action);
+                }
+                else{
+                    holder.checkBox.setChecked(!holder.checkBox.isChecked());
+                    //Blur item here
+                    if(selectAllCheckBox.isChecked()){
+                        selectAllCheckBox.setChecked(false);
+                    }
+                    if(holder.checkBox.isChecked()){
+                        if(adapter.getItems().get(holder.getAdapterPosition()).getType() == ListItem.TYPE_EVENT){
+                            adapter.getItemsSelected().add(holder.getAdapterPosition());
+                        }
+                        //Blur item here
+                    }
+                    else{
+                        adapter.getItemsSelected().remove((Object)holder.getAdapterPosition());
+                        //Back
+                    }
+                    String syntax = (adapter.getItemsSelected().size() == 1)
+                            ? "item"
+                            : "items";
+                    String notification = (adapter.getItemsSelected().isEmpty())
+                            ? ""
+                            : getString(R.string.number_selected_items, adapter.getItemsSelected().size(), syntax);
+                    countItemTextView.setText(notification);
+                    selectAllCheckBox.setChecked(adapter.getItemsSelected().size() >= imagesViewModel.getImages().getValue().size());
+
+                    int count = 0;
+                    for(CheckBox i: adapter.getMapCheckBoxes()
+                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
+                            .stream().skip(1).collect(Collectors.toList())){
+                        if(i.isChecked()){
+                            count++;
+                        }
+                    }
+                    adapter.getMapCheckBoxes()
+                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
+                            .get(0)
+                            .setChecked(count >= images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size());
+                }
             }
 
             @Override
@@ -99,6 +158,88 @@ public class PhotosFragment extends Fragment {
                         R.drawable.image_border,
                         requireActivity().getTheme())
                 );
+            }
+
+            @Override
+            public void OnItemLongClick(PhotosAdapter.ImageViewHolder holder, ImageItem item) {
+                if(currentState == CHANGED_MODE){
+                    return;
+                }
+                currentState = CHANGED_MODE;
+                adapter.setCurrentState(currentState);
+                actionBar.hide();
+                navigationBar.setVisibility(View.GONE);
+                showDeleteBar();
+            }
+
+            @Override
+            public void OnCheckBoxClick(PhotosAdapter.ImageViewHolder holder) {
+                if(holder.checkBox.isChecked()){
+                    if(adapter.getItems().get(holder.getAdapterPosition()).getType() == ListItem.TYPE_EVENT) {
+                        adapter.getItemsSelected().add(holder.getAdapterPosition());
+                    }
+                    //Blur item here
+                }
+                else{
+                    Log.d("AAA",Integer.toString(holder.getAdapterPosition()));
+                    adapter.getItemsSelected().remove((Object)holder.getAdapterPosition());
+                    //Back
+                }
+                String syntax = (adapter.getItemsSelected().size() == 1)
+                        ? "item"
+                        : "items";
+                String notification = (adapter.getItemsSelected().isEmpty())
+                        ? ""
+                        : getString(R.string.number_selected_items, adapter.getItemsSelected().size(), syntax);
+                countItemTextView.setText(notification);
+                selectAllCheckBox.setChecked(adapter.getItemsSelected().size() >= imagesViewModel.getImages().getValue().size());
+                int count = 0;
+                int a = adapter.getMapCheckBoxes()
+                        .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size();
+                for(CheckBox i: adapter.getMapCheckBoxes()
+                        .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
+                        .stream().skip(1).collect(Collectors.toList())){
+                    if(i.isChecked()){
+                        count++;
+                    }
+                }
+                adapter.getMapCheckBoxes()
+                        .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
+                        .get(0)
+                        .setChecked(count >= images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size());
+            }
+
+            @Override
+            public void OnHeaderCheckBoxClick(PhotosAdapter.HeaderViewHolder holder) {
+                if(holder.checkBox.isChecked()){
+                    for(CheckBox checkBox: adapter.getMapCheckBoxes().get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))){
+                        checkBox.setChecked(true);
+                    }
+                }else{
+                    for(CheckBox checkBox: adapter.getMapCheckBoxes().get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))){
+                        checkBox.setChecked(false);
+                    }
+                }
+                String syntax = (adapter.getItemsSelected().size() == 1)
+                        ? "item"
+                        : "items";
+                String notification = (adapter.getItemsSelected().isEmpty())
+                        ? ""
+                        : getString(R.string.number_selected_items, adapter.getItemsSelected().size(), syntax);
+                countItemTextView.setText(notification);
+                selectAllCheckBox.setChecked(adapter.getItemsSelected().size() >= imagesViewModel.getImages().getValue().size());
+            }
+
+            private void showDeleteBar(){
+                if(getView() == null)
+                {
+                    currentState = UNCHANGED_MODE;
+                    adapter.setCurrentState(currentState);
+                    actionBar.show();
+                    return;
+                }
+                ConstraintLayout bar = getView().findViewById(R.id.delete_bar);
+                bar.setVisibility(View.VISIBLE);
             }
         };
 
@@ -126,6 +267,122 @@ public class PhotosFragment extends Fragment {
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
+        ImageButton backButton = view.findViewById(R.id.go_back_option);
+        ImageButton deleteButton = view.findViewById(R.id.delete_option);
+        ConstraintLayout deleteBar = view.findViewById(R.id.delete_bar);
+        selectAllCheckBox = view.findViewById(R.id.select_all_option);
+        countItemTextView = view.findViewById(R.id.count_item);
+
+        selectAllCheckBox.setOnClickListener(new View.OnClickListener() {
+            void allSelected() {
+                adapter.getItemsSelected().clear();
+                for (int i = adapter.getItemCount() - 1; i >= 0; --i) {
+                    if(adapter.getItems().get(i).getType() == ListItem.TYPE_EVENT){
+                        adapter.getItemsSelected().add(i);
+                    }
+                }
+
+                String syntax = (adapter.getItemsSelected().size() == 1)
+                        ? "item"
+                        : "items";
+                String notification = (adapter.getItemsSelected().isEmpty())
+                        ? ""
+                        : getString(R.string.number_selected_items, adapter.getItemsSelected().size(), syntax);
+                countItemTextView.setText(notification);
+                adapter.selectAll();
+                adapter.setAllSelectedFlags(true);
+
+            }
+
+            void allUnselected() {
+                adapter.getItemsSelected().clear();
+                adapter.setAllSelectedFlags(false);
+                adapter.unSelectAll();
+                countItemTextView.setText("");
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (selectAllCheckBox.isChecked()) {
+                    allSelected();
+                } else {
+                    allUnselected();
+                }
+            }
+        });
+
+        backButton.setOnClickListener(v -> {
+            deleteBar.setVisibility(View.GONE);
+            currentState = UNCHANGED_MODE;
+            adapter.setCurrentState(UNCHANGED_MODE);
+            adapter.setCheckBoxesInvisible();
+            for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
+                navigationBar.getMenu().getItem(i).setEnabled(true);
+            }
+            adapter.unSelectAll();
+            actionBar.show();
+            navigationBar.setVisibility(View.VISIBLE);
+            countItemTextView.setText("");
+            selectAllCheckBox.setChecked(false);
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            MaterialAlertDialogBuilder builder
+                    = new MaterialAlertDialogBuilder(getActivity()
+                    , R.style.AlertDialog_AppCompat_Submit);
+
+            View dialogView = getLayoutInflater().inflate(R.layout.submit_dialog,null);
+            TextView notification = dialogView.findViewById(R.id.notification);
+            String albumSyntax;
+            if(adapter.getItemsSelected().size() > 1){
+                albumSyntax = "images";
+            }else{
+                albumSyntax = "image";
+            }
+            notification.setText(getString(
+                    R.string.delete_notification,
+                    adapter.getItemsSelected().size(),
+                    albumSyntax)
+            );
+            builder.setView(dialogView);
+            builder.setPositiveButton(R.string.label_ok, (dialog1, id) -> {
+                adapter.getItemsSelected().forEach(i -> {
+                    int realIndex = 0;
+                    int tmp = 0;
+                    boolean found = false;
+                    for(LocalDateTime dateTime: images.keySet()){
+                        tmp++;
+                        for(Image image: images.get(dateTime)){
+                            if(tmp == i){
+                                found = true;
+                                break;
+                            }
+                            realIndex++;
+                            tmp++;
+                        }
+                        if(found){
+                            break;
+                        }
+                    }
+                    Uri uri = ImageStorageHandler.getContentUri(requireContext(),imagesViewModel
+                            .getImages()
+                            .getValue()
+                            .get(realIndex)
+                            .getImageUri());
+                    ImageStorageHandler.deleteImage(requireContext(), requireActivity(), uri);
+                    adapter.notifyItemRemoved(i);
+                });
+                if(selectAllCheckBox.isChecked()){
+                    selectAllCheckBox.setChecked(false);
+                }
+                adapter.unSelectAll();
+                countItemTextView.setText("");
+            });
+            builder.setNegativeButton(R.string.label_cancel, (dialog12, id) -> {
+            });
+            builder.show();
+        });
     }
 
 //    private LocalDate buildRandomDateInCurrentMonth() {

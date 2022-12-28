@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -48,7 +47,6 @@ import com.example.album.ui.SplitToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
@@ -80,17 +78,6 @@ public class AlbumFragment extends Fragment{
 
     ImagesViewModel imagesViewModel;
     TreeMap<String,List<Image>> map;
-
-    List<String> albumNames = new ArrayList<>(Arrays.asList("Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
-            "Picnic", "Friends", "Selfie", "Memes", "Camera", "Videos", "Favorites", "Screens", "Locations", "Download", "Collages",
-            "Picnic", "Friends", "Selfie", "Memes"));
-    List<Integer> albumImages = new ArrayList<>(Arrays.asList(R.drawable.photo1, R.drawable.photo2,
-            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
-            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
-            R.drawable.photo9, R.drawable.photo1, R.drawable.photo2,
-            R.drawable.photo10, R.drawable.photo4, R.drawable.cat1, R.drawable.photo6,
-            R.drawable.photo3, R.drawable.photo5, R.drawable.photo8, R.drawable.photo7,
-            R.drawable.photo9));
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -209,6 +196,7 @@ public class AlbumFragment extends Fragment{
             adapter.unSelectAll();
             countItemTextView.setText("");
             navigationBar.setVisibility(View.VISIBLE);
+            selectAllCheckBox.setChecked(false);
         });
 
         deleteButton.setOnClickListener(v -> {
@@ -219,7 +207,7 @@ public class AlbumFragment extends Fragment{
             View dialogView = getLayoutInflater().inflate(R.layout.submit_dialog,null);
             TextView notification = (TextView)dialogView.findViewById(R.id.notification);
             String albumSyntax;
-            if(selectedItems.size() >= 1){
+            if(selectedItems.size() > 1){
                 albumSyntax = "albums";
             }else{
                 albumSyntax = "album";
@@ -235,8 +223,6 @@ public class AlbumFragment extends Fragment{
                 while (!selectedItems.isEmpty()) {
                     int selectedIndex = selectedItems.get(0);
                     selectedItems.remove(0);
-                    albumImages.remove(selectedIndex);
-                    albumNames.remove(selectedIndex);
                     adapter.notifyItemRemoved(selectedIndex);
                 }
                 if(selectAllCheckBox.isChecked()){
@@ -297,6 +283,7 @@ public class AlbumFragment extends Fragment{
                             ? ""
                             : getString(R.string.number_selected_items, selectedItems.size(), syntax);
                     countItemTextView.setText(notification);
+                    selectAllCheckBox.setChecked(selectedItems.size() >= imagesViewModel.getAlbums().size());
                 }
             }
 
@@ -318,6 +305,8 @@ public class AlbumFragment extends Fragment{
                         ? ""
                         : getString(R.string.number_selected_items, selectedItems.size(), syntax);
                 countItemTextView.setText(notification);
+
+                selectAllCheckBox.setChecked(selectedItems.size() >= imagesViewModel.getAlbums().size());
             }
 
             @Override
@@ -380,7 +369,7 @@ public class AlbumFragment extends Fragment{
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        final EditText nameEt = (EditText) dialog.findViewById(R.id.userInputDialog);
+        final EditText nameEt = dialog.findViewById(R.id.userInputDialog);
         Button okButton = dialog.findViewById(R.id.okDialogBtn);
         Button cancelButton = dialog.findViewById(R.id.cancelDialogBtn);
 
@@ -398,216 +387,15 @@ public class AlbumFragment extends Fragment{
         });
 
         cancelButton.setOnClickListener(view -> dialog.dismiss());
-        okButton.setOnClickListener(new View.OnClickListener() {
+        okButton.setOnClickListener(v -> {
+            String new_album_name = nameEt.getText().toString();
 
-//            private void addNewAlbumIntoExternal(){
-//                File newDir = new File(Environment.getExternalStoragePublicDirectory(
-//                        Environment.DIRECTORY_PICTURES
-//                ), "/" + getString(R.string.app_name));
-//                requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, )
-//            }
+            NavDirections action = AlbumFragmentDirections.actionAlbumFragmentToPickImagesFragment(new_album_name);
+            navController.navigate(action);
 
-            @Override
-            public void onClick(View v) {
-                String new_album_name = nameEt.getText().toString();
-
-//                List<Image> images = imagesViewModel.getImages().getValue();
-//                Image[] arrayImages = new Image[images.size()];
-//                images.toArray(arrayImages);
-//                NavDirections action = AlbumFragmentDirections
-//                        .actionAlbumFragmentToDetailAlbumFragment(albumname);
-//                navController.navigate(action);
-
-                NavDirections action = AlbumFragmentDirections.actionAlbumFragmentToPickImagesFragment(new_album_name);
-                navController.navigate(action);
-
-//            albumNames.add(name);
-//            albumImages.add(R.drawable.image2);
-//            adapter.notifyItemChanged(albumImages.size() - 1);
-                adapter.notifyDataSetChanged();
-                dialog.dismiss();
-            }
+            adapter.notifyDataSetChanged();
+            dialog.dismiss();
         });
         dialog.show();
     }
 }
-
-
-//        boolean flag = setUpMainActionbar(view);
-//        MenuHost menuHost = requireActivity();
-//        menuHost.addMenuProvider(new MenuProvider() {
-//            @Override
-//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-//                menuInflater.inflate(R.menu.album_option,menu);
-//                if(flag)
-//                {
-//                    ((MainActivity)getActivity())
-//                            .getSupportActionBar()
-//                            .setTitle(R.string.albums);
-//                }
-//            }
-//
-//            @Override
-//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//                switch (menuItem.getItemId()) {
-//                    case R.id.menu_newAlbum:
-//                        Toast.makeText(requireContext(), "create new album",Toast.LENGTH_SHORT).show();
-//                        return true;
-//                    case R.id.menu_setting:
-//                        Toast.makeText(requireContext(), "setting",Toast.LENGTH_SHORT).show();
-//                        return true;
-//                    default:
-//                        return false;
-//                }
-//            }
-//
-//
-//        });
-
-//        MenuHost menuHost = requireActivity();
-//        MenuProvider menuProvider = new MenuProvider() {
-//            @Override
-//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-////                menuInflater.inflate(R.menu.album_option,menu);
-////                menu.getItem(2).setVisible(false);
-//            }
-//
-//            @Override
-//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//
-//                return false;
-//            }
-//        };
-//        menuHost.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
-
-//        splitToolbar = getActivity().findViewById(R.id.navigation_bar);
-
-//Set Layout Manager
-//        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(),3));
-//        //Set Item Decoration
-//        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3,24,false));
-
-//        //Navigation ToolBar's implement
-//        navigationBar.addMenuProvider(new MenuProvider() {
-//            @Override
-//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-//                menuInflater.inflate(R.menu.navigation_bar_menu,menu);
-//                MenuItem defaultItem = menu.getItem(1);
-//                defaultItem.setTitle(getSpannableStringFromMenuItem(defaultItem,R.color.highlightColorText));
-//                navigationMenu = menu;
-//            }
-//
-//            @Override
-//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//                int id = menuItem.getItemId();
-//                for(int i =0; i < navigationMenu.size(); i++){
-//                    MenuItem currentItem = navigationMenu.getItem(i);
-//                    if (currentItem.getItemId() == R.id.galleryFragment) {
-//                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
-//                    } else if (currentItem.getItemId() == R.id.albumFragment) {
-//                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
-//                    } else if (currentItem.getItemId() == R.id.privacyFragment) {
-//                        currentItem.setTitle(getSpannableStringFromMenuItem(currentItem,R.color.textColorPrimary));
-//                    }
-//                }
-//                NavController navController =
-//                        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-//
-//                menuItem.setTitle(getSpannableStringFromMenuItem(menuItem, R.color.highlightColorText));
-//
-//                return NavigationUI.onNavDestinationSelected(menuItem,navController) ||
-//                        AlbumFragment.super.onOptionsItemSelected(menuItem);
-//                if (id == R.id.galleryFragment){
-//                    return NavigationUI.onNavDestinationSelected(menuItem,navController) ||
-//                            AlbumFragment.super.onOptionsItemSelected(menuItem);
-//                }
-//                else if(id == R.id.albumFragment){
-//                    return NavigationUI.onNavDestinationSelected(menuItem, navController) ||
-//                            AlbumFragment
-//                }
-//                else if(id == R.id.privacyFragment){
-//
-//                }
-//                return false;
-//            }
-//        });
-
-//
-//        NavController navController = Navigation.findNavController(view);
-//        AppBarConfiguration appBarConfiguration =
-//                new AppBarConfiguration.Builder(navController.getGraph()).build();
-//
-//        AppBarConfiguration appBarConfiguration1 =
-//                new AppBarConfiguration.Builder(R.id.galleryFragment,R.id.albumFragment).build();
-//
-//        NavigationUI.setupWithNavController(navigationBar, navController, appBarConfiguration1);
-//        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-//            @Override
-//            public void onDestinationChanged(
-//                    @NonNull NavController navController
-//                    , @NonNull NavDestination navDestination
-//                    , @Nullable Bundle bundle) {
-//                navigationBar.setTitle("");
-//            }
-//        });
-
-
-//    private boolean setUpMainActionbar(View view){
-//        AppCompatActivity activity = (AppCompatActivity)getActivity();
-//        Toolbar toolbar = getActivity().findViewById(R.id.app_bar);
-//        if(activity != null){
-//            activity.setSupportActionBar(toolbar);
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private SpannableString getSpannableStringFromMenuItem(MenuItem item, int colorResource){
-//        SpannableString spanString =
-//                new SpannableString(item.getTitle().toString());
-//        spanString.setSpan(
-//                new ForegroundColorSpan(ContextCompat
-//                        .getColor(requireContext(),colorResource)),
-//                0,
-//                spanString.length(),
-//                0
-//        ); //fix the color to white
-//        return spanString;
-//    }
-
-//    public void showAlbumOption(View v){
-//          PopupMenu popupMenu = new PopupMenu(requireContext(), v);
-//          popupMenu.setOnMenuItemClickListener(requireContext());
-//          popupMenu.inflate(R.menu.album_option);
-//          popupMenu.show();
-//    }
-
-//    private void setUpNavigationBar(){
-//        MenuProvider menuProvider = new MenuProvider() {
-//            @Override
-//            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-//                menuInflater.inflate(R.menu.album_option,menu);
-//            }
-//
-//            @Override
-//            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-//                int id = menuItem.getItemId();
-//                NavOptions navOptions = new NavOptions.Builder()
-//                        .setLaunchSingleTop(true)
-//                        .setEnterAnim(R.anim.slide_in_left)
-//                        .setExitAnim(R.anim.slide_out_right)
-//                        .setPopEnterAnim(R.anim.slide_in_right)
-//                        .setPopExitAnim(R.anim.slide_out_left)
-//                        .build();
-//
-//                if(id == R.id.galleryFragment){
-//                    if(navController != null) {
-//                        navController.navigate(id, null, navOptions);
-//                        return true;
-//                    }
-//                }
-//                return true;
-//            }
-//        };
-//        splitToolbar.addMenuProvider(menuProvider,getViewLifecycleOwner(), Lifecycle.State.CREATED);
-//    }

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/add_to_album_dialog.xml" value="0.20878623188405798" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/album_edit_bar.xml" value="0.245018115942029" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/album_layout.xml" value="0.1621376811594203" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/bottom_bar.xml" value="0.1621376811594203" />
@@ -10,10 +11,12 @@
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/custom_dialog_set.xml" value="0.1621376811594203" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/delete_album_dialog_layout.xml" value="0.1" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/fragment_image_detail.xml" value="0.1" />
-        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/fragment_image_edit.xml" value="0.17708333333333334" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/image_item.xml" value="0.245018115942029" />
-        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.12158054711246201" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/images_viewpager.xml" value="0.20878623188405798" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.20878623188405798" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/selected_option.xml" value="0.245018115942029" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/settings_activity.xml" value="0.20878623188405798" />
+        <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/layout/submit_dialog.xml" value="0.20878623188405798" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/menu/album_option.xml" value="0.25" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/menu/default_menu.xml" value="0.25" />
         <entry key="..\:/DaiHoc/Mobile/Android-Album-App/app/src/main/res/menu/edit_nav.xml" value="0.25" />
@@ -92,24 +95,29 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/album_navigation_bar.xml" value="0.17255434782608695" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/bottom_bar.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.21603260869565216" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/brush_size_dialog.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/choosing_color_dialog.xml" value="0.16" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/color_pref.xml" value="0.13196555217831812" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/crop_activity.xml" value="0.20878623188405798" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/crop_fragment.xml" value="0.1265625" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/custom_dialog_set.xml" value="0.27447916666666666" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/date_header.xml" value="0.23796296296296296" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/delete_album_dialog_layout.xml" value="0.2368659420289855" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/detail_image_fragment.xml" value="0.2105978260869565" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/empty_layout.xml" value="0.20878623188405798" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/filter_item.xml" value="0.12407407407407407" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/fragment_image_detail.xml" value="0.2361111111111111" />
-        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/gallery_fragment.xml" value="0.1265625" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/gallery_fragment.xml" value="0.264" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/gallery_item.xml" value="0.25" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/grid_album_item.xml" value="0.2368659420289855" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/image_item.xml" value="0.25" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/images_viewpager.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/include_setting.xml" value="0.20878623188405798" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/linear_album_item.xml" value="0.72" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/multi_albums_selected.xml" value="0.264" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/multi_items_selected.xml" value="0.21603260869565216" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.2368659420289855" />
+        <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/rename_dialog.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/selected_option.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/set_wallpaper_sign.xml" value="0.27447916666666666" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/layout/setting_filter_dialog.xml" value="0.27447916666666666" />
@@ -134,29 +142,6 @@
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/menu/switch_layout_menu.xml" value="0.2734375" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/xml/provider_path.xml" value="0.13489583333333333" />
         <entry key="..\:/HK1-2223/LT Android/Project/Album/app/src/main/res/xml/root_preferences.xml" value="0.27447916666666666" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/drawable-v24/ic_circle.xml" value="0.1295" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/drawable-v24/ic_undo.xml" value="0.1295" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/drawable/ic_back_alter.xml" value="0.1295" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/drawable/ic_check.xml" value="0.11" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/drawable/ic_circle_change.xml" value="0.11" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/drawable/ic_redo.xml" value="0.1295" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/drawable/mydialog.xml" value="0.122" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/activity_main.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/album_layout.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/choosing_color_dialog.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/delete_album_dialog_layout.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/fragment_image_detail.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/gallery_fragment.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/gallery_item.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/grid_album_item.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/image_item.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/linear_album_item.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/new_album_dialog_layout.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/pick_images_fragment.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/selected_option.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/sticker_items.xml" value="0.17552083333333332" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/layout/sticker_photo_view.xml" value="0.17447916666666666" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Android-Album-App/app/src/main/res/menu/paint_nav.xml" value="0.17552083333333332" />
       </map>
     </option>
   </component>
