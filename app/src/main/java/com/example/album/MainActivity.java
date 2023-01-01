@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     ImagesViewModel imagesViewModel;
     Observer<List<Image>> observer;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

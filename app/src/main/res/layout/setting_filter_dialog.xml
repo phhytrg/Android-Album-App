@@ -14,7 +14,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/filter_brightness"
-            android:textSize="20sp"
+            android:textSize="20dp"
             />
 
         <SeekBar
@@ -34,7 +34,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/filter_corner"
-            android:textSize="18sp"/>
+            android:textSize="18dp"/>
         <SeekBar
             android:id="@+id/filter_corner"
             android:layout_width="fill_parent"
@@ -52,7 +52,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/filter_tint"
-            android:textSize="20sp"/>
+            android:textSize="20dp"/>
         <SeekBar
             android:id="@+id/filter_tint"
             android:layout_width="fill_parent"
@@ -70,7 +70,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/blur"
-            android:textSize="20sp"/>
+            android:textSize="20dp"/>
         <SeekBar
             android:id="@+id/filter_blur"
             android:layout_width="fill_parent"

@@ -28,7 +28,6 @@ public class Image implements Parcelable{
         bucketName = in.readString();
     }
 
-
     public long getId() {
         return id;
     }

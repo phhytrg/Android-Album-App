@@ -18,11 +18,11 @@ import android.renderscript.ScriptIntrinsicBlur;
 import java.util.Random;
 
 public class ImageFilter {
-    public static String[] filter_values= {"NONE","GRAY","INVERT","CONTRAST","TINT","RELIEF","SNOW","OLD","SHADING","CORNER","BRIGHTNESS"};
-    public static String[] auto_filter_values= {"SNOW","CONTRAST","TINT","TINT","RELIEF","OLD","CORNER","TINT","BRIGHTNESS","TINT"};
+    public static String[] filter_values = {"NONE", "GRAY", "INVERT", "CONTRAST", "TINT", "RELIEF", "SNOW", "OLD", "SHADING", "CORNER", "BRIGHTNESS"};
+    public static String[] auto_filter_values = {"SNOW", "CONTRAST", "TINT", "TINT", "RELIEF", "OLD", "CORNER", "TINT", "BRIGHTNESS", "TINT"};
 
     public static Bitmap applyFilter(Bitmap bitmap, String filter, Object... options) {
-        switch (filter){
+        switch (filter) {
             case "NONE":
                 return bitmap;
             case "GRAY":
@@ -31,22 +31,23 @@ public class ImageFilter {
                 if (options.length < 1) {
                     return changeToContrast(bitmap, 50);
                 }
-                return changeToContrast(bitmap, (Integer)options[0]);
+                return changeToContrast(bitmap, (Integer) options[0]);
             case "BRIGHTNESS":
                 if (options.length < 1) {
                     return changeToBrightness(bitmap, 70);
                 }
-                return changeToBrightness(bitmap, (Integer)options[0]);
+                return changeToBrightness(bitmap, (Integer) options[0]);
             case "CORNER":
                 if (options.length < 1) {
                     return roundCorner(bitmap, 200);
                 }
-                return roundCorner(bitmap, (Integer)options[0]);
+                return roundCorner(bitmap, (Integer) options[0]);
             case "TINT":
                 if (options.length < 1) {
                     return tintImage(bitmap, 40);
                 }
-                return tintImage(bitmap, (Integer)options[0]);
+                return tintImage(bitmap, (Integer) options[0]);
+
             case "SNOW":
                 return applySnowEffect(bitmap);
             case "INVERT":
@@ -57,16 +58,17 @@ public class ImageFilter {
                 if (options.length < 1) {
                     return changeToRelief(bitmap, -1234567);
                 }
-                return changeToRelief(bitmap, (Integer)options[0] - 100000);
+                return changeToRelief(bitmap, (Integer) options[0] - 100000);
             case "SHADING":
                 if (options.length < 1) {
                     return changeToShading(bitmap, 10);
                 }
-                return changeToShading(bitmap, (Integer)options[0]);
+                return changeToShading(bitmap, (Integer) options[0]);
 
         }
         return bitmap;
     }
+
     public static Bitmap tintImage(Bitmap src, int degree) {
         double PI = 3.14159d;
         double FULL_CIRCLE_DEGREE = 360d;
@@ -80,31 +82,31 @@ public class ImageFilter {
         src.getPixels(pix, 0, width, 0, 0, width, height);
 
         int RY, GY, BY, RYY, GYY, BYY, R, G, B, Y;
-        double angle = (PI * (double)degree) / HALF_CIRCLE_DEGREE;
+        double angle = (PI * (double) degree) / HALF_CIRCLE_DEGREE;
 
-        int S = (int)(RANGE * Math.sin(angle));
-        int C = (int)(RANGE * Math.cos(angle));
+        int S = (int) (RANGE * Math.sin(angle));
+        int C = (int) (RANGE * Math.cos(angle));
 
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++) {
                 int index = y * width + x;
-                int r = ( pix[index] >> 16 ) & 0xff;
-                int g = ( pix[index] >> 8 ) & 0xff;
+                int r = (pix[index] >> 16) & 0xff;
+                int g = (pix[index] >> 8) & 0xff;
                 int b = pix[index] & 0xff;
-                RY = ( 70 * r - 59 * g - 11 * b ) / 100;
-                GY = (-30 * r + 41 * g - 11 * b ) / 100;
-                BY = (-30 * r - 59 * g + 89 * b ) / 100;
-                Y  = ( 30 * r + 59 * g + 11 * b ) / 100;
-                RYY = ( S * BY + C * RY ) / 256;
-                BYY = ( C * BY - S * RY ) / 256;
-                GYY = (-51 * RYY - 19 * BYY ) / 100;
+                RY = (70 * r - 59 * g - 11 * b) / 100;
+                GY = (-30 * r + 41 * g - 11 * b) / 100;
+                BY = (-30 * r - 59 * g + 89 * b) / 100;
+                Y = (30 * r + 59 * g + 11 * b) / 100;
+                RYY = (S * BY + C * RY) / 256;
+                BYY = (C * BY - S * RY) / 256;
+                GYY = (-51 * RYY - 19 * BYY) / 100;
                 R = Y + RYY;
-                R = ( R < 0 ) ? 0 : (( R > 255 ) ? 255 : R );
+                R = (R < 0) ? 0 : ((R > 255) ? 255 : R);
                 G = Y + GYY;
-                G = ( G < 0 ) ? 0 : (( G > 255 ) ? 255 : G );
+                G = (G < 0) ? 0 : ((G > 255) ? 255 : G);
                 B = Y + BYY;
-                B = ( B < 0 ) ? 0 : (( B > 255 ) ? 255 : B );
-                pix[index] = 0xff000000 | (R << 16) | (G << 8 ) | B;
+                B = (B < 0) ? 0 : ((B > 255) ? 255 : B);
+                pix[index] = 0xff000000 | (R << 16) | (G << 8) | B;
             }
 
         Bitmap outBitmap = Bitmap.createBitmap(width, height, src.getConfig());
@@ -114,6 +116,7 @@ public class ImageFilter {
 
         return outBitmap;
     }
+
     public static Bitmap roundCorner(Bitmap src, float round) {
         // image size
         int width = src.getWidth();
@@ -144,6 +147,7 @@ public class ImageFilter {
         // return final image
         return result;
     }
+
     private static Bitmap changeToOld(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -156,10 +160,8 @@ public class ImageFilter {
         int newB = 0;
         int[] pixels = new int[width * height];
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-        for (int i = 0; i < height; i++)
-        {
-            for (int k = 0; k < width; k++)
-            {
+        for (int i = 0; i < height; i++) {
+            for (int k = 0; k < width; k++) {
                 pixColor = pixels[width * i + k];
                 pixR = Color.red(pixColor);
                 pixG = Color.green(pixColor);
@@ -187,10 +189,8 @@ public class ImageFilter {
         int width = bitmap.getWidth();
 
         // scan through every pixel
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 // get one pixel
                 pixelColor = bitmap.getPixel(x, y);
                 // saving alpha channel
@@ -208,78 +208,89 @@ public class ImageFilter {
         return bmOut;
     }
 
-public static Bitmap applySnowEffect(Bitmap source) {
-    // get image size
-    int width = source.getWidth();
-    int height = source.getHeight();
-    int[] pixels = new int[width * height];
-    // get pixel array from source
-    source.getPixels(pixels, 0, width, 0, 0, width, height);
-    // random object
-    Random random = new Random();
+    public static Bitmap applySnowEffect(Bitmap source) {
+        // get image size
+        int width = source.getWidth();
+        int height = source.getHeight();
+        int[] pixels = new int[width * height];
+        // get pixel array from source
+        source.getPixels(pixels, 0, width, 0, 0, width, height);
+        // random object
+        Random random = new Random();
 
-    int R, G, B, index = 0, thresHold = 50;
-    // iteration through pixels
-    for(int y = 0; y < height; ++y) {
-        for(int x = 0; x < width; ++x) {
-            // get current index in 2D-matrix
-            index = y * width + x;
-            // get color
-            R = Color.red(pixels[index]);
-            G = Color.green(pixels[index]);
-            B = Color.blue(pixels[index]);
-            // generate threshold
-            thresHold = random.nextInt(255);
-            if(R > thresHold && G > thresHold && B > thresHold) {
-                pixels[index] = Color.rgb(255, 255, 255);
+        int R, G, B, index = 0, thresHold = 50;
+        // iteration through pixels
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                // get current index in 2D-matrix
+                index = y * width + x;
+                // get color
+                R = Color.red(pixels[index]);
+                G = Color.green(pixels[index]);
+                B = Color.blue(pixels[index]);
+                // generate threshold
+                thresHold = random.nextInt(255);
+                if (R > thresHold && G > thresHold && B > thresHold) {
+                    pixels[index] = Color.rgb(255, 255, 255);
+                }
             }
         }
+        // output bitmap
+        Bitmap bmOut = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        bmOut.setPixels(pixels, 0, width, 0, 0, width, height);
+        return bmOut;
     }
-    // output bitmap
-    Bitmap bmOut = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-    bmOut.setPixels(pixels, 0, width, 0, 0, width, height);
-    return bmOut;
-}
-public static Bitmap changeToBrightness(Bitmap src, int value) {
-    // image size
-    int width = src.getWidth();
-    int height = src.getHeight();
-    // create output bitmap
-    Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
-    // color information
-    int A, R, G, B;
-    int pixel;
 
-    // scan through all pixels
-    for(int x = 0; x < width; ++x) {
-        for(int y = 0; y < height; ++y) {
-            // get pixel color
-            pixel = src.getPixel(x, y);
-            A = Color.alpha(pixel);
-            R = Color.red(pixel);
-            G = Color.green(pixel);
-            B = Color.blue(pixel);
+    public static Bitmap changeToBrightness(Bitmap src, int value) {
+        // image size
+        int width = src.getWidth();
+        int height = src.getHeight();
+        // create output bitmap
+        Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
+        // color information
+        int A, R, G, B;
+        int pixel;
 
-            // increase/decrease each channel
-            R += value;
-            if(R > 255) { R = 255; }
-            else if(R < 0) { R = 0; }
+        // scan through all pixels
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                // get pixel color
+                pixel = src.getPixel(x, y);
+                A = Color.alpha(pixel);
+                R = Color.red(pixel);
+                G = Color.green(pixel);
+                B = Color.blue(pixel);
 
-            G += value;
-            if(G > 255) { G = 255; }
-            else if(G < 0) { G = 0; }
+                // increase/decrease each channel
+                R += value;
+                if (R > 255) {
+                    R = 255;
+                } else if (R < 0) {
+                    R = 0;
+                }
 
-            B += value;
-            if(B > 255) { B = 255; }
-            else if(B < 0) { B = 0; }
+                G += value;
+                if (G > 255) {
+                    G = 255;
+                } else if (G < 0) {
+                    G = 0;
+                }
 
-            // apply new pixel color to output bitmap
-            bmOut.setPixel(x, y, Color.argb(A, R, G, B));
+                B += value;
+                if (B > 255) {
+                    B = 255;
+                } else if (B < 0) {
+                    B = 0;
+                }
+
+                // apply new pixel color to output bitmap
+                bmOut.setPixel(x, y, Color.argb(A, R, G, B));
+            }
         }
+        // return final image
+        return bmOut;
     }
-    // return final image
-    return bmOut;
-    }
+
     private static Bitmap changeToRelief(Bitmap bitmap, int value) {
 
         int width = bitmap.getWidth();
@@ -290,8 +301,8 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
 
         int index = 0;
         // iteration through pixels
-        for(int y = 0; y < height; ++y) {
-            for(int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
                 // get current index in 2D-matrix
                 index = y * width + x;
                 // AND
@@ -303,6 +314,7 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
         returnBitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         return returnBitmap;
     }
+
     public static Bitmap changeToContrast(Bitmap src, double value) {
         // image size
         int width = src.getWidth();
@@ -316,26 +328,35 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
         double contrast = Math.pow((100 + value) / 100, 2);
 
         // scan through all pixels
-        for(int x = 0; x < width; ++x) {
-            for(int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
                 // get pixel color
                 pixel = src.getPixel(x, y);
                 A = Color.alpha(pixel);
                 // apply filter contrast for every channel R, G, B
                 R = Color.red(pixel);
-                R = (int)(((((R / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if(R < 0) { R = 0; }
-                else if(R > 255) { R = 255; }
+                R = (int) (((((R / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                if (R < 0) {
+                    R = 0;
+                } else if (R > 255) {
+                    R = 255;
+                }
 
                 G = Color.red(pixel);
-                G = (int)(((((G / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if(G < 0) { G = 0; }
-                else if(G > 255) { G = 255; }
+                G = (int) (((((G / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                if (G < 0) {
+                    G = 0;
+                } else if (G > 255) {
+                    G = 255;
+                }
 
                 B = Color.red(pixel);
-                B = (int)(((((B / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if(B < 0) { B = 0; }
-                else if(B > 255) { B = 255; }
+                B = (int) (((((B / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                if (B < 0) {
+                    B = 0;
+                } else if (B > 255) {
+                    B = 255;
+                }
 
                 // set new pixel color to output bitmap
                 bmOut.setPixel(x, y, Color.argb(A, R, G, B));
@@ -345,6 +366,7 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
         // return final image
         return bmOut;
     }
+
     private static Bitmap changeToGray(Bitmap bitmap) {
         int width, height;
         width = bitmap.getWidth();
@@ -365,6 +387,7 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
 
         return grayBitmap;
     }
+
     public static Bitmap changeToShading(Bitmap source, int shadingColor) {
         // get image size
         int width = source.getWidth();
@@ -375,8 +398,8 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
 
         int index = 0;
         // iteration through pixels
-        for(int y = 0; y < height; ++y) {
-            for(int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
                 // get current index in 2D-matrix
                 index = y * width + x;
                 // AND
@@ -390,36 +413,6 @@ public static Bitmap changeToBrightness(Bitmap src, int value) {
     }
 
     public static Bitmap blurImage(RenderScript renderScript, Bitmap bmp, float r) {
-
-        //Radius range (0 < r <= 25)
-        /*if(r <= 0){
-            r = 0.1f;
-        }else if(r > 25){
-            r = 25.0f;
-        }
-        Bitmap bmp_rescale = Bitmap.createScaledBitmap(bmp,
-                (int) (bmp.getWidth() *0.05) ,
-                (int) (bmp.getHeight() *0.05), true
-        );
-
-        Bitmap bitmap = Bitmap.createBitmap(
-                bmp_rescale.getWidth(), bmp_rescale.getHeight(),
-                Bitmap.Config.ARGB_8888);
-
-
-        Allocation blurInput = Allocation.createFromBitmap(renderScript, bmp_rescale);
-        Allocation blurOutput = Allocation.createFromBitmap(renderScript, bitmap);
-
-        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(renderScript,
-                Element.U8_4(renderScript));
-        blur.setInput(blurInput);
-        blur.setRadius(r);
-        blur.forEach(blurOutput);
-
-        blurOutput.copyTo(bitmap);
-        //renderScript.destroy();
-
-        return bitmap;*/
         if(r <= 0){
             r = 0.1f;
         }else if(r > 25){
