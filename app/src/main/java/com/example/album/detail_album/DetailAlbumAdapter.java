@@ -32,6 +32,7 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
     private OnClickListener listener;
 
     private boolean allSelectedFlags;
+    private List<Integer> selectedItems = new ArrayList<Integer>();
 
     public void setCurrentState(int currentState) {
         this.currentState = currentState;
@@ -45,7 +46,6 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
     }
     Context context;
     List<Image> images;
-    private final List<CheckBox> checkBoxes = new ArrayList<>();
 
     public DetailAlbumAdapter(OnClickListener listener, List<Image> images) {
         this.listener = listener;
@@ -94,7 +94,9 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
         else{
             holder.checkBox.setVisibility(View.GONE);
         }
-        checkBoxes.add(holder.checkBox);
+        if(selectedItems.contains((holder.getAdapterPosition()))){
+            holder.checkBox.setChecked(true);
+        }
         holder.imageView.setOnClickListener(v -> listener.OnItemClick(holder, position));
         holder.imageView.setOnLongClickListener(v -> {
             listener.OnItemLongClick(holder);
@@ -129,26 +131,26 @@ public class DetailAlbumAdapter extends RecyclerView.Adapter<DetailAlbumAdapter.
     }
 
     public void setCheckBoxesVisible(){
-        for(int i =0 ;i<checkBoxes.size(); i++){
-            checkBoxes.get(i).setVisibility(View.VISIBLE);
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 
     public void setCheckBoxesInvisible(){
-        for(int i =0 ;i<checkBoxes.size(); i++){
-            checkBoxes.get(i).setVisibility(View.GONE);
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 
     public void selectAll(){
-        for(int i =0 ;i<checkBoxes.size(); i++){
-            checkBoxes.get(i).setChecked(true);
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 
     public void unSelectAll(){
-        for(int i =0 ;i<checkBoxes.size(); i++){
-            checkBoxes.get(i).setChecked(false);
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 }

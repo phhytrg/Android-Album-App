@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -61,7 +60,6 @@ import java.io.OutputStream;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -182,8 +180,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     navigationBar.setVisibility(View.GONE);
                 }
                 if(id == R.id.camera){
-//                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-//                    startActivity(intent);
                     startCamera();
                 }
                 if(id == R.id.thisDayFragment){
@@ -204,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                             .build().show();
 
                 }
+                Log.d(TAG, "onMenuItemSelected: 1");
                 return false;
             }
         });
@@ -457,11 +454,38 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         return imageUri;
     }
 
-    private void startCamera(){
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        takePicture.launch(cameraIntent);
 
+    private void startCamera(){
+//        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//        takePicture.launch(cameraIntent);
+        Thread newThread = new Thread(backgroundTask);
+        newThread.start();
+        while(myResult != null){
+            if(myResult == Activity.RESULT_OK){
+                Image newImage = imagesViewModel.getImages().getValue().get(0);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("image", newImage);
+                navController.navigate(R.id.DetailImage, bundle);
+                myResult = null;
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    private Integer myResult = null;
+
+    private final Runnable backgroundTask = new Runnable() {
+        @Override
+        public void run() {
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            takePicture.launch(cameraIntent);
+        }
+    };
+
     ActivityResultLauncher<Intent> takePicture
             = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -470,66 +494,24 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     if (result.getData() != null) {
                         bmp = (Bitmap) result.getData().getExtras().get("data");
                         try {
+                            Log.d(TAG, "MainActivity: SaveImage");
                             Uri uri = ImageStorageHandler.saveImage(this, bmp,"Camera");
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            String[]projection = new String[]{
-                                    MediaStore.Images.ImageColumns._ID,
-                                    MediaStore.Images.ImageColumns.DATA,
-                                    MediaStore.Images.ImageColumns.ORIENTATION,
-                                    MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-                                    MediaStore.Images.ImageColumns.BUCKET_ID,
-                                    MediaStore.Images.ImageColumns.MIME_TYPE ,
-                                    MediaStore.Images.ImageColumns.DATE_MODIFIED,
-                                    MediaStore.Images.ImageColumns.WIDTH,
-                                    MediaStore.Images.ImageColumns.HEIGHT,
-                                    MediaStore.Images.ImageColumns.DESCRIPTION,
-                                    MediaStore.Images.ImageColumns.DISPLAY_NAME
-                            };
-                            Cursor cursor = this.getContentResolver().query(uri, projection, null, null, null);
-                            Image newImage = new Image();
-                            if(cursor.moveToFirst()){
-                                long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
-                                String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
-                                long date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))*1000L;
-                                int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH));
-                                int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT));
-                                String bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
-                                String description = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DESCRIPTION));
 
-                                LocalDateTime localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDateTime();
-                                newImage.setId(id);
-                                newImage.setDescription(description);
-                                newImage.setName(name);
-                                newImage.setDate(localDate);
-                                newImage.setBucketName(bucketName);
-                                newImage.setImageUri(Uri.fromFile(new File(path)));
-                                newImage.setWidth(width);
-                                newImage.setHeight(height);
-                            }
-//                        Image newImage = imagesViewModel.getImages().getValue().get(0);
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("image", newImage);
-                            navController.navigate(R.id.DetailImage, bundle);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
-
                     }
                     else{
                         throw new IllegalStateException("Can not get image returned by camera :)");
                     }
                 }
+                myResult = result.getResultCode();
             });
 
     public ActivityResultLauncher<IntentSenderRequest> deleteImage
             = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(),
             result -> {
-
+                //Nothing to do
             });
 
     @Override

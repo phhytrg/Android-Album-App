@@ -18,11 +18,8 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.example.album.R;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -34,11 +31,11 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<Integer> itemsSelected = new ArrayList<>();
     private boolean allSelectedFlags = false;
-    private TreeMap<LocalDateTime, List<CheckBox>> mapCheckboxes = new TreeMap<>();
 
-    public TreeMap<LocalDateTime, List<CheckBox>> getMapCheckBoxes() {
-        return mapCheckboxes;
-    }
+//    private TreeMap<LocalDateTime, List<CheckBox>> mapCheckboxes = new TreeMap<>();
+//    public TreeMap<LocalDateTime, List<CheckBox>> getMapCheckBoxes() {
+//        return mapCheckboxes;
+//    }
 
     public void setCurrentState(int currentState) {
         this.currentState = currentState;
@@ -55,6 +52,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public List<ListItem> getItems() {
         return items;
     }
+
 
     private List<ListItem> items;
     private AdapterCallback listener;
@@ -101,8 +99,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 viewHolder.headerText.setText(DateUtils.formatDate(header.getDate()));
 
                 viewHolder.dateTime = header.getDate();
-                List<CheckBox> checkBoxes = mapCheckboxes.computeIfAbsent(viewHolder.dateTime.truncatedTo(ChronoUnit.DAYS), k -> new ArrayList<>());
-                checkBoxes.add(viewHolder.checkBox);
+//                List<CheckBox> checkBoxes = mapCheckboxes.computeIfAbsent(viewHolder.dateTime.truncatedTo(ChronoUnit.DAYS), k -> new ArrayList<>());
+//                checkBoxes.add(viewHolder.checkBox);
 
                 if(currentState == PhotosFragment.CHANGED_MODE){
                     viewHolder.checkBox.setVisibility(View.VISIBLE);
@@ -144,9 +142,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 viewHolder.checkBox.setOnClickListener(v -> listener.OnCheckBoxClick(viewHolder));
 
-
-                List<CheckBox> checkBoxes = mapCheckboxes.computeIfAbsent(viewHolder.dateTime.truncatedTo(ChronoUnit.DAYS), k -> new ArrayList<>());
-                checkBoxes.add(viewHolder.checkBox);
+//                List<CheckBox> checkBoxes = mapCheckboxes.computeIfAbsent(viewHolder.dateTime.truncatedTo(ChronoUnit.DAYS), k -> new ArrayList<>());
+//                checkBoxes.add(viewHolder.checkBox);
 
                 if(currentState == PhotosFragment.CHANGED_MODE){
                     viewHolder.checkBox.setVisibility(View.VISIBLE);
@@ -161,6 +158,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+
     @Override
     public int getItemCount() {
         return items.size();
@@ -172,35 +170,26 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setCheckBoxesVisible(){
-        for(Map.Entry<LocalDateTime, List<CheckBox>> entry: mapCheckboxes.entrySet()){
-            for(CheckBox checkBox: entry.getValue()){
-                checkBox.setVisibility(View.VISIBLE);
-            }
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 
     public void setCheckBoxesInvisible(){
-        for(Map.Entry<LocalDateTime, List<CheckBox>> entry: mapCheckboxes.entrySet()){
-            for(CheckBox checkBox: entry.getValue()){
-                checkBox.setVisibility(View.GONE);
-            }
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 
     public void selectAll(){
-        for(Map.Entry<LocalDateTime, List<CheckBox>> entry: mapCheckboxes.entrySet()){
-            for(CheckBox checkBox: entry.getValue()){
-                checkBox.setChecked(true);
-
-            }
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 
     public void unSelectAll(){
-        for(Map.Entry<LocalDateTime, List<CheckBox>> entry: mapCheckboxes.entrySet()){
-            for(CheckBox checkBox: entry.getValue()){
-                checkBox.setChecked(false);
-            }
+        for(int i =0 ;i < getItemCount(); i++){
+            notifyItemChanged(i);
         }
     }
 
@@ -208,13 +197,13 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.allSelectedFlags = allSelectedFlags;
     }
 
-    public List<CheckBox> getCheckBoxes(){
-        List<CheckBox> checkBoxes = new ArrayList<>();
-        for(Map.Entry<LocalDateTime, List<CheckBox>> entry: mapCheckboxes.entrySet()){
-            checkBoxes.addAll(entry.getValue());
-        }
-        return checkBoxes;
-    }
+//    public List<CheckBox> getCheckBoxes(){
+//        List<CheckBox> checkBoxes = new ArrayList<>();
+//        for(Map.Entry<LocalDateTime, List<CheckBox>> entry: mapCheckboxes.entrySet()){
+//            checkBoxes.addAll(entry.getValue());
+//        }
+//        return checkBoxes;
+//    }
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder{
         //TODO

@@ -46,7 +46,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class PhotosFragment extends Fragment {
     List<ListItem> listItems;
@@ -77,7 +76,6 @@ public class PhotosFragment extends Fragment {
 
         navController = navHostFragment == null ? null : navHostFragment.getNavController();
         imagesViewModel = new ViewModelProvider(requireActivity()).get(ImagesViewModel.class);
-
         actionBar = ((AppCompatActivity)requireActivity()).getSupportActionBar();
         navigationBar = requireActivity().findViewById(R.id.navigation_bar);
         navigationBar.setVisibility(View.VISIBLE);
@@ -136,18 +134,18 @@ public class PhotosFragment extends Fragment {
                     countItemTextView.setText(notification);
                     selectAllCheckBox.setChecked(adapter.getItemsSelected().size() >= imagesViewModel.getImages().getValue().size());
 
-                    int count = 0;
-                    for(CheckBox i: adapter.getMapCheckBoxes()
-                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
-                            .stream().skip(1).collect(Collectors.toList())){
-                        if(i.isChecked()){
-                            count++;
-                        }
-                    }
-                    adapter.getMapCheckBoxes()
-                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
-                            .get(0)
-                            .setChecked(count >= images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size());
+//                    int count = 0;
+//                    for(CheckBox i: adapter.getMapCheckBoxes()
+//                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
+//                            .stream().skip(1).collect(Collectors.toList())){
+//                        if(i.isChecked()){
+//                            count++;
+//                        }
+//                    }
+//                    adapter.getMapCheckBoxes()
+//                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
+//                            .get(0)
+//                            .setChecked(count >= images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size());
                 }
             }
 
@@ -194,30 +192,34 @@ public class PhotosFragment extends Fragment {
                 countItemTextView.setText(notification);
                 selectAllCheckBox.setChecked(adapter.getItemsSelected().size() >= imagesViewModel.getImages().getValue().size());
                 int count = 0;
-                int a = adapter.getMapCheckBoxes()
-                        .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size();
-                for(CheckBox i: adapter.getMapCheckBoxes()
-                        .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
-                        .stream().skip(1).collect(Collectors.toList())){
-                    if(i.isChecked()){
-                        count++;
-                    }
-                }
-                adapter.getMapCheckBoxes()
-                        .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
-                        .get(0)
-                        .setChecked(count >= images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size());
+//                adapter.getMapCheckBoxes()
+//                        .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
+//                        .get(0)
+//                        .setChecked(count >= images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size());
             }
 
             @Override
             public void OnHeaderCheckBoxClick(PhotosAdapter.HeaderViewHolder holder) {
+                int count = images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size();
                 if(holder.checkBox.isChecked()){
-                    for(CheckBox checkBox: adapter.getMapCheckBoxes().get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))){
-                        checkBox.setChecked(true);
+//                    for(CheckBox checkBox: adapter.getMapCheckBoxes().get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))){
+//                        checkBox.setChecked(true);
+//                    }
+                    for(int i = 0; i < count; i++){
+                        if(!adapter.getItemsSelected().contains(holder.getAdapterPosition()+i+1)){
+                            adapter.getItemsSelected().add(holder.getAdapterPosition() + i + 1);
+                            adapter.notifyItemChanged(holder.getAdapterPosition() + i + 1);
+                        }
                     }
                 }else{
-                    for(CheckBox checkBox: adapter.getMapCheckBoxes().get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))){
-                        checkBox.setChecked(false);
+//                    for(CheckBox checkBox: adapter.getMapCheckBoxes().get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))){
+//                        checkBox.setChecked(false);
+//                    }
+                    for(int i = 0; i < count; i++){
+                        if(adapter.getItemsSelected().contains(holder.getAdapterPosition()+i+1)){
+                            adapter.getItemsSelected().remove((Object)(holder.getAdapterPosition() + i + 1));
+                            adapter.notifyItemChanged(holder.getAdapterPosition() + i + 1);
+                        }
                     }
                 }
                 String syntax = (adapter.getItemsSelected().size() == 1)
@@ -317,6 +319,7 @@ public class PhotosFragment extends Fragment {
             currentState = UNCHANGED_MODE;
             adapter.setCurrentState(UNCHANGED_MODE);
             adapter.setCheckBoxesInvisible();
+            adapter.getItemsSelected().clear();
             for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
                 navigationBar.getMenu().getItem(i).setEnabled(true);
             }

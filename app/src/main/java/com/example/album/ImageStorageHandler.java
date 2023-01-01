@@ -19,7 +19,6 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.widget.Toast;
 
 import androidx.activity.result.IntentSenderRequest;
 import androidx.annotation.NonNull;
@@ -69,6 +68,7 @@ public class ImageStorageHandler {
         return bitmap;
     }
 
+    @NonNull
     private static Bitmap RGB565toARGB888(Bitmap img) throws Exception {
         int numPixels = img.getWidth() * img.getHeight();
         int[] pixels = new int[numPixels];
@@ -130,36 +130,7 @@ public class ImageStorageHandler {
         return imageUri;
     }
 
-    public static String saveImage(Context mContext, Bitmap image) {
-        String savedImagePath = null;
-
-        String timeStamp = Long.toString(System.currentTimeMillis());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                + "/Album/Camera");
-        boolean success = true;
-        if (!storageDir.exists()) {
-            success = storageDir.mkdirs();
-        }
-        if (success) {
-            File imageFile = new File(storageDir, imageFileName);
-            savedImagePath = imageFile.getAbsolutePath();
-            try {
-                OutputStream fOut = new FileOutputStream(imageFile);
-                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-                fOut.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // Add the image to the system gallery
-            galleryAddPic(mContext, savedImagePath);
-            Toast.makeText(mContext, "IMAGE SAVED", Toast.LENGTH_LONG).show();
-        }
-        return savedImagePath;
-    }
-
-    private static void galleryAddPic(Context mContext, String imagePath) {
+    private static void galleryAddPic(@NonNull Context mContext, String imagePath) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(imagePath);
         Uri contentUri = Uri.fromFile(f);
@@ -167,7 +138,7 @@ public class ImageStorageHandler {
         mContext.sendBroadcast(mediaScanIntent);
     }
 
-    public static Uri getContentUri(Context context, Uri imageUri){
+    public static Uri getContentUri(@NonNull Context context, @NonNull Uri imageUri){
         String[] projections = {MediaStore.MediaColumns._ID};
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,

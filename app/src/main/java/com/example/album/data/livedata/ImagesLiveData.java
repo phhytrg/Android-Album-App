@@ -96,4 +96,8 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
         int res = context.getContentResolver().update(uri, values, null, null);
         return res != 0;
     }
+
+    public void forcingUpdate(){
+        setValue(getValue());
+    }
 }
