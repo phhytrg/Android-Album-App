@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.renderscript.RenderScript;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -42,7 +43,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.album.ImageUri;
+import com.example.album.ImageStorageHandler;
 import com.example.album.MainActivity;
 import com.example.album.R;
 import com.example.album.data.Image;
@@ -323,7 +324,7 @@ public class EditImageFragment extends Fragment{
 
         private void onDonePressed(){
             try {
-                ImageUri.saveImage(requireContext(), bitmap, "Edit");
+                ImageStorageHandler.saveImage(requireContext(), bitmap, "Edit");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -489,6 +490,7 @@ public class EditImageFragment extends Fragment{
             final SeekBar sk_filter_bright = dialog.findViewById(R.id.filter_bright);
             final SeekBar sk_filter_corner = dialog.findViewById(R.id.filter_corner);
             final SeekBar sk_filter_tint = dialog.findViewById(R.id.filter_tint);
+            final SeekBar sk_filter_blur = dialog.findViewById(R.id.filter_blur);
 
             sk_filter_bright.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 Bitmap bmlocal;int stop;
@@ -561,6 +563,31 @@ public class EditImageFragment extends Fragment{
 
                 }
             });
+
+            RenderScript renderScript = RenderScript.create(requireContext());
+            sk_filter_blur.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                Bitmap bmlocal; int stop;
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    bitmap = ImageFilter.blurImage(renderScript, bitmap,  stop);
+                    bmscaled[0] = bitmapResize(bitmap);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    bmlocal = ImageFilter.blurImage(renderScript, bmscaled[0],  progress);
+                    imageView.setImageBitmap(bmlocal);
+                    stop =  progress;
+
+
+                }
+            });
+
             WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
             layoutParams.copyFrom(dialog.getWindow().getAttributes());
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;

@@ -90,6 +90,7 @@
     <string name="confirm_delete">Bạn có chắc chắn muốn xóa những album này?
     Những hình ảnh trong album sẽ không bị xóa theo album</string>
     <string name="add_to_album">Thêm vào album</string>
+    <string name="add_to_Fav">Thêm vào Mục ưa thích</string>
     <string name="undo">Hoàn tác</string>
     <string name="redo">Làm lại</string>
     <string name="eraser">Xóa</string>
@@ -126,5 +127,8 @@
 
     <string name="number_selected_items">Đã chọn %d %s</string>
     <string name="pick_done">Xong</string>
+
+    <string name="on_this_day">Ngày này năm xưa</string>
+    <string name="blur">Làm mờ</string>
 
 </resources>

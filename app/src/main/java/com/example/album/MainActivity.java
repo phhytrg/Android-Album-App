@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -68,8 +69,13 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import omari.hamza.storyview.StoryView;
+import omari.hamza.storyview.model.MyStory;
+import omari.hamza.storyview.utils.StoryViewHeaderInfo;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -247,10 +253,77 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 //                    startActivity(intent);
                     startCamera();
                 }
+                if(id == R.id.thisDayFragment){
+                    try {
+                        MyStory currentStory = new MyStory(
+                                "dummy-link",
+                                SimpleDateFormat.getDateInstance().parse("20-10-2019 10:00:00"),
+                                null
+                                );
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Uri path = Uri.parse("android.resource://"+ getPackageName() + "/" + R.drawable.photo10);
+                    new StoryView.Builder(getSupportFragmentManager())
+                            .setStoriesList(onThisDayImages().first)
+                            .setHeadingInfoList(onThisDayImages().second)
+                            .setStoryDuration(5000)
+                            .build().show();
+
+                }
+                Log.d(TAG, "onMenuItemSelected: 1");
                 return false;
             }
         });
         app_bar.setNavigationOnClickListener(v -> navController.navigateUp());
+    }
+
+    private Pair<ArrayList<MyStory>,ArrayList<StoryViewHeaderInfo>> onThisDayImages(){
+        Calendar.getInstance().getTime();
+        LocalDateTime current = Calendar
+                .getInstance()
+                .getTime()
+                .toInstant()
+                .atZone(ZoneId.systemDefault()).toLocalDateTime();
+        List<Image> images = imagesViewModel.getImages().getValue();
+
+        ArrayList<MyStory> myStories = new ArrayList<>();
+        ArrayList<StoryViewHeaderInfo> headerInfoArrayList = new ArrayList<>();
+
+        for (int i = 0; i < images.size(); i++){
+//            if(images.get(i).getDate().getMonth().equals(current.getMonth())
+//            && images.get(i).getDate().getDayOfMonth() == current.getDayOfMonth()){
+//                MyStory myStory = new MyStory(
+//                        images.get(i).getImageUri().toString(),
+//                        Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
+//                        null
+//                );
+//                myStories.add(myStory);
+//            }
+            MyStory myStory = new MyStory(
+                    images.get(i).getImageUri().toString(),
+                    Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
+                    null
+            );
+            myStories.add(myStory);
+
+            headerInfoArrayList.add(new StoryViewHeaderInfo(
+                    DateUtils.formatDate(images.get(i).getDate()),
+                    null,
+                    null
+            ));
+
+        }
+        if(myStories.isEmpty()){
+            Uri path = Uri.parse("android.resource://"+ this.getPackageName() + "/" + R.drawable.photo10);
+            MyStory myStory = new MyStory(
+                    path.toString(),
+                    null,
+                    null
+            );
+            myStories.add(myStory);
+        }
+        return new Pair<>(myStories, headerInfoArrayList);
     }
 
     private void setUpNavigationActionBar(){
@@ -466,58 +539,28 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     if (result.getData() != null) {
                         bmp = (Bitmap) result.getData().getExtras().get("data");
                         try {
-                            Uri uri = ImageUri.saveImage(this, bmp,"Camera");
-                            try {
-                                Thread.sleep(4000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            String[]projection = new String[]{
-                                    MediaStore.Images.ImageColumns._ID,
-                                    MediaStore.Images.ImageColumns.DATA,
-                                    MediaStore.Images.ImageColumns.ORIENTATION,
-                                    MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-                                    MediaStore.Images.ImageColumns.BUCKET_ID,
-                                    MediaStore.Images.ImageColumns.MIME_TYPE ,
-                                    MediaStore.Images.ImageColumns.DATE_MODIFIED,
-                                    MediaStore.Images.ImageColumns.WIDTH,
-                                    MediaStore.Images.ImageColumns.HEIGHT,
-                                    MediaStore.Images.ImageColumns.DESCRIPTION,
-                                    MediaStore.Images.ImageColumns.DISPLAY_NAME
-                            };
-                            Cursor cursor = this.getContentResolver().query(uri, projection, null, null, null);
-                            Image newImage = new Image();
-                            if(cursor.moveToFirst()){
-                                long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
-                                String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                                String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
-                                long date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))*1000L;
-                                int width = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH));
-                                int height = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT));
-                                String bucketName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
-                                String description = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DESCRIPTION));
-
-                                LocalDateTime localDate = Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDateTime();
-                                newImage.setId(id);
-                                newImage.setDescription(description);
-                                newImage.setName(name);
-                                newImage.setDate(localDate);
-                                newImage.setBucketName(bucketName);
-                                newImage.setImageUri(Uri.fromFile(new File(path)));
-                                newImage.setWidth(width);
-                                newImage.setHeight(height);
-                            }
+                            ImageUri.saveImage(this, bmp, "Camera");
+                            Image image = imagesViewModel.getImages().getValue().get(0);
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable("image", newImage);
+                            bundle.putParcelable("image", image);
                             navController.navigate(R.id.DetailImage, bundle);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
+
                     }
                     else{
                         throw new IllegalStateException("Can not get image returned by camera :)");
                     }
                 }
+
+                myResult = result.getResultCode();
+            });
+
+    public ActivityResultLauncher<IntentSenderRequest> deleteImage
+            = registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(),
+            result -> {
+                //Nothing to do
             });
 
     @Override

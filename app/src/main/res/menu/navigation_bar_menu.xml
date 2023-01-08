@@ -14,5 +14,4 @@
         app:showAsAction="always"
         android:id="@+id/privacyFragment"
         tools:ignore="AlwaysShowAction" />
-
 </menu>

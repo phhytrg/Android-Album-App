@@ -5,6 +5,8 @@
         android:title="@string/details" />
     <item android:id="@+id/add"
         android:title="@string/add_to_album"/>
+    <item android:id="@+id/add_to_Fav"
+        android:title="@string/add_to_Fav"/>
     <item android:id="@+id/set"
         android:title="@string/set_as_wallpaper"/>
     <item android:id="@+id/rename"

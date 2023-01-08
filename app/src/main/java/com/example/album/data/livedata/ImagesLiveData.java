@@ -50,7 +50,7 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
                 MediaStore.Images.ImageColumns.HEIGHT,
                 MediaStore.Images.ImageColumns.DESCRIPTION,
                 MediaStore.Images.ImageColumns.DISPLAY_NAME,
-                MediaStore.Images.ImageColumns.SIZE
+                MediaStore.Images.ImageColumns.SIZE,
         };
 
         Cursor cursor = context.getContentResolver().query(
@@ -95,5 +95,9 @@ public class ImagesLiveData extends ContentProviderLiveData<List<Image>> {
         Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
         int res = context.getContentResolver().update(uri, values, null, null);
         return res != 0;
+    }
+
+    public void forcingUpdate(){
+        setValue(getValue());
     }
 }
