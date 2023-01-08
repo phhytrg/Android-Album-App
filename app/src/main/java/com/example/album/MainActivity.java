@@ -5,33 +5,30 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcel;
 import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -45,6 +42,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
@@ -55,6 +53,7 @@ import androidx.preference.PreferenceManager;
 import com.example.album.album.AlbumFragmentDirections;
 import com.example.album.data.Image;
 import com.example.album.data.ImagesViewModel;
+import com.example.album.gallery.DateUtils;
 import com.example.album.gallery.PhotosFragmentDirections;
 import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ToggleButtonGroupTableLayout;
@@ -65,11 +64,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -160,9 +159,27 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
             }
 
-            Intent notificationIntent = new Intent(this, NotificationActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+//            Intent notificationIntent = new Intent(this, NotificationActivity.class);
+//            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP );
+
+            PendingIntent contentIntent;
+
+            contentIntent = new NavDeepLinkBuilder(this)
+                    .setGraph(R.navigation.nav_graph)
+                    .setDestination(R.id.storyViewFragment)
+                    .createPendingIntent();
+
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+//                contentIntent = PendingIntent
+//                        .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
+//
+//            }
+//            else
+//            {
+//                contentIntent = PendingIntent
+//                        .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);;
+//            }
+
             Bitmap bitmap;
             Image image = memories.get(0);
             try {
@@ -254,16 +271,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     startCamera();
                 }
                 if(id == R.id.thisDayFragment){
-                    try {
-                        MyStory currentStory = new MyStory(
-                                "dummy-link",
-                                SimpleDateFormat.getDateInstance().parse("20-10-2019 10:00:00"),
-                                null
-                                );
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    Uri path = Uri.parse("android.resource://"+ getPackageName() + "/" + R.drawable.photo10);
                     new StoryView.Builder(getSupportFragmentManager())
                             .setStoriesList(onThisDayImages().first)
                             .setHeadingInfoList(onThisDayImages().second)
@@ -278,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         app_bar.setNavigationOnClickListener(v -> navController.navigateUp());
     }
 
-    private Pair<ArrayList<MyStory>,ArrayList<StoryViewHeaderInfo>> onThisDayImages(){
+    public Pair<ArrayList<MyStory>,ArrayList<StoryViewHeaderInfo>> onThisDayImages(){
         Calendar.getInstance().getTime();
         LocalDateTime current = Calendar
                 .getInstance()
@@ -291,21 +298,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         ArrayList<StoryViewHeaderInfo> headerInfoArrayList = new ArrayList<>();
 
         for (int i = 0; i < images.size(); i++){
-//            if(images.get(i).getDate().getMonth().equals(current.getMonth())
-//            && images.get(i).getDate().getDayOfMonth() == current.getDayOfMonth()){
-//                MyStory myStory = new MyStory(
-//                        images.get(i).getImageUri().toString(),
-//                        Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
-//                        null
-//                );
-//                myStories.add(myStory);
-//            }
-            MyStory myStory = new MyStory(
-                    images.get(i).getImageUri().toString(),
-                    Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
-                    null
-            );
-            myStories.add(myStory);
+            if(images.get(i).getDate().getMonth().equals(current.getMonth())
+            && images.get(i).getDate().getDayOfMonth() == current.getDayOfMonth()){
+                MyStory myStory = new MyStory(
+                        images.get(i).getImageUri().toString(),
+                        Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
+                        null
+                );
+                myStories.add(myStory);
+            }
 
             headerInfoArrayList.add(new StoryViewHeaderInfo(
                     DateUtils.formatDate(images.get(i).getDate()),
@@ -539,7 +540,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     if (result.getData() != null) {
                         bmp = (Bitmap) result.getData().getExtras().get("data");
                         try {
-                            ImageUri.saveImage(this, bmp, "Camera");
+                            ImageStorageHandler.saveImage(this, bmp, "Camera");
                             Image image = imagesViewModel.getImages().getValue().get(0);
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("image", image);
@@ -553,8 +554,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         throw new IllegalStateException("Can not get image returned by camera :)");
                     }
                 }
-
-                myResult = result.getResultCode();
             });
 
     public ActivityResultLauncher<IntentSenderRequest> deleteImage
