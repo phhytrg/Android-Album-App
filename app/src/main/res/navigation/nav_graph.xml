@@ -97,4 +97,8 @@
             app:destination="@id/DetailImage" >
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/storyViewFragment"
+        android:name="com.example.album.story_view.StoryViewFragment"
+        android:label="StoryViewFragment" />
 </navigation>

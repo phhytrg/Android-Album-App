@@ -42,6 +42,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.NavDirections;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
@@ -63,6 +64,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -157,9 +160,27 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
             }
 
-            Intent notificationIntent = new Intent(this, NotificationActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+//            Intent notificationIntent = new Intent(this, NotificationActivity.class);
+//            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP );
+
+            PendingIntent contentIntent;
+
+            contentIntent = new NavDeepLinkBuilder(this)
+                    .setGraph(R.navigation.nav_graph)
+                    .setDestination(R.id.storyViewFragment)
+                    .createPendingIntent();
+
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+//                contentIntent = PendingIntent
+//                        .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
+//
+//            }
+//            else
+//            {
+//                contentIntent = PendingIntent
+//                        .getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);;
+//            }
+
             Bitmap bitmap;
             Image image = memories.get(0);
             try {
@@ -288,21 +309,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         ArrayList<StoryViewHeaderInfo> headerInfoArrayList = new ArrayList<>();
 
         for (int i = 0; i < images.size(); i++){
-//            if(images.get(i).getDate().getMonth().equals(current.getMonth())
-//            && images.get(i).getDate().getDayOfMonth() == current.getDayOfMonth()){
-//                MyStory myStory = new MyStory(
-//                        images.get(i).getImageUri().toString(),
-//                        Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
-//                        null
-//                );
-//                myStories.add(myStory);
-//            }
-            MyStory myStory = new MyStory(
-                    images.get(i).getImageUri().toString(),
-                    Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
-                    null
-            );
-            myStories.add(myStory);
+            if(images.get(i).getDate().getMonth().equals(current.getMonth())
+            && images.get(i).getDate().getDayOfMonth() == current.getDayOfMonth()){
+                MyStory myStory = new MyStory(
+                        images.get(i).getImageUri().toString(),
+                        Date.from(images.get(i).getDate().atZone(ZoneId.systemDefault()).toInstant()),
+                        null
+                );
+                myStories.add(myStory);
+            }
 
             headerInfoArrayList.add(new StoryViewHeaderInfo(
                     DateUtils.formatDate(images.get(i).getDate()),
@@ -523,35 +538,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void startCamera(){
-//        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//        takePicture.launch(cameraIntent);
-        Thread newThread = new Thread(backgroundTask);
-        newThread.start();
-        while(myResult != null){
-            if(myResult == Activity.RESULT_OK){
-                Image newImage = imagesViewModel.getImages().getValue().get(0);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("image", newImage);
-                navController.navigate(R.id.DetailImage, bundle);
-                myResult = null;
-            }
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        takePicture.launch(cameraIntent);
+
     }
-
-    private Integer myResult = null;
-
-    private final Runnable backgroundTask = new Runnable() {
-        @Override
-        public void run() {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            takePicture.launch(cameraIntent);
-        }
-    };
 
     ActivityResultLauncher<Intent> takePicture
             = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -575,6 +565,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         throw new IllegalStateException("Can not get image returned by camera :)");
                     }
                 }
+
                 myResult = result.getResultCode();
             });
 
