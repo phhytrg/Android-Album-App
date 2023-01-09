@@ -64,6 +64,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -296,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         app_bar.setNavigationOnClickListener(v -> navController.navigateUp());
     }
 
-    private Pair<ArrayList<MyStory>,ArrayList<StoryViewHeaderInfo>> onThisDayImages(){
+    public Pair<ArrayList<MyStory>,ArrayList<StoryViewHeaderInfo>> onThisDayImages(){
         Calendar.getInstance().getTime();
         LocalDateTime current = Calendar
                 .getInstance()
@@ -551,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     if (result.getData() != null) {
                         bmp = (Bitmap) result.getData().getExtras().get("data");
                         try {
-                            ImageUri.saveImage(this, bmp, "Camera");
+                            ImageStorageHandler.saveImage(this, bmp, "Camera");
                             Image image = imagesViewModel.getImages().getValue().get(0);
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("image", image);
@@ -566,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     }
                 }
 
-                myResult = result.getResultCode();
+//                myResult = result.getResultCode();
             });
 
     public ActivityResultLauncher<IntentSenderRequest> deleteImage
