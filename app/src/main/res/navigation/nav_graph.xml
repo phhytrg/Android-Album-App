@@ -26,6 +26,9 @@
                 android:name="label"
                 app:argType="string"/>
         </action>
+        <action
+            android:id="@+id/action_AlbumFragment_to_privateLoginFragment"
+            app:destination="@id/privateLoginFragment" />
     </fragment>
     <fragment
         android:id="@+id/DetailAlbumFragment"
@@ -70,6 +73,9 @@
         <action
             android:id="@+id/action_PhotosFragment_to_AlbumFragment"
             app:destination="@id/AlbumFragment" />
+        <action
+            android:id="@+id/action_PhotosFragment_to_privateLoginFragment"
+            app:destination="@id/privateLoginFragment" />
     </fragment>
 
 
@@ -101,4 +107,16 @@
         android:id="@+id/storyViewFragment"
         android:name="com.example.album.story_view.StoryViewFragment"
         android:label="StoryViewFragment" />
+
+    <fragment
+        android:id="@+id/privateLoginFragment"
+        android:name="com.example.album.private_session.PrivateLoginFragment"
+        android:label="Private" >
+        <action
+            android:id="@+id/action_privateLoginFragment_to_PhotosFragment"
+            app:destination="@id/PhotosFragment" />
+        <action
+            android:id="@+id/action_privateLoginFragment_to_AlbumFragment"
+            app:destination="@id/AlbumFragment" />
+    </fragment>
 </navigation>

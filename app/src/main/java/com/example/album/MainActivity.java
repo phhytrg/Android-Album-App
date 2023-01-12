@@ -55,6 +55,7 @@ import com.example.album.data.Image;
 import com.example.album.data.ImagesViewModel;
 import com.example.album.gallery.DateUtils;
 import com.example.album.gallery.PhotosFragmentDirections;
+import com.example.album.private_session.PrivateLoginFragmentDirections;
 import com.example.album.ui.SplitToolbar;
 import com.example.album.ui.ToggleButtonGroupTableLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -64,8 +65,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -274,16 +273,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     startCamera();
                 }
                 if(id == R.id.thisDayFragment){
-                    try {
-                        MyStory currentStory = new MyStory(
-                                "dummy-link",
-                                SimpleDateFormat.getDateInstance().parse("20-10-2019 10:00:00"),
-                                null
-                                );
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    Uri path = Uri.parse("android.resource://"+ getPackageName() + "/" + R.drawable.photo10);
                     new StoryView.Builder(getSupportFragmentManager())
                             .setStoriesList(onThisDayImages().first)
                             .setHeadingInfoList(onThisDayImages().second)
@@ -342,7 +331,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void setUpNavigationActionBar(){
         AppBarConfiguration appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.PhotosFragment,R.id.AlbumFragment).build();
+                new AppBarConfiguration
+                        .Builder(R.id.PhotosFragment,R.id.AlbumFragment, R.id.privateLoginFragment)
+                        .build();
         if(navController!= null) {
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         }
@@ -363,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     } else if (currentItem.getItemId() == R.id.AlbumFragment) {
                         currentItem.setTitle(
                                 getSpannableStringFromMenuItem(currentItem, R.attr.iconColor));
-                    } else if (currentItem.getItemId() == R.id.privacyFragment) {
+                    } else if (currentItem.getItemId() == R.id.privateLoginFragment) {
                         currentItem.setTitle(
                                 getSpannableStringFromMenuItem(currentItem, R.attr.iconColor));
                     }
@@ -384,12 +375,34 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                                 .actionAlbumFragmentToPhotosFragment();
                         navController.navigate(action, setUpSpecificNavOpts(0));
                     }
+                    else if(destinationId == R.id.privateLoginFragment){
+                        NavDirections action = AlbumFragmentDirections
+                                .actionAlbumFragmentToPrivateLoginFragment();
+                        navController.navigate(action, setUpSpecificNavOpts(1));
+                    }
                 }
                 else if(currentId == R.id.PhotosFragment){
                     if(destinationId == R.id.AlbumFragment){
                         NavDirections action = PhotosFragmentDirections
                                 .actionPhotosFragmentToAlbumFragment();
                         navController.navigate(action, setUpSpecificNavOpts(1));
+                    }
+                    else if(destinationId == R.id.privateLoginFragment){
+                        NavDirections action = PhotosFragmentDirections
+                                .actionPhotosFragmentToPrivateLoginFragment();
+                        navController.navigate(action, setUpSpecificNavOpts(1));
+                    }
+                }
+                else if(currentId == R.id.privateLoginFragment){
+                    if(destinationId == R.id.PhotosFragment) {
+                        NavDirections action = PrivateLoginFragmentDirections
+                                .actionPrivateLoginFragmentToPhotosFragment();
+                        navController.navigate(action, setUpSpecificNavOpts(0));
+                    }
+                    else if(destinationId == R.id.AlbumFragment){
+                        NavDirections action = PrivateLoginFragmentDirections
+                                .actionPrivateLoginFragmentToAlbumFragment();
+                        navController.navigate(action, setUpSpecificNavOpts(0));
                     }
                 }
                 return true;
