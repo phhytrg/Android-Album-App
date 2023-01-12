@@ -90,6 +90,15 @@ public class EditImageFragment extends Fragment{
     private float ts_xDown = 0, ts_yDown = 0;
     private RelativeLayout wrapLayout;
 
+    // image sticker
+    ViewGroup scrollStickerView;
+    Integer[] thumbnail_stickers = {R.drawable.sticker_star, R.drawable.sticker_avocado,
+            R.drawable.sticker_bulb, R.drawable.sticker_banana, R.drawable.sticker_duck,
+            R.drawable.sticker_gift, R.drawable.sticker_hpbd, R.drawable.sticker_icecream,
+            R.drawable.sticker_lips, R.drawable.sticker_planet, R.drawable.sticker_sun};
+    ImageView sticker;
+    float xDown = 0, yDown = 0;
+
     EditImageFragment.ImageCropping imageCropping;
     EditImageFragment.ImageEditing imageEditing;
     EditImageFragment.ImagePainting imagePainting;
@@ -139,7 +148,6 @@ public class EditImageFragment extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        app_bar.show();
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -161,6 +169,9 @@ public class EditImageFragment extends Fragment{
         text_output = view.findViewById(R.id.stickerTextview);
         change_font = view.findViewById(R.id.btn_font);
         wrapLayout = (RelativeLayout) view.findViewById(R.id.wrap_photo) ;
+
+        scrollStickerView = (ViewGroup) view.findViewById(R.id.viewgroup);
+        sticker = (ImageView) view.findViewById(R.id.sticker_view);
 
         imageCropping = new ImageCropping();
         imageEditing = new ImageEditing();
@@ -267,9 +278,11 @@ public class EditImageFragment extends Fragment{
         else if(id == R.id.paint){
             imagePainting.switchLayout();
         }
-//        else if(id == R.id.undo){
-//
-//        }
+        else if(id == R.id.stickers){
+            scrollStickerView.getLayoutParams().height = RelativeLayout.LayoutParams.WRAP_CONTENT;;
+            scrollStickerView.requestLayout();
+            imagePainting.addStickers();
+        }
         else if(id == R.id.text_sticker){
             imagePainting.addTextSticker();
         }
@@ -689,6 +702,7 @@ public class EditImageFragment extends Fragment{
                                     newIcon.mutate().setColorFilter(envelope.getColor(), PorterDuff.Mode.SRC_IN);
                                     color.setIcon(newIcon);
                                     imageViewPaint.setColor(envelope.getColor());
+                                    text_output.setTextColor(envelope.getColor());
                                 }
                             })
                     .setNegativeButton(getString(R.string.label_cancel),
@@ -697,6 +711,54 @@ public class EditImageFragment extends Fragment{
                     .attachBrightnessSlideBar(true)  // the default value is true.
                     .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
                     .show();
+        }
+
+        protected void AddSticker(int frameId) {
+//        Drawable selectedLargeSticker = getResources().getDrawable(thumbnail_stickers[frameId], getTheme()); //API-21 or newer
+//        imageSelected.setBackground(selectedLargeImage);
+            sticker.setImageResource(thumbnail_stickers[frameId]);
+            sticker.setVisibility(View.VISIBLE);
+        }
+
+        private void addStickers(){
+            relativeLayout.removeView(v);
+            for (int i = 0; i < thumbnail_stickers.length; i++) {
+                final View singleFrame = getLayoutInflater().inflate(R.layout.sticker_items, null);
+                singleFrame.setId(i);
+                ImageView sticker_thum = (ImageView) singleFrame.findViewById(R.id.icon);
+                sticker_thum.setImageResource(thumbnail_stickers[i]);
+                scrollStickerView.addView(singleFrame);
+                singleFrame.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AddSticker(singleFrame.getId());
+                    }});
+                sticker.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getActionMasked()){
+                            case MotionEvent.ACTION_DOWN:
+                                xDown = event.getX();
+                                yDown = event.getY();
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                float movedX, movedY;
+                                movedX = event.getX();
+                                movedY = event.getY();
+
+                                float distanceX = movedX - xDown;
+                                float distanceY = movedY - yDown;
+
+                                sticker.setX(sticker.getX() + distanceX);
+                                sticker.setY(sticker.getY() + distanceY);
+
+//                            xDown = movedX;
+//                            yDown = movedY;
+                        }
+                        return true;
+                    }
+                });
+            }
         }
 
         private void addTextSticker(){
@@ -771,6 +833,9 @@ public class EditImageFragment extends Fragment{
 
         private void onBackPressed(){
             text_input.setVisibility(View.GONE);
+            text_output.setVisibility(View.GONE);
+            scrollStickerView.getLayoutParams().height = 0;
+            scrollStickerView.requestLayout();
             font_bar.getLayoutParams().height = 0;
             font_bar.requestLayout();
             relativeLayout.removeView(v);
@@ -778,6 +843,8 @@ public class EditImageFragment extends Fragment{
             currentState = CurrentState.EDIT;
         }
         private void onDonePressed(){
+            scrollStickerView.getLayoutParams().height = 0;
+            scrollStickerView.requestLayout();
             text_input.setVisibility(View.GONE);
             font_bar.getLayoutParams().height = 0;
             font_bar.requestLayout();
