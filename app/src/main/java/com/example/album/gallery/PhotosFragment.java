@@ -91,6 +91,16 @@ public class PhotosFragment extends Fragment {
         editor = shared_prefs.edit();
         isLinearLayout = shared_prefs.getBoolean("photosLayout", true);
 
+//        navController.getCurrentBackStackEntry().getSavedStateHandle().getLiveData("delete")
+//                .observe(getViewLifecycleOwner(), result -> {
+//                    LocalDateTime date = ((Image)result).getDate().truncatedTo(ChronoUnit.DAYS);
+//                    List keys = new ArrayList(images.keySet());
+//                    Collections.reverse(keys);
+//                    int index = imagesViewModel.getImages().getValue().indexOf(result) + keys.indexOf(date);
+//                    adapter.notifyItemRemoved( index + 1);
+//                    imagesViewModel.getImages().forcingUpdate();
+//                });
+
         for (LocalDateTime date : images.descendingKeySet()) {
             HeaderItem header = new HeaderItem(date);
             listItems.add(header);
@@ -133,19 +143,6 @@ public class PhotosFragment extends Fragment {
                             : getString(R.string.number_selected_items, adapter.getItemsSelected().size(), syntax);
                     countItemTextView.setText(notification);
                     selectAllCheckBox.setChecked(adapter.getItemsSelected().size() >= imagesViewModel.getImages().getValue().size());
-
-//                    int count = 0;
-//                    for(CheckBox i: adapter.getMapCheckBoxes()
-//                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
-//                            .stream().skip(1).collect(Collectors.toList())){
-//                        if(i.isChecked()){
-//                            count++;
-//                        }
-//                    }
-//                    adapter.getMapCheckBoxes()
-//                            .get(holder.dateTime.truncatedTo(ChronoUnit.DAYS))
-//                            .get(0)
-//                            .setChecked(count >= images.get(holder.dateTime.truncatedTo(ChronoUnit.DAYS)).size());
                 }
             }
 
@@ -387,11 +384,6 @@ public class PhotosFragment extends Fragment {
             builder.show();
         });
     }
-
-//    private LocalDate buildRandomDateInCurrentMonth() {
-//        Random random = new Random();
-//        return DateUtils.buildDate(random.nextInt(31) + 1);
-//    }
 
 
     @NonNull

@@ -471,6 +471,16 @@ public class DetailImageFragment extends Fragment {
         }
         else if(id == R.id.delete) {
             Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show();
+            Uri uri = ImageStorageHandler.getContentUri(requireContext(),imagesViewModel
+                    .getImages()
+                    .getValue()
+                    .get(currentPosition)
+                    .getImageUri());
+            ImageStorageHandler.deleteImage(requireContext(), requireActivity(), uri);
+            navController.getPreviousBackStackEntry().getSavedStateHandle().set("delete", image);
+            navController.popBackStack();
+            imagesViewModel.getImages().getValue().remove(image);
+            mViewPagerAdapter.notifyDataSetChanged();
         }
         else if(id == R.id.share){
             handleShare();

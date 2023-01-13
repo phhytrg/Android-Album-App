@@ -6,7 +6,6 @@ import android.app.RecoverableSecurityException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -129,14 +128,6 @@ public class ImageStorageHandler {
         }
 
         return imageUri;
-    }
-
-    private static void galleryAddPic(@NonNull Context mContext, String imagePath) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(imagePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        mContext.sendBroadcast(mediaScanIntent);
     }
 
     public static Uri getContentUri(@NonNull Context context, @NonNull Uri imageUri){
