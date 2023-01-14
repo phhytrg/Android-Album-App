@@ -105,6 +105,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if(currentState == PhotosFragment.CHANGED_MODE){
                     viewHolder.checkBox.setVisibility(View.VISIBLE);
                 }
+                else{
+                    viewHolder.checkBox.setVisibility(View.GONE);
+                }
                 viewHolder.checkBox.setOnClickListener(v -> listener.OnHeaderCheckBoxClick(viewHolder));
                 break;
             }
@@ -148,6 +151,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 if(currentState == PhotosFragment.CHANGED_MODE){
                     viewHolder.checkBox.setVisibility(View.VISIBLE);
                 }
+                else{
+                    viewHolder.checkBox.setVisibility(View.GONE);
+                }
                 if(itemsSelected.contains(viewHolder.getAdapterPosition())){
                     viewHolder.checkBox.setChecked(true);
                 }
@@ -176,9 +182,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setCheckBoxesInvisible(){
-        for(int i =0 ;i < getItemCount(); i++){
-            notifyItemChanged(i);
-        }
+        notifyDataSetChanged();
     }
 
     public void selectAll(){

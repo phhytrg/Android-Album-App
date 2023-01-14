@@ -187,7 +187,7 @@ public class DetailImageFragment extends Fragment {
         }
         return true;
     }
-        private void onBackPressed(){
+    private void onBackPressed(){
         // dang o layout_detail
         Window window = requireActivity().getWindow();
         TypedValue outValue = new TypedValue();

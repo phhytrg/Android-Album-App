@@ -317,9 +317,11 @@ public class PhotosFragment extends Fragment {
             adapter.setCurrentState(UNCHANGED_MODE);
             adapter.setCheckBoxesInvisible();
             adapter.getItemsSelected().clear();
-            for(int i =0 ;i< navigationBar.getMenu().size(); ++i){
+
+            for(int i =0 ;i < navigationBar.getMenu().size(); ++i){
                 navigationBar.getMenu().getItem(i).setEnabled(true);
             }
+
             adapter.unSelectAll();
             actionBar.show();
             navigationBar.setVisibility(View.VISIBLE);

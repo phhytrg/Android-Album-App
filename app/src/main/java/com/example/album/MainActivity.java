@@ -317,15 +317,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             ));
 
         }
-        if(myStories.isEmpty()){
-            Uri path = Uri.parse("android.resource://"+ this.getPackageName() + "/" + R.drawable.photo10);
-            MyStory myStory = new MyStory(
-                    path.toString(),
-                    null,
-                    null
-            );
-            myStories.add(myStory);
-        }
         return new Pair<>(myStories, headerInfoArrayList);
     }
 
@@ -567,10 +558,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         bmp = (Bitmap) result.getData().getExtras().get("data");
                         try {
                             ImageStorageHandler.saveImage(this, bmp, "Camera");
-                            Image image = imagesViewModel.getImages().getValue().get(0);
+//                            Image image = imagesViewModel.getImages().getValue().get(0);
+//                            Bundle bundle = new Bundle();
+//                            bundle.putParcelable("image", image);
+//                            navController.navigate(R.id.DetailImage, bundle);
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable("image", image);
-                            navController.navigate(R.id.DetailImage, bundle);
+                            bundle.putParcelable("image", bmp);
+                            navController.navigate(R.id.reviewImageFragment, bundle);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }

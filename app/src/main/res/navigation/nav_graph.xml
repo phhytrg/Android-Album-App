@@ -119,4 +119,8 @@
             android:id="@+id/action_privateLoginFragment_to_AlbumFragment"
             app:destination="@id/AlbumFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/reviewImageFragment"
+        android:name="com.example.album.review_image.ReviewImageFragment"
+        android:label="ReviewImageFragment" />
 </navigation>
